@@ -71,10 +71,19 @@ PDF を読む必要が出たら `poppler-utils` も同じ手で入る（依存�
 
 ## いま どこまで
 
-`npm run dev` でホームが開き、出題範囲 65 項目が読める。
-手順 1（`syllabus.json` と `coverage`）と手順 2 の bdd（`src/diagram/`）は完了している。
-bdd の見本は `#/notation`（ナビには出していない）。
-**次は DESIGN.md §13 の手順 3（`read_diagram` と `spot_error` の採点 + 誤り解説）から。**
+DESIGN.md §13 の手順 1〜7・9・12・13（Service Worker を除く）まで完了。画面はすべて動く。
+教材は全 12 章（`src/data/lessons/*.md`）、問題は第 1 章 bdd の 27 問。bdd の記法見本は `#/notation`。
+**次は手順 8（自分で解いて手が止まった所を記録する検問）と、手順 10（ibd / par のレンダラ）。**
+
+見た目は **WHITEBOARD のすりガラス**（2026-10-06 に決定。Claude 風の配色はやめた）。
+sql-training の「前景は不透明」は引き継がない。代わりにコントラストは `contrast` で実描画から測る。
+
+教材と問題の作り:
+
+- 教材は章ごとの Markdown。節の見出しの直後に `items:` `figures:` `term:` の札（`src/data/lessonParser.ts`）
+- `validate` が「用語が定義より先に出ていないか」を落とす（章 0 の地図は除く）
+- spot_error の誤りは `src/diagram/rules.ts` の規則で検出できるものだけ。問題の `errors` と規則の検出結果が**ぴったり一致**しないと落ちる
+- `coverage` は章の札 `problemsReady: true` の章だけ穴を落とす（レンダラが無い章は問題を作れないため）
 
 図のレンダラの作り:
 

@@ -1,0 +1,1944 @@
+[
+  {
+    "id": "bdd-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-bdd-purpose"
+    ],
+    "level": 1,
+    "title": "bdd から読み取れること",
+    "prompt_md": "次の図から言えることはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure",
+        "name": "Decomposition"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            },
+            {
+              "kind": "part",
+              "name": "wheels",
+              "type": "Wheel",
+              "mult": "4"
+            },
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ]
+        },
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "Wheel",
+          "kind": "block",
+          "name": "Wheel"
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Vehicle-Engine",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Engine",
+          "targetRole": "engine",
+          "targetMult": "1"
+        },
+        {
+          "id": "comp:Vehicle-Wheel",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Wheel",
+          "targetRole": "wheels",
+          "targetMult": "4"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle は Engine を 1 つ、Wheel を 4 つ部分として持つ"
+      },
+      {
+        "id": "b",
+        "text_md": "Engine と Wheel は駆動軸でつながっている"
+      },
+      {
+        "id": "c",
+        "text_md": "Vehicle は Engine の一種である"
+      },
+      {
+        "id": "d",
+        "text_md": "Wheel は Vehicle を部分として持つ"
+      }
+    ],
+    "answer": [
+      "a"
+    ],
+    "hints_md": [
+      "黒ひし形はどちらの端に付いているか。",
+      "部品どうしの「つながり」は bdd に描けるか。"
+    ],
+    "explanation_md": "黒ひし形は**全体の側**（Vehicle）に付き、部分の側の端に多重度（1 と 4）がある。だから「Vehicle が Engine を 1 つ、Wheel を 4 つ持つ」。\n\n- b: 部品どうしの**接続**は bdd では描けない（ibd の仕事）\n- c: 「一種である」は白三角（汎化）\n- d: ひし形の向きが逆の読み方",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-purpose-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-bdd-purpose"
+    ],
+    "level": 2,
+    "title": "どの図で表すか",
+    "prompt_md": "「エンジンの出力軸が、変速機の入力軸につながっている」ことを表すのに最も適した図はどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "ブロック定義図（bdd）"
+      },
+      {
+        "id": "b",
+        "text_md": "内部ブロック図（ibd）"
+      },
+      {
+        "id": "c",
+        "text_md": "パラメトリック図（par）"
+      },
+      {
+        "id": "d",
+        "text_md": "パッケージ図（pkg）"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "「何があるか」と「どうつながっているか」は別の図。"
+    ],
+    "explanation_md": "**つながり**は内部ブロック図（ibd）で、パートどうしをコネクタで結んで描く。bdd は型と、型どうしの関係（持つ・一種である）を描く図で、部品どうしの接続は描けない。"
+  },
+  {
+    "id": "bdd-purpose-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-bdd-purpose"
+    ],
+    "level": 3,
+    "title": "bdd では表せないもの",
+    "prompt_md": "ブロック定義図（bdd）**だけでは**表せないものはどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "車両が車輪を 4 つ持つこと"
+      },
+      {
+        "id": "b",
+        "text_md": "電気自動車が車両の一種であること"
+      },
+      {
+        "id": "c",
+        "text_md": "4 つの車輪のうち、どれが前の車軸につながっているか"
+      },
+      {
+        "id": "d",
+        "text_md": "質量の単位が kg であること"
+      }
+    ],
+    "answer": [
+      "c"
+    ],
+    "hints_md": [
+      "bdd の線は「型」どうしの関係。同じ型の 4 つを区別できるか。"
+    ],
+    "explanation_md": "bdd は**型**の関係を描くので、同じ型（Wheel）の 4 つを区別して「どれがどこにつながるか」は描けない。それはパートを個別に描ける ibd の仕事。\n\na はコンポジションと多重度、b は汎化、d は値型の単位で、どれも bdd で表せる。"
+  },
+  {
+    "id": "bdd-defuse-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-def-usage"
+    ],
+    "level": 1,
+    "title": "定義と使用を読む",
+    "prompt_md": "次の図について正しいものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Chassis"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "frontWheels",
+              "type": "Wheel",
+              "mult": "2"
+            },
+            {
+              "kind": "part",
+              "name": "rearWheels",
+              "type": "Wheel",
+              "mult": "2"
+            }
+          ]
+        },
+        {
+          "id": "Wheel",
+          "kind": "block",
+          "name": "Wheel",
+          "props": [
+            {
+              "kind": "value",
+              "name": "diameter",
+              "type": "Length"
+            }
+          ]
+        },
+        {
+          "id": "Length",
+          "kind": "valueType",
+          "name": "Length",
+          "tags": {
+            "unit": "m"
+          }
+        }
+      ],
+      "relations": []
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Wheel というブロックが 2 つ定義されている"
+      },
+      {
+        "id": "b",
+        "text_md": "Wheel は 1 つの定義で、frontWheels と rearWheels はその使用（パート）である"
+      },
+      {
+        "id": "c",
+        "text_md": "frontWheels と rearWheels はブロックである"
+      },
+      {
+        "id": "d",
+        "text_md": "frontWheels と rearWheels は型が違うので直径を別々に定義する必要がある"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "`名前 : 型` の、コロンの左右はそれぞれ何か。"
+    ],
+    "explanation_md": "`frontWheels : Wheel [2]` のコロンの**左が使用の名前、右が定義（型）**。Wheel は 1 回だけ定義され、2 か所で使われている。直径（diameter）は Wheel の定義に 1 回書けば、どちらの使用も持つ。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-defuse-2",
+    "type": "spot_error",
+    "items": [
+      "mu-def-usage"
+    ],
+    "level": 2,
+    "title": "使用の名前の置き場所",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            }
+          ]
+        },
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine"
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Vehicle-Engine",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Engine",
+          "sourceRole": "engine"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "comp:Vehicle-Engine",
+        "kind": "role-wrong-end",
+        "why": "`engine` は Vehicle の中での Engine の使用の名前なので、Engine の側の端に書く。"
+      }
+    ],
+    "hints_md": [
+      "parts 区画の `engine : Engine` の `engine` は、どちらの端の呼び名か。"
+    ],
+    "explanation_md": "parts 区画の `engine : Engine` と、線の端のロール名は同じもの。ロール名は**部分の側（Engine の端）**に書く。全体の側に書くと「Engine から見た Vehicle の呼び名」の意味になってしまう。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-defuse-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-def-usage"
+    ],
+    "level": 3,
+    "title": "同じ部品を 2 か所で使う",
+    "prompt_md": "前輪と後輪は同じ型の車輪だが、車両の中で別の役割を持つ。最も適したモデル化はどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`FrontWheel` と `RearWheel` の 2 つのブロックを定義する"
+      },
+      {
+        "id": "b",
+        "text_md": "`Wheel` を 1 つ定義し、Vehicle に `front : Wheel [2]` と `rear : Wheel [2]` の 2 つのパートを置く"
+      },
+      {
+        "id": "c",
+        "text_md": "`Wheel` を 1 つ定義し、`wheels : Wheel [4]` の 1 つのパートだけを置く"
+      },
+      {
+        "id": "d",
+        "text_md": "`Wheel` を `Vehicle` の特化（汎化）にする"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "定義は 1 つ、使用は何か所でも。",
+      "役割を区別したいなら、使用を分ける。"
+    ],
+    "explanation_md": "同じ型なら**定義は 1 つ**にし、役割ごとに**使用（パート）を分ける**のが定義と使用を分ける理由。\n\n- a: 同じものを 2 回定義すると、直径を変えるとき 2 か所直すことになる\n- c: 4 つを 1 つのパートにまとめると、前と後ろを区別できない\n- d: 車輪は車両の一種ではない"
+  },
+  {
+    "id": "bdd-features-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-block-features"
+    ],
+    "level": 1,
+    "title": "区画を読む",
+    "prompt_md": "次の図の Vehicle について正しいものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            },
+            {
+              "kind": "reference",
+              "name": "driver",
+              "type": "Driver",
+              "mult": "0..1"
+            },
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            },
+            {
+              "kind": "operation",
+              "name": "start",
+              "params": ""
+            }
+          ]
+        },
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "Driver",
+          "kind": "block",
+          "name": "Driver"
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Vehicle-Engine",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Engine",
+          "targetRole": "engine",
+          "targetMult": "1"
+        },
+        {
+          "id": "ref:Vehicle-Driver",
+          "kind": "association",
+          "source": "Vehicle",
+          "target": "Driver",
+          "targetRole": "driver",
+          "targetMult": "0..1",
+          "targetNavigable": true
+        }
+      ]
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle が無くなると Driver も無くなる"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle が無くなっても Driver は残る。Vehicle は Driver を指しているだけ"
+      },
+      {
+        "id": "c",
+        "text_md": "`mass` は部品（パート）である"
+      },
+      {
+        "id": "d",
+        "text_md": "`start()` は値属性である"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "`driver` はどの区画に書かれているか。"
+    ],
+    "explanation_md": "`driver` は **references** 区画にあり、線も矢じりだけ（ひし形なし）。参照は持たずに指すだけなので、Vehicle が無くなっても Driver は残る。\n\n`mass` は values 区画の値属性、`start()` は operations 区画の操作。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-features-2",
+    "type": "spot_error",
+    "items": [
+      "mu-block-features"
+    ],
+    "level": 2,
+    "title": "区画と型の食い違い",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "engine",
+              "type": "Engine"
+            },
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ]
+        },
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        }
+      ],
+      "relations": []
+    },
+    "errors": [
+      {
+        "at": "Vehicle",
+        "kind": "value-typed-by-block",
+        "why": "`engine : Engine` の Engine はブロックなので、values 区画ではなく parts 区画に書く。"
+      }
+    ],
+    "hints_md": [
+      "values 区画の行の型を、それぞれ確かめる。"
+    ],
+    "explanation_md": "values 区画に書けるのは**値型**（または Real などの基本型）で型付けしたものだけ。Engine は `«block»` なので、`engine : Engine` は parts 区画（持ち物なら）か references 区画（指すだけなら）に書く。`mass : Mass` は Mass が値型なので正しい。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-features-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-block-features"
+    ],
+    "level": 3,
+    "title": "最高速度をどこに書くか",
+    "prompt_md": "「車両の最高速度は 180 km/h」をブロック Vehicle に持たせたい。最も適した書き方はどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "parts 区画に `maxSpeed : Speed`（Speed は «block»）"
+      },
+      {
+        "id": "b",
+        "text_md": "values 区画に `maxSpeed : Speed = 180`（Speed は単位 km/h を持つ «valueType»）"
+      },
+      {
+        "id": "c",
+        "text_md": "operations 区画に `maxSpeed() : Real`"
+      },
+      {
+        "id": "d",
+        "text_md": "references 区画に `maxSpeed : Speed`"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "速度は「部品」か「量」か。",
+      "単位はどこで決めるか。"
+    ],
+    "explanation_md": "速度は**量**なので値属性にし、**単位を持つ値型**で型付けする。既定値は `= 180`。単位は値型（Speed の unit = km/h）で決まる。\n\nブロックで型付けすると部品の意味になり、操作にすると「呼び出し」の意味になる。"
+  },
+  {
+    "id": "bdd-valuetype-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-valuetype"
+    ],
+    "level": 1,
+    "title": "値型を読む",
+    "prompt_md": "次の図の `«valueType» Mass {unit = kg}` について正しいものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Types"
+      },
+      "elements": [
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        },
+        {
+          "id": "Force",
+          "kind": "valueType",
+          "name": "Force",
+          "tags": {
+            "unit": "N"
+          }
+        },
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ]
+        }
+      ],
+      "relations": []
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Mass は部品で、Vehicle は Mass を持ち物として持つ"
+      },
+      {
+        "id": "b",
+        "text_md": "Mass は量の型で、値は kg で表す。1500 kg の値が 2 つあっても区別しない"
+      },
+      {
+        "id": "c",
+        "text_md": "Mass はポートを持てる"
+      },
+      {
+        "id": "d",
+        "text_md": "`{unit = kg}` はコメントで、モデルには意味を持たない"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "ブロックと値型の違いは「実体を区別するか」。"
+    ],
+    "explanation_md": "値型は**量・性質の型**で、実体を区別しない（1500 kg はどこでも 1500 kg）。`{unit = kg}` は値型の**単位**で、モデルの情報。値型は部品もポートも持たない。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-valuetype-2",
+    "type": "spot_error",
+    "items": [
+      "mu-valuetype"
+    ],
+    "level": 2,
+    "title": "値型に部品がある",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Types"
+      },
+      "elements": [
+        {
+          "id": "Battery",
+          "kind": "block",
+          "name": "Battery",
+          "props": [
+            {
+              "kind": "value",
+              "name": "voltage",
+              "type": "Voltage"
+            },
+            {
+              "kind": "value",
+              "name": "capacity",
+              "type": "Energy"
+            }
+          ]
+        },
+        {
+          "id": "Voltage",
+          "kind": "valueType",
+          "name": "Voltage",
+          "tags": {
+            "unit": "V"
+          }
+        },
+        {
+          "id": "Energy",
+          "kind": "valueType",
+          "name": "Energy",
+          "props": [
+            {
+              "kind": "part",
+              "name": "cell",
+              "type": "Battery"
+            }
+          ],
+          "tags": {
+            "unit": "kWh"
+          }
+        }
+      ],
+      "relations": []
+    },
+    "errors": [
+      {
+        "at": "Energy",
+        "kind": "valuetype-with-parts",
+        "why": "Energy は値型なので部品（parts 区画）を持たない。"
+      }
+    ],
+    "hints_md": [
+      "値型が持てないものは何か。"
+    ],
+    "explanation_md": "«valueType» は量の型で、部品の構造を持たない。Energy の parts 区画は誤り。部品を持たせたいならブロックにする（ここでは Battery が Energy を値属性として持つのが正しい形で、すでにそうなっている）。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-valuetype-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-valuetype"
+    ],
+    "level": 3,
+    "title": "温度の型を選ぶ",
+    "prompt_md": "冷却水の温度（℃）を値属性として持たせたい。**単位の取り違えをモデルで防げる**型の選び方はどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`temp : Real`"
+      },
+      {
+        "id": "b",
+        "text_md": "`temp : Temperature`（Temperature は単位 ℃ を持つ «valueType»）"
+      },
+      {
+        "id": "c",
+        "text_md": "`temp : Temperature`（Temperature は «block»）"
+      },
+      {
+        "id": "d",
+        "text_md": "`temp : String`（\"90℃\" のように書く）"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "単位はどこに持たせるか。"
+    ],
+    "explanation_md": "単位を持つ**値型**で型付けすると、束縛コネクタなどで単位が合わない所を見つけられる。\n\n- a: Real でも動くが、単位の情報が失われる\n- c: ブロックにすると部品の意味になる\n- d: 文字列では計算も単位の照合もできない"
+  },
+  {
+    "id": "bdd-assoc-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-association"
+    ],
+    "level": 1,
+    "title": "黒と白のひし形",
+    "prompt_md": "次の図で、Fleet が無くなったとき**残る**ものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Fleet"
+      },
+      "elements": [
+        {
+          "id": "Fleet",
+          "kind": "block",
+          "name": "Fleet"
+        },
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle"
+        },
+        {
+          "id": "Depot",
+          "kind": "block",
+          "name": "Depot"
+        }
+      ],
+      "relations": [
+        {
+          "id": "agg:Fleet-Vehicle",
+          "kind": "aggregation",
+          "source": "Fleet",
+          "target": "Vehicle",
+          "targetRole": "vehicles",
+          "targetMult": "1..*"
+        },
+        {
+          "id": "comp:Fleet-Depot",
+          "kind": "composition",
+          "source": "Fleet",
+          "target": "Depot",
+          "targetRole": "depots",
+          "targetMult": "0..*"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle だけ"
+      },
+      {
+        "id": "b",
+        "text_md": "Depot だけ"
+      },
+      {
+        "id": "c",
+        "text_md": "Vehicle と Depot の両方"
+      },
+      {
+        "id": "d",
+        "text_md": "どちらも残らない"
+      }
+    ],
+    "answer": [
+      "a"
+    ],
+    "hints_md": [
+      "塗りつぶしたひし形と、中抜きのひし形の違い。"
+    ],
+    "explanation_md": "Depot へは**黒ひし形**（コンポジション）なので、Fleet が無くなると Depot も無くなる。Vehicle へは**白ひし形**（共有集約）で、共有してよい関係なので Vehicle は残る。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-assoc-2",
+    "type": "spot_error",
+    "items": [
+      "mu-association"
+    ],
+    "level": 2,
+    "title": "区画とひし形の食い違い",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            },
+            {
+              "kind": "part",
+              "name": "wheels",
+              "type": "Wheel",
+              "mult": "4"
+            }
+          ]
+        },
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "Wheel",
+          "kind": "block",
+          "name": "Wheel"
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Vehicle-Engine",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Engine",
+          "targetRole": "engine",
+          "targetMult": "1"
+        },
+        {
+          "id": "agg:Vehicle-Wheel",
+          "kind": "aggregation",
+          "source": "Vehicle",
+          "target": "Wheel",
+          "targetRole": "wheels",
+          "targetMult": "4"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "agg:Vehicle-Wheel",
+        "kind": "parts-vs-aggregation",
+        "why": "wheels は parts 区画にあるので持ち物（コンポジション）。線は黒ひし形にする。"
+      }
+    ],
+    "hints_md": [
+      "parts 区画の行と、線の種類を突き合わせる。"
+    ],
+    "explanation_md": "parts 区画は**黒ひし形を箱の中で書いたもの**。`wheels : Wheel [4]` が parts 区画にあるのに、線が白ひし形になっているので食い違う。Engine への線は黒ひし形で、区画とも一致している。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-assoc-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-association"
+    ],
+    "level": 3,
+    "title": "運転者との関係を選ぶ",
+    "prompt_md": "車両は運転者を**辿れれば**よく、運転者は車を降りても存在し続ける。最も適した図はどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "黒ひし形（Vehicle の側）",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Choice A"
+          },
+          "elements": [
+            {
+              "id": "Vehicle",
+              "kind": "block",
+              "name": "Vehicle"
+            },
+            {
+              "id": "Driver",
+              "kind": "block",
+              "name": "Driver"
+            }
+          ],
+          "relations": [
+            {
+              "id": "comp:Vehicle-Driver",
+              "kind": "composition",
+              "source": "Vehicle",
+              "target": "Driver",
+              "targetRole": "driver",
+              "targetMult": "0..1"
+            }
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "text_md": "矢じりだけの線（Driver の側に矢じり）",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Choice B"
+          },
+          "elements": [
+            {
+              "id": "Vehicle",
+              "kind": "block",
+              "name": "Vehicle"
+            },
+            {
+              "id": "Driver",
+              "kind": "block",
+              "name": "Driver"
+            }
+          ],
+          "relations": [
+            {
+              "id": "ref:Vehicle-Driver",
+              "kind": "association",
+              "source": "Vehicle",
+              "target": "Driver",
+              "targetRole": "driver",
+              "targetMult": "0..1",
+              "targetNavigable": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "c",
+        "text_md": "白三角（Vehicle の側）",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Choice C"
+          },
+          "elements": [
+            {
+              "id": "Vehicle",
+              "kind": "block",
+              "name": "Vehicle"
+            },
+            {
+              "id": "Driver",
+              "kind": "block",
+              "name": "Driver"
+            }
+          ],
+          "relations": [
+            {
+              "id": "gen:Driver-Vehicle",
+              "kind": "generalization",
+              "source": "Driver",
+              "target": "Vehicle"
+            }
+          ]
+        }
+      },
+      {
+        "id": "d",
+        "text_md": "黒ひし形（Driver の側）",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Choice D"
+          },
+          "elements": [
+            {
+              "id": "Vehicle",
+              "kind": "block",
+              "name": "Vehicle"
+            },
+            {
+              "id": "Driver",
+              "kind": "block",
+              "name": "Driver"
+            }
+          ],
+          "relations": [
+            {
+              "id": "comp:Driver-Vehicle",
+              "kind": "composition",
+              "source": "Driver",
+              "target": "Vehicle",
+              "targetRole": "vehicle"
+            }
+          ]
+        }
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "「持つ」か「指す」か。",
+      "辿れる向きは何で表すか。"
+    ],
+    "explanation_md": "運転者は車両の持ち物ではない（車を降りても存在する）ので、ひし形は使わない。辿れればよいので、**矢じりだけの関連**（参照）にし、矢じりを Driver の側に付ける。\n\n- a, d: 黒ひし形は持ち物（全体が消えると部分も消える）\n- c: 「運転者は車両の一種」ではない"
+  },
+  {
+    "id": "bdd-mult-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-multiplicity"
+    ],
+    "level": 1,
+    "title": "多重度を読む",
+    "prompt_md": "次の図で、Car 1 台が持つ Seat の数はどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Interior"
+      },
+      "elements": [
+        {
+          "id": "Car",
+          "kind": "block",
+          "name": "Car",
+          "props": [
+            {
+              "kind": "part",
+              "name": "seats",
+              "type": "Seat",
+              "mult": "2..5"
+            }
+          ]
+        },
+        {
+          "id": "Seat",
+          "kind": "block",
+          "name": "Seat"
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Car-Seat",
+          "kind": "composition",
+          "source": "Car",
+          "target": "Seat",
+          "targetRole": "seats",
+          "targetMult": "2..5"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "ちょうど 2 つ"
+      },
+      {
+        "id": "b",
+        "text_md": "2 つ以上 5 つ以下"
+      },
+      {
+        "id": "c",
+        "text_md": "2 つまたは 5 つ"
+      },
+      {
+        "id": "d",
+        "text_md": "Seat 1 つが Car を 2〜5 台持つ"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "`..` は範囲。",
+      "多重度はどちらの端に書いてあるか。"
+    ],
+    "explanation_md": "`2..5` は「2 以上 5 以下」。多重度は**数えられる側（Seat）の端**に書き、「Car 1 台あたりの Seat の数」と読む。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-mult-2",
+    "type": "spot_error",
+    "items": [
+      "mu-multiplicity"
+    ],
+    "level": 2,
+    "title": "多重度とロール名の置き場所",
+    "prompt_md": "次の図には誤りがある。誤っている所を**すべて**指せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "wheels",
+              "type": "Wheel",
+              "mult": "4"
+            },
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            }
+          ]
+        },
+        {
+          "id": "Wheel",
+          "kind": "block",
+          "name": "Wheel"
+        },
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine"
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Vehicle-Wheel",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Wheel",
+          "sourceRole": "wheels",
+          "sourceMult": "4"
+        },
+        {
+          "id": "comp:Vehicle-Engine",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Engine",
+          "targetRole": "engine",
+          "targetMult": "1"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "comp:Vehicle-Wheel",
+        "kind": "composite-end-mult",
+        "why": "全体の側（Vehicle）の多重度は 1 か 0..1 にしかならない。4 は Wheel の側に書く。"
+      },
+      {
+        "at": "comp:Vehicle-Wheel",
+        "kind": "role-wrong-end",
+        "why": "ロール名 wheels も Wheel の側の端に書く。"
+      }
+    ],
+    "hints_md": [
+      "「Vehicle 1 台あたり Wheel が 4 つ」の 4 は、どちらの端に置くか。"
+    ],
+    "explanation_md": "多重度とロール名は**部分の側**の端に書く。Vehicle の端に `4` があると「Wheel 1 つを 4 台の Vehicle が持つ」意味になり、コンポジションでは起こりえない（部分は同時に 1 つの全体にしか属さない）。誤りは 1 本の線に 2 つあるが、指すのは線 1 本でよい。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-mult-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-multiplicity"
+    ],
+    "level": 3,
+    "title": "あってもなくてもよい部品",
+    "prompt_md": "車両は予備タイヤを 1 本持つこともあれば、持たないこともある。parts 区画の書き方として正しいものはどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`spare : Wheel`"
+      },
+      {
+        "id": "b",
+        "text_md": "`spare : Wheel [0..1]`"
+      },
+      {
+        "id": "c",
+        "text_md": "`spare : Wheel [1..*]`"
+      },
+      {
+        "id": "d",
+        "text_md": "`spare : Wheel [*]`"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "`[ ]` を書かないと多重度はいくつか。"
+    ],
+    "explanation_md": "「無いか、1 つ」は `0..1`。\n\n- a: 多重度を省くと **1**（必ず 1 つ）\n- c: 1 つ以上（無いことは許さない）\n- d: 0 個以上（2 本以上も許してしまう）"
+  },
+  {
+    "id": "bdd-gen-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-specialization"
+    ],
+    "level": 1,
+    "title": "汎化で受け継ぐもの",
+    "prompt_md": "次の図で、ElectricVehicle が持つ値属性を**すべて**選べ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleTypes"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ],
+          "abstract": true
+        },
+        {
+          "id": "ElectricVehicle",
+          "kind": "block",
+          "name": "ElectricVehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "batteryCapacity",
+              "type": "Energy"
+            }
+          ]
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        },
+        {
+          "id": "Energy",
+          "kind": "valueType",
+          "name": "Energy",
+          "tags": {
+            "unit": "kWh"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "gen:ElectricVehicle-Vehicle",
+          "kind": "generalization",
+          "source": "ElectricVehicle",
+          "target": "Vehicle"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`mass`"
+      },
+      {
+        "id": "b",
+        "text_md": "`batteryCapacity`"
+      },
+      {
+        "id": "c",
+        "text_md": "`unit`"
+      },
+      {
+        "id": "d",
+        "text_md": "どれも持たない（Vehicle は抽象なので）"
+      }
+    ],
+    "answer": [
+      "a",
+      "b"
+    ],
+    "hints_md": [
+      "白三角はどちらの側に付いているか。",
+      "特化した側は、一般の側の何を受け継ぐか。"
+    ],
+    "explanation_md": "白三角は**一般の側（Vehicle）**に付いている。特化した ElectricVehicle は Vehicle の特徴を**すべて受け継ぐ**ので、`mass` と自分の `batteryCapacity` の両方を持つ。Vehicle が抽象（斜体）でも、受け継ぐことは変わらない。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-gen-2",
+    "type": "spot_error",
+    "items": [
+      "mu-specialization"
+    ],
+    "level": 2,
+    "title": "汎化の相手",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleTypes"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "abstract": true
+        },
+        {
+          "id": "Truck",
+          "kind": "block",
+          "name": "Truck"
+        },
+        {
+          "id": "Payload",
+          "kind": "valueType",
+          "name": "Payload",
+          "tags": {
+            "unit": "t"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "gen:Truck-Vehicle",
+          "kind": "generalization",
+          "source": "Truck",
+          "target": "Vehicle"
+        },
+        {
+          "id": "gen:Payload-Vehicle",
+          "kind": "generalization",
+          "source": "Payload",
+          "target": "Vehicle"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "gen:Payload-Vehicle",
+        "kind": "generalization-across-kinds",
+        "why": "Payload は値型、Vehicle はブロック。汎化は同じ種類どうしの間にだけ引ける。"
+      }
+    ],
+    "hints_md": [
+      "汎化の両端の箱の «» を見比べる。"
+    ],
+    "explanation_md": "汎化は**同じ種類どうし**（ブロックとブロック、値型と値型）に引く。値型の Payload がブロックの Vehicle を特化することはできない。積載量は Truck の値属性（`payload : Payload`）として持たせるのが正しい。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-gen-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-specialization"
+    ],
+    "level": 3,
+    "title": "共通の性質を 1 か所に",
+    "prompt_md": "トラックとバスはどちらも車両で、質量と最高速度を共通に持つ。共通の性質を 1 か所で定義したい。最も適したモデル化はどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "抽象ブロック Vehicle に共通の値属性を書き、Truck と Bus から Vehicle へ汎化（白三角は Vehicle の側）"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle から Truck と Bus へ黒ひし形を引く"
+      },
+      {
+        "id": "c",
+        "text_md": "Truck と Bus の両方に同じ値属性を書く"
+      },
+      {
+        "id": "d",
+        "text_md": "Truck から Bus へ汎化を引く"
+      }
+    ],
+    "answer": [
+      "a"
+    ],
+    "hints_md": [
+      "「トラックは車両の一種」と言えるか。"
+    ],
+    "explanation_md": "「〜は〜の一種」（is-a）は**汎化**。共通の性質を一般の側に 1 回書けば、特化した側はすべて受け継ぐ。\n\n- b: 黒ひし形は「持つ」の意味（車両がトラックを持つ、になる）\n- c: 2 か所に同じことを書くと、片方だけ直す事故が起きる\n- d: バスはトラックの一種ではない"
+  },
+  {
+    "id": "bdd-capture-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-struct-capture"
+    ],
+    "level": 1,
+    "title": "分解を表す関係",
+    "prompt_md": "「ドローンは機体 1 つとローター 4 つでできている（ドローンを廃棄すれば部品も廃棄する）」を bdd で表すのに使うものはどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "汎化（白三角）"
+      },
+      {
+        "id": "b",
+        "text_md": "コンポジション（黒ひし形）と、部分の側の多重度"
+      },
+      {
+        "id": "c",
+        "text_md": "依存（破線の矢印）"
+      },
+      {
+        "id": "d",
+        "text_md": "参照（矢じりだけの線）"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "「でできている」は持つ関係か、一種の関係か。"
+    ],
+    "explanation_md": "「〜でできている」「全体を捨てれば部分も捨てる」は**コンポジション**。ローターの数 4 は Rotor の側の端に多重度で書く。"
+  },
+  {
+    "id": "bdd-capture-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-struct-capture"
+    ],
+    "level": 2,
+    "title": "値型にすべきもの",
+    "prompt_md": "ドローンのモデルで、**値型**で表すべきものを**すべて**選べ。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "機体の質量"
+      },
+      {
+        "id": "b",
+        "text_md": "バッテリー"
+      },
+      {
+        "id": "c",
+        "text_md": "モーターの定格電圧"
+      },
+      {
+        "id": "d",
+        "text_md": "ローター"
+      }
+    ],
+    "answer": [
+      "a",
+      "c"
+    ],
+    "hints_md": [
+      "実体を区別するもの（部品）と、量・性質を分ける。"
+    ],
+    "explanation_md": "質量と電圧は**量**なので値型（単位 kg・V）。バッテリーとローターは実体を区別する**部品**なのでブロック。"
+  },
+  {
+    "id": "bdd-capture-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-struct-capture"
+    ],
+    "level": 3,
+    "title": "ドローンの分解を選ぶ",
+    "prompt_md": "「ドローンは機体 1 つとローター 4 つでできている」を正しく表した図はどれか。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "A",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Drone",
+            "name": "Choice A"
+          },
+          "elements": [
+            {
+              "id": "Drone",
+              "kind": "block",
+              "name": "Drone"
+            },
+            {
+              "id": "Frame",
+              "kind": "block",
+              "name": "Frame"
+            },
+            {
+              "id": "Rotor",
+              "kind": "block",
+              "name": "Rotor"
+            }
+          ],
+          "relations": [
+            {
+              "id": "comp:Drone-Frame",
+              "kind": "composition",
+              "source": "Drone",
+              "target": "Frame",
+              "targetRole": "frame",
+              "targetMult": "1"
+            },
+            {
+              "id": "comp:Drone-Rotor",
+              "kind": "composition",
+              "source": "Drone",
+              "target": "Rotor",
+              "targetRole": "rotors",
+              "targetMult": "4"
+            }
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "text_md": "B",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Drone",
+            "name": "Choice B"
+          },
+          "elements": [
+            {
+              "id": "Drone",
+              "kind": "block",
+              "name": "Drone"
+            },
+            {
+              "id": "Frame",
+              "kind": "block",
+              "name": "Frame"
+            },
+            {
+              "id": "Rotor",
+              "kind": "block",
+              "name": "Rotor"
+            }
+          ],
+          "relations": [
+            {
+              "id": "comp:Drone-Frame",
+              "kind": "composition",
+              "source": "Drone",
+              "target": "Frame",
+              "targetRole": "frame",
+              "targetMult": "1"
+            },
+            {
+              "id": "comp:Drone-Rotor",
+              "kind": "composition",
+              "source": "Drone",
+              "target": "Rotor",
+              "sourceMult": "4",
+              "sourceRole": "rotors"
+            }
+          ]
+        }
+      },
+      {
+        "id": "c",
+        "text_md": "C",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Drone",
+            "name": "Choice C"
+          },
+          "elements": [
+            {
+              "id": "Drone",
+              "kind": "block",
+              "name": "Drone"
+            },
+            {
+              "id": "Frame",
+              "kind": "block",
+              "name": "Frame"
+            },
+            {
+              "id": "Rotor",
+              "kind": "block",
+              "name": "Rotor"
+            }
+          ],
+          "relations": [
+            {
+              "id": "gen:Frame-Drone",
+              "kind": "generalization",
+              "source": "Frame",
+              "target": "Drone"
+            },
+            {
+              "id": "gen:Rotor-Drone",
+              "kind": "generalization",
+              "source": "Rotor",
+              "target": "Drone"
+            }
+          ]
+        }
+      },
+      {
+        "id": "d",
+        "text_md": "D",
+        "model": {
+          "type": "bdd",
+          "frame": {
+            "kind": "bdd",
+            "ownerType": "package",
+            "owner": "Drone",
+            "name": "Choice D"
+          },
+          "elements": [
+            {
+              "id": "Drone",
+              "kind": "block",
+              "name": "Drone"
+            },
+            {
+              "id": "Frame",
+              "kind": "block",
+              "name": "Frame"
+            },
+            {
+              "id": "Rotor",
+              "kind": "block",
+              "name": "Rotor"
+            }
+          ],
+          "relations": [
+            {
+              "id": "comp:Frame-Drone",
+              "kind": "composition",
+              "source": "Frame",
+              "target": "Drone",
+              "targetRole": "drone",
+              "targetMult": "1"
+            },
+            {
+              "id": "comp:Rotor-Drone",
+              "kind": "composition",
+              "source": "Rotor",
+              "target": "Drone",
+              "targetRole": "drone",
+              "targetMult": "4"
+            }
+          ]
+        }
+      }
+    ],
+    "answer": [
+      "a"
+    ],
+    "hints_md": [
+      "ひし形の位置、多重度の位置、線の種類の 3 つを順に確かめる。"
+    ],
+    "explanation_md": "A が正しい。黒ひし形は**全体（Drone）の側**、多重度 4 とロール名は**部分（Rotor）の側**。\n\n- B: 多重度を全体の側に書いている\n- C: 汎化は「一種」の意味（ローターはドローンの一種ではない）\n- D: ひし形の向きが逆（部品がドローンを持つ意味になる）",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-build-1",
+    "type": "read_diagram",
+    "items": [
+      "mbf-build-bdd"
+    ],
+    "level": 1,
+    "title": "ヘッダを読む",
+    "prompt_md": "次の図のヘッダ `bdd [package] DroneStructure [Decomposition]` の `[package]` が表すものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "DroneStructure",
+        "name": "Decomposition"
+      },
+      "elements": [
+        {
+          "id": "Drone",
+          "kind": "block",
+          "name": "Drone",
+          "props": [
+            {
+              "kind": "part",
+              "name": "rotors",
+              "type": "Rotor",
+              "mult": "4"
+            },
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ]
+        },
+        {
+          "id": "Rotor",
+          "kind": "block",
+          "name": "Rotor"
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Drone-Rotor",
+          "kind": "composition",
+          "source": "Drone",
+          "target": "Rotor",
+          "targetRole": "rotors",
+          "targetMult": "4"
+        }
+      ]
+    },
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "図の種類"
+      },
+      {
+        "id": "b",
+        "text_md": "図が表しているモデル要素（DroneStructure）の型"
+      },
+      {
+        "id": "c",
+        "text_md": "図の名前"
+      },
+      {
+        "id": "d",
+        "text_md": "図に描かれているブロックの型"
+      }
+    ],
+    "answer": [
+      "b"
+    ],
+    "hints_md": [
+      "ヘッダは「種類 [型] 名前 [図の名前]」の順。"
+    ],
+    "explanation_md": "ヘッダは `種類の略号 [対象の型] 対象の名前 [図の名前]`。`[package]` は、この図が表している **DroneStructure の型**がパッケージであることを示す。図の種類は `bdd`、図の名前は `Decomposition`。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-build-2",
+    "type": "spot_error",
+    "items": [
+      "mbf-build-bdd"
+    ],
+    "level": 2,
+    "title": "作った bdd を確かめる",
+    "prompt_md": "次の図には誤りが**2 か所**ある。誤っている所をすべて指せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "package",
+        "owner": "DroneStructure",
+        "name": "Decomposition"
+      },
+      "elements": [
+        {
+          "id": "Drone",
+          "kind": "block",
+          "name": "Drone",
+          "props": [
+            {
+              "kind": "part",
+              "name": "rotors",
+              "type": "Rotor",
+              "mult": "4"
+            },
+            {
+              "kind": "part",
+              "name": "battery",
+              "type": "Battery"
+            }
+          ]
+        },
+        {
+          "id": "Rotor",
+          "kind": "block",
+          "name": "Rotor"
+        },
+        {
+          "id": "Battery",
+          "kind": "block",
+          "name": "Battery"
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Drone-Rotor",
+          "kind": "composition",
+          "source": "Drone",
+          "target": "Rotor",
+          "targetRole": "rotors",
+          "targetMult": "2"
+        },
+        {
+          "id": "comp:Drone-Battery",
+          "kind": "composition",
+          "source": "Drone",
+          "target": "Battery",
+          "targetRole": "battery",
+          "targetMult": "1"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-kind",
+        "why": "ブロックとひし形を描いた図は bdd。ヘッダの略号が ibd になっている。"
+      },
+      {
+        "at": "comp:Drone-Rotor",
+        "kind": "part-mult-mismatch",
+        "why": "parts 区画は rotors : Rotor [4] なのに、線の多重度が 2。"
+      }
+    ],
+    "hints_md": [
+      "ヘッダの略号と、描かれている図の種類は合っているか。",
+      "区画の多重度と線の多重度を突き合わせる。"
+    ],
+    "explanation_md": "1 つ目はヘッダの略号。ブロックとコンポジションを描いた図は bdd なので `bdd [package] …` が正しい。2 つ目は多重度の食い違い。同じパートを区画と線の両方で書いたら、多重度は一致させる。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "bdd-build-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-bdd"
+    ],
+    "level": 3,
+    "title": "必ず一致させるもの",
+    "prompt_md": "bdd で、あるパートを parts 区画と黒ひし形の線の**両方**で書いた。必ず一致していなければならないものを**すべて**選べ。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "区画の名前と、部分の側の端のロール名"
+      },
+      {
+        "id": "b",
+        "text_md": "区画の多重度と、部分の側の端の多重度"
+      },
+      {
+        "id": "c",
+        "text_md": "区画の型と、線の部分の側のブロック"
+      },
+      {
+        "id": "d",
+        "text_md": "区画の名前と、全体の側の端のロール名"
+      }
+    ],
+    "answer": [
+      "a",
+      "b",
+      "c"
+    ],
+    "hints_md": [
+      "区画の行と線は、同じことの 2 通りの書き方。"
+    ],
+    "explanation_md": "parts 区画の `rotors : Rotor [4]` と、黒ひし形の線の**部分の側の端**（ロール名 rotors・多重度 4・相手 Rotor）は同じもの。名前・型・多重度のすべてが一致する。全体の側の端に書くロール名は別の意味（部分から見た全体の呼び名）。"
+  }
+]

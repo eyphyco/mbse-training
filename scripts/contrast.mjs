@@ -68,7 +68,7 @@ for (const theme of ['light', 'dark']) {
 
   const measure = async (label, selector, nth = 0) => {
     const loc = page.locator(selector).nth(nth);
-    if ((await loc.count()) === 0) throw new Error(`見つからない: ${selector}`);
+    if ((await page.locator(selector).count()) <= nth) throw new Error(`見つからない: ${selector}`);
     await loc.scrollIntoViewIfNeeded();
     await page.waitForTimeout(250);
     const shot = await page.screenshot();
@@ -83,26 +83,44 @@ for (const theme of ['light', 'dark']) {
     rows.push([theme, label, ratio]);
   };
 
-  await page.goto(`${base}/#/`, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(900);
+  const open = async (path) => {
+    await page.goto(`${base}/#${path}`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(900);
+  };
 
   /*
-    地の上に直接載る文字と、面の上の文字の両方を測る。
-    下地を写真にしたので地の明るさは場所で振れる（狭く抑えてあるが 0 ではない）。
+    すりガラスの板の上の文字は、地が「透けた写真 + 板の色」で決まる。
+    トークンの値だけでは分からないので、画面ごとに実際に描かれたものを測る。
   */
-  await measure('節の見出し (muted)', 'main h2');
-  await measure('進捗の本文 (fg)', 'main p.text-lead');
-  await measure('出典の注記 (muted)', 'main p.text-small');
-  await measure('領域の比率 (accent)', 'main span.text-accent');
-  await measure('項目数 (subtle)', 'main span.text-subtle');
-  await measure('定義リストの見出し (subtle)', 'main dt');
+  await open('/');
+  await measure('見出し (fg)', 'main h1');
+  await measure('節の副題 (muted)', 'main h2 + span');
+  await measure('網羅の比率 (accent)', 'main span.text-accent');
+  await measure('札の補足 (muted)', '[data-testid=today] li span.text-tiny');
+  await measure('主ボタンの白文字 (gradient)', '[data-testid=start-today]');
   await measure('ナビの現在地 (accent)', 'header nav a[aria-current="page"]');
+  await measure('ナビの他 (muted)', 'header nav a:not([aria-current])', 1);
+  await measure('データの所在 (rose)', '[data-testid=data-badge]');
+
+  await open('/board?item=mu-association');
+  await measure('レーン名 (fg)', '[data-testid=lane-untouched] h2');
+  await measure('レーンの副題 (muted)', '[data-testid=lane-untouched] h2 + span');
+  await measure('空レーンの文 (muted)', '[data-testid=lane-dropped] .border-dashed');
+  await measure('札の名前 (fg)', '[data-item] span.line-clamp-2');
+  await measure('札の補足 (muted)', '[data-item="mu-ibd-purpose"] span.text-micro');
+  await measure('詳細の項目名 (muted)', '[data-testid=detail] dt');
+  await measure('タブの現在地 (accent)', '[data-testid=detail] [role=tab][aria-selected=true]');
+
+  await open('/learn/bdd');
+  await measure('本文 (fg)', '[data-testid=section-bdd-purpose] .md p');
+  await measure('表の見出し (muted)', '[data-testid=section-bdd-purpose] .md th');
+  await measure('初出の語の札 (purple)', '[data-testid=section-bdd-purpose] p.text-tiny');
 
   /*
     図の中の文字。地は紙（dg-paper）か札（dg-tab）で、どちらも不透明。
     文字 1 つの箱を測るので、明暗の両端がそのまま文字と地になる。
   */
-  await page.goto(`${base}/#/notation`, { waitUntil: 'networkidle' });
+  await open('/notation');
   await page.locator('[data-testid=diagram][data-status=ready]').first().waitFor();
   await measure('図枠のヘッダ (dg-tab)', 'figure svg text', 1);
   await measure('図の区画の行 (dg-ink)', 'figure svg [data-ref="Vehicle"] > text', 3);
@@ -117,7 +135,7 @@ for (const [theme, label, ratio] of rows) {
   const ok = ratio >= MIN;
   if (!ok) low += 1;
   console.log(
-    `${ok ? 'OK  ' : 'LOW '} ${theme.padEnd(5)} ${label.padEnd(26)} ${ratio.toFixed(2)}:1`,
+    `${ok ? 'OK  ' : 'LOW '} ${theme.padEnd(5)} ${label.padEnd(24)} ${ratio.toFixed(2)}:1`,
   );
 }
 console.log(low === 0 ? `\n${rows.length} 件すべて ${MIN}:1 以上` : `\n${low} 件が ${MIN}:1 未満`);

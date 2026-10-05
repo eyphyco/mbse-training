@@ -43,3 +43,16 @@ export const STAGGER: Variants = {
 
 /** 画面遷移。位置は動かさず、切り替わりの断絶だけ和らげる */
 export const PAGE: Transition = { duration: 0.15, ease: EASE_OUT };
+
+/** 吹き出し（絞り込み・検索候補）。上から少し落ちて、わずかに大きくなって収まる */
+export const POP = {
+  initial: { opacity: 0, y: -6, scale: 0.98 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.18, ease: EASE_OUT } },
+  exit: { opacity: 0, y: -4, scale: 0.98, transition: { duration: 0.12, ease: EASE_OUT } },
+} as const;
+
+/** 札が持ち上がる（ホバー）。WHITEBOARD の札は触ると少し浮く */
+export const LIFT = { y: -2, transition: { duration: 0.16, ease: EASE_OUT } } as const;
+
+/** 札がレーンをまたいで飛ぶときのばね。SLIDE より少し柔らかく、着地が見えるように */
+export const FLY: Transition = { type: 'spring', stiffness: 380, damping: 36, mass: 0.8 };

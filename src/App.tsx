@@ -1,47 +1,75 @@
+import { useEffect, useState } from 'react';
 import { HashRouter, Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
-import { MotionConfig, motion } from 'motion/react';
-import { PAGE, SLIDE } from './components/motion';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { COLLAPSE, PAGE, SLIDE } from './components/motion';
 import { ToastProvider } from './components/ToastProvider';
 import ThemeToggle from './components/ThemeToggle';
 import ErrorBoundary from './components/ErrorBoundary';
-import { IconLayers } from './components/icons';
+import Search from './components/Search';
+import Legend from './components/Legend';
+import {
+  IconAa,
+  IconBook,
+  IconCube,
+  IconGrid,
+  IconHome,
+  IconInfo,
+  IconList,
+  IconSliders,
+  IconTimer,
+} from './components/icons';
+import { ProgressProvider } from './storage/ProgressProvider';
+import { useProgress } from './storage/progressContext';
 import Home from './pages/Home';
+import Board from './pages/Board';
+import Learn from './pages/Learn';
+import LearnChapter from './pages/LearnChapter';
+import Problems from './pages/Problems';
+import ProblemPage from './pages/ProblemPage';
+import Exam from './pages/Exam';
+import Glossary from './pages/Glossary';
+import Settings from './pages/Settings';
 import Notation from './pages/Notation';
 
 /*
-  骨格だけ。中身は DESIGN.md §13 の順で入れていく。
+  版面は WHITEBOARD（@_ryu15_ の 2 投稿の画面）に合わせる。
+  浮いたガラスのヘッダ 1 本に、ロゴ・ナビ・検索・凡例・データの所在を並べる。
   経路は DESIGN.md §5 の表に合わせてある。
 */
 const NAV = [
-  { to: '/', label: 'ホーム', end: true },
-  { to: '/board', label: '範囲', end: false },
-  { to: '/learn', label: '教材', end: false },
-  { to: '/problems', label: '問題', end: false },
-  { to: '/exam', label: '模擬試験', end: false },
-  { to: '/settings', label: '進捗', end: false },
+  { to: '/', label: 'ホーム', end: true, Icon: IconHome },
+  { to: '/board', label: 'ボード', end: false, Icon: IconGrid },
+  { to: '/learn', label: '教材', end: false, Icon: IconBook },
+  { to: '/problems', label: '問題', end: false, Icon: IconList },
+  { to: '/exam', label: '模擬試験', end: false, Icon: IconTimer },
+  { to: '/glossary', label: '用語集', end: false, Icon: IconAa },
+  { to: '/settings', label: '進捗', end: false, Icon: IconSliders },
 ];
 
-function Header() {
+function Header({ legend, onLegend }: { legend: boolean; onLegend: () => void }) {
+  const { saveFailed } = useProgress();
   return (
-    <header className="panel-chrome sticky top-0 z-20 border-b border-line">
-      <div className="mx-auto flex h-14 w-full max-w-page items-center gap-2 px-3 sm:gap-6 sm:px-5 lg:px-8">
-        <Link
-          to="/"
-          className="flex shrink-0 items-center gap-2 text-body font-semibold tracking-tight text-fg"
-        >
-          <IconLayers size={17} className="text-accent" />
-          <span className="hidden sm:inline">MBSE Training</span>
-          <span className="sr-only sm:hidden">MBSE Training</span>
+    <header className="sticky top-0 z-30 px-3 pt-3 sm:px-5 lg:px-6">
+      <div className="panel-chrome mx-auto flex max-w-page flex-wrap items-center gap-2 rounded-xl border border-edge px-3 py-2 lg:flex-nowrap lg:gap-3">
+        <Link to="/" className="flex shrink-0 items-center gap-2 pr-1">
+          <span
+            className="flex h-8 w-8 items-center justify-center rounded-sm text-white"
+            style={{ background: 'var(--g-primary)' }}
+          >
+            <IconCube size={18} />
+          </span>
+          <span className="text-body font-extrabold tracking-[0.06em] text-fg">MBSE TRAINING</span>
         </Link>
+
         {/* 選択中は下線ではなく丸い下地。1 つを使い回して滑らせる */}
-        <nav className="flex items-center gap-0.5 sm:gap-1">
-          {NAV.map((item) => (
+        <nav className="order-3 -mx-1 flex w-full items-center gap-0.5 overflow-x-auto px-1 lg:order-none lg:w-auto">
+          {NAV.map(({ to, label, end, Icon }) => (
             <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
+              key={to}
+              to={to}
+              end={end}
               className={({ isActive }) =>
-                `relative isolate flex h-8 items-center rounded-full px-2 text-small whitespace-nowrap transition-colors sm:px-2.5 sm:text-body ${
+                `relative isolate flex h-9 shrink-0 items-center gap-1.5 rounded-sm px-2.5 text-small font-semibold whitespace-nowrap transition-colors ${
                   isActive ? 'text-accent' : 'text-muted hover:text-fg'
                 }`
               }
@@ -52,73 +80,124 @@ function Header() {
                     <motion.span
                       layoutId="nav-active"
                       transition={SLIDE}
-                      className="absolute inset-0 -z-10 rounded-full bg-accent-soft ring-1 ring-accent-line"
+                      className="absolute inset-0 -z-10 rounded-sm bg-accent-soft ring-1 ring-accent-line"
                     />
                   )}
-                  {item.label}
+                  <Icon size={15} />
+                  {label}
                 </>
               )}
             </NavLink>
           ))}
         </nav>
-        <div className="ml-auto">
+
+        <div className="order-2 ml-auto flex min-w-0 items-center gap-2 lg:order-none lg:ml-0 lg:flex-1">
+          <div className="hidden min-w-0 flex-1 md:block">
+            <Search />
+          </div>
           <ThemeToggle />
+          <button
+            type="button"
+            onClick={onLegend}
+            aria-expanded={legend}
+            className={`flex h-9 items-center gap-1.5 rounded-sm border px-2.5 text-small font-semibold transition-colors ${
+              legend
+                ? 'border-accent-line bg-accent-soft text-accent'
+                : 'border-edge bg-raised text-muted hover:text-fg'
+            }`}
+          >
+            <IconInfo size={15} />
+            <span className="hidden sm:inline">凡例</span>
+          </button>
+          {/* データの所在を常時出す（DESIGN.md §4.10）。保存に失敗していたら正直に言う */}
+          <span
+            className={`hidden shrink-0 items-center gap-1.5 rounded-sm border px-2.5 py-1 text-micro leading-tight font-semibold xl:flex ${
+              saveFailed
+                ? 'border-danger-line bg-danger-soft text-danger'
+                : 'border-[var(--c-tile-rose)] bg-[var(--c-tile-rose)] text-[var(--c-tile-rose-fg)]'
+            }`}
+            data-testid="data-badge"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+            <span>
+              {saveFailed ? '保存できていません' : 'サーバ未接続'}
+              <br />
+              {saveFailed ? 'このタブを閉じると消えます' : 'データはこの端末のみ'}
+            </span>
+          </span>
+        </div>
+        <div className="order-4 w-full md:hidden">
+          <Search />
         </div>
       </div>
     </header>
   );
 }
 
-/** まだ無い画面。何が入る予定かを書いておく（空白に意味を持たせる） */
-function Planned({ title, note }: { title: string; note: string }) {
-  return (
-    <div className="panel rounded-lg border border-dashed border-line bg-surface p-8 text-center">
-      <h1 className="text-lead font-semibold tracking-tight text-fg">{title}</h1>
-      <p className="mt-2 text-small leading-relaxed text-muted">{note}</p>
-    </div>
-  );
-}
-
 function Pages() {
   const location = useLocation();
   const section = location.pathname.split('/')[1] ?? '';
+  /*
+    画面を移ったら先頭から見せる。SPA は窓のスクロール位置を持ち越すので、
+    教材の下の方からボードへ移ると、ボードも下の方から始まっていた。
+    節への飛び先（#…）があるときは、飛ぶ側（教材の章）に任せる。
+  */
+  useEffect(() => {
+    if (!location.hash) window.scrollTo({ top: 0 });
+  }, [location.pathname, location.hash]);
   return (
-    <motion.div key={section} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={PAGE}>
+    <motion.div
+      key={section}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={PAGE}
+    >
       <ErrorBoundary resetKey={location.pathname}>
         <Routes location={location}>
           <Route path="/" element={<Home />} />
-          {/* ナビには出さない。ボードの「図」タブができたらそこへ吸収する */}
+          <Route path="/board" element={<Board />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/learn/:id" element={<LearnChapter />} />
+          <Route path="/problems" element={<Problems />} />
+          <Route path="/problems/:id" element={<ProblemPage />} />
+          <Route path="/exam" element={<Exam />} />
+          <Route path="/glossary" element={<Glossary />} />
+          <Route path="/settings" element={<Settings />} />
+          {/* ナビには出さない。図のレンダラの見本 */}
           <Route path="/notation" element={<Notation />} />
-          <Route
-            path="/board"
-            element={
-              <Planned title="出題範囲ボード" note="DESIGN.md §4.2。範囲を定着度で並べる。" />
-            }
-          />
-          <Route
-            path="/learn"
-            element={<Planned title="教材" note="DESIGN.md §7。章 0「地図」から。" />}
-          />
-          <Route
-            path="/problems"
-            element={
-              <Planned title="問題" note="DESIGN.md §6。図を読む・誤りを見つける・組み立てる。" />
-            }
-          />
-          <Route
-            path="/exam"
-            element={
-              <Planned title="模擬試験" note="EXAM.md §5。本番は 90 問・日本語で 120〜135 分。" />
-            }
-          />
-          <Route
-            path="/settings"
-            element={<Planned title="進捗" note="エクスポート / インポート / リセット。" />}
-          />
           <Route path="*" element={<Home />} />
         </Routes>
       </ErrorBoundary>
     </motion.div>
+  );
+}
+
+function Shell() {
+  const [legend, setLegend] = useState(false);
+  return (
+    <div className="min-h-full">
+      <Header legend={legend} onLegend={() => setLegend((v) => !v)} />
+      {/* 下の余白は通知の積み場の高さを足す（ToastProvider が書き出す） */}
+      <main className="mx-auto w-full max-w-page px-3 pt-4 pb-[calc(2rem+var(--toast-space,0px))] sm:px-5 lg:px-6">
+        <AnimatePresence initial={false}>
+          {legend && (
+            <motion.div
+              key="legend"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={COLLAPSE}
+              className="overflow-hidden"
+            >
+              <div className="pb-4">
+                <Legend />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <Pages />
+      </main>
+    </div>
   );
 }
 
@@ -127,16 +206,12 @@ export default function App() {
     /* reducedMotion="user" で OS の「視差効果を減らす」に従う */
     <MotionConfig reducedMotion="user">
       <ToastProvider>
-        {/* GitHub Pages でリロードしても 404 にならないよう HashRouter を使う */}
-        <HashRouter>
-          <div className="min-h-full">
-            <Header />
-            {/* 下の余白は通知の積み場の高さを足す（ToastProvider が書き出す） */}
-            <main className="mx-auto w-full max-w-page px-5 pt-8 pb-[calc(2rem+var(--toast-space,0px))] lg:px-8">
-              <Pages />
-            </main>
-          </div>
-        </HashRouter>
+        <ProgressProvider>
+          {/* GitHub Pages でリロードしても 404 にならないよう HashRouter を使う */}
+          <HashRouter>
+            <Shell />
+          </HashRouter>
+        </ProgressProvider>
       </ToastProvider>
     </MotionConfig>
   );

@@ -1,6 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#f0eee6"/>
-  <ellipse cx="32" cy="18" rx="18" ry="7" fill="none" stroke="#c8613c" stroke-width="4"/>
-  <path d="M14 18v28c0 3.9 8.1 7 18 7s18-3.1 18-7V18" fill="none" stroke="#c8613c" stroke-width="4"/>
-  <path d="M14 32c0 3.9 8.1 7 18 7s18-3.1 18-7" fill="none" stroke="#c8613c" stroke-width="4"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c5cf5"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 4 56 18v28L32 60 8 46V18Z" fill="url(#g)"/>
+  <path d="M32 4 56 18 32 32 8 18Z" fill="#fff" fill-opacity=".35"/>
+  <path d="M32 32v28L8 46V18Z" fill="#000" fill-opacity=".12"/>
 </svg>

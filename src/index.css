@@ -3,95 +3,111 @@
 /* ==================================================================
    デザイントークン
    ------------------------------------------------------------------
+   見た目は WHITEBOARD（@_ryu15_ の 2 投稿の画面）に合わせる。
+     - ぼかした明るい写真の上に、すりガラスの板が浮く
+     - 色は青〜紫。主行動だけ紫 → 青のグラデーションで塗る
+     - レーンは左端の色バー + 名前 + 件数の丸札
+
    ライト/ダークの値は light-dark() で 1 か所にまとめている。
    切り替えは :root の color-scheme を差し替えるだけ。
-   （data-theme が付く前でも color-scheme: light dark で OS に追従する）
    ================================================================== */
 
 :root {
   color-scheme: light dark;
 
   /* --- 面 ---------------------------------------------------------
-     どの面も不透明。下地の写真は板で隠れ、透けない。
-     文字の下地がどこでも 1 色に決まるので、コントラストが「板のどこに
-     載ったか」で動かない（measure した値がそのまま効く）。 */
-  --c-canvas: light-dark(#efece3, #131211);
-  --c-surface: light-dark(#fbfaf7, #262523);
-  --c-raised: light-dark(#f4f1e9, #2f2d2a);
-  --c-sunken: light-dark(#eae6dc, #100f0e);
-  /* 溝の中で一段持ち上げるつまみ用。surface より更に白い／黒い */
-  --c-solid: light-dark(#ffffff, #2a2724);
-  /* スクロールする内容の上に留まる帯（固定ヘッダ・表の見出し） */
-  --c-chrome: light-dark(#faf9f5, #1b1a18);
+     板は半透明（すりガラス）。透け具合はここで決め、ぼかしは .panel が掛ける。
+     surface … レーン・詳細パネルなど大きな板
+     raised  … 板の上に載る札（カード）。一段白く／明るく
+     sunken  … 入力欄・溝
+     solid   … 不透明が要る所（つまみ・浮きもの）
+     chrome  … 浮いたヘッダの帯
 
-  /* 下地の写真。light-dark() は色にしか効かないので、画像だけは
-     data-theme で差し替える（index.html が描画前に必ず付ける）。
-     絵を 2 枚持つ理由は backdrop-dark.svg の頭に書いた。 */
+     透けると板の上の文字の地が「透けた写真」で決まるので、写真の振れ幅は
+     狭く作ってある（assets/backdrop-*.svg）。値は contrast が実描画から測る。 */
+  --c-canvas: light-dark(#e3ebf5, #0d1427);
+  --c-surface: light-dark(rgb(255 255 255 / 0.56), rgb(22 30 52 / 0.62));
+  --c-raised: light-dark(rgb(255 255 255 / 0.8), rgb(40 50 80 / 0.66));
+  --c-sunken: light-dark(rgb(230 236 245 / 0.7), rgb(8 12 26 / 0.45));
+  --c-solid: light-dark(#ffffff, #1c2540);
+  --c-chrome: light-dark(rgb(255 255 255 / 0.62), rgb(18 25 45 / 0.66));
+
   --bg-photo: url('./assets/backdrop-light.svg');
-
-  /* 写真に掛ける薄布。写真の出方はここ 1 つで決める。
-     濃くすれば地は canvas に近づき、薄くすれば写真が出る。
-
-     ライトの地は 232..242 に収まる（canvas は 239）。暗い側へ 7 段
-     下がるので、地の上に直接載る文字はその端で測って決める。 */
-  --c-veil: light-dark(rgb(242 238 230 / 0.75), rgb(19 18 17 / 0.74));
+  /* 写真に掛ける薄布。ぼけた写真をさらに少しだけ沈める */
+  --c-veil: light-dark(rgb(236 242 250 / 0.25), rgb(10 15 30 / 0.2));
 
   /* --- 境界 -------------------------------------------------------
-     板の縁。上辺のハイライトで厚みを、外周のヘアラインで輪郭を出す */
-  --c-line: light-dark(rgb(60 46 32 / 0.13), rgb(255 245 230 / 0.1));
-  --c-line-strong: light-dark(rgb(60 46 32 / 0.2), rgb(255 245 230 / 0.2));
-  --c-panel-edge: light-dark(rgb(255 255 255 / 0.72), rgb(255 248 236 / 0.1));
+     ガラスの縁は白い細線（光の反射）。区切り線は紺の薄墨 */
+  --c-line: light-dark(rgb(30 41 70 / 0.1), rgb(226 232 255 / 0.1));
+  --c-line-strong: light-dark(rgb(30 41 70 / 0.18), rgb(226 232 255 / 0.2));
+  --c-panel-edge: light-dark(rgb(255 255 255 / 0.85), rgb(255 255 255 / 0.12));
 
   /* --- 文字 -------------------------------------------------------
-     ライトの subtle だけ一段濃い（#6a645c → #666057）。下地を写真に
-     した分、地は暗い側へ 7 段振れる。前は平らな canvas の上で 4.95:1
-     だったが、振れた端では 4.63:1 まで落ちて 4.5:1 の縁に並ぶ。
-     端で 4.92:1 になる濃さに寄せた（面の上でも 5.60 → 5.96 に上がる）。 */
-  --c-fg: light-dark(#191714, #f4f2ec);
-  --c-fg-muted: light-dark(#5c564c, #a8a29a);
-  --c-fg-subtle: light-dark(#666057, #9b948a);
+     墨は真っ黒にせず紺に寄せる（WHITEBOARD の文字色）。 */
+  --c-fg: light-dark(#18203a, #e9eef9);
+  --c-fg-muted: light-dark(#454f69, #b0bad0);
+  --c-fg-subtle: light-dark(#56607a, #9aa5bd);
 
-  /* --- アクセント -------------------------------------------------
-     soft / line は不透明色ではなく「色の膜」。板の上で沈まないように
-
-     基準は Claude のテラコッタ #d97757。ただし明るい下地の上では
-     文字色として 4.5:1 に届かないので、ライトだけ一段濃い錆色にする
-     （膜と枠は #d97757 のままなので、印象は両テーマで揃う）。 */
-  --c-accent: light-dark(#a04a29, #e0906c);
-  --c-accent-solid: light-dark(#b3542f, #bd5c37);
-  --c-accent-solid-hover: light-dark(#9c4726, #cc6a42);
+  /* --- アクセント（青） -------------------------------------------
+     選択中のタブ・リンク・現在地。主ボタンは別に紫 → 青のグラデーション */
+  --c-accent: light-dark(#2456d6, #8cb0ff);
+  --c-accent-solid: light-dark(#3a63e0, #4a6fe6);
+  --c-accent-solid-hover: light-dark(#2f55cc, #5a7df0);
   --c-on-accent: #ffffff;
-  --c-accent-soft: light-dark(rgb(217 119 87 / 0.13), rgb(217 119 87 / 0.18));
-  --c-accent-line: light-dark(rgb(217 119 87 / 0.32), rgb(217 119 87 / 0.34));
+  --c-accent-soft: light-dark(rgb(59 110 246 / 0.12), rgb(120 160 255 / 0.16));
+  --c-accent-line: light-dark(rgb(59 110 246 / 0.34), rgb(120 160 255 / 0.36));
+  /*
+    主行動のグラデーション（「エージェントに依頼」の札）。白文字を載せるので、
+    明るい端でも 4.5:1 を割らない濃さにしてある（#3b82f6 そのままだと 3.7:1）。
+  */
+  --g-primary: linear-gradient(100deg, #7048e8 0%, #5b5ce6 45%, #2f6fe0 100%);
+  --g-primary-hover: linear-gradient(100deg, #6239dc 0%, #4f4fdc 45%, #2562d6 100%);
 
-  /* 正解は青緑ではなくセージ。テラコッタと同じ暖かさの側に寄せる */
-  --c-success: light-dark(#2f6640, #82c091);
-  --c-success-soft: light-dark(rgb(77 138 92 / 0.13), rgb(130 192 145 / 0.14));
-  --c-success-line: light-dark(rgb(77 138 92 / 0.3), rgb(130 192 145 / 0.28));
+  --c-success: light-dark(#167a3e, #5fd38a);
+  --c-success-soft: light-dark(rgb(34 160 90 / 0.13), rgb(95 211 138 / 0.15));
+  --c-success-line: light-dark(rgb(34 160 90 / 0.32), rgb(95 211 138 / 0.32));
 
-  /* 不正解がテラコッタに見えないよう、色相をローズ側まで振り切る。
-     オレンジ寄りの赤にすると、隣に並んだアクセントと区別が付かない */
-  --c-danger: light-dark(#b02636, #f28b93);
-  --c-danger-soft: light-dark(rgb(200 45 60 / 0.12), rgb(242 139 147 / 0.15));
-  --c-danger-line: light-dark(rgb(200 45 60 / 0.3), rgb(242 139 147 / 0.3));
+  --c-danger: light-dark(#c01a42, #ff8aa2);
+  --c-danger-soft: light-dark(rgb(225 29 72 / 0.11), rgb(255 138 162 / 0.15));
+  --c-danger-line: light-dark(rgb(225 29 72 / 0.3), rgb(255 138 162 / 0.32));
 
-  /* Anthropic の kraft #d4a27f 系 */
-  --c-warning: light-dark(#8a5a1c, #d9ab74);
-  --c-warning-soft: light-dark(rgb(196 145 70 / 0.16), rgb(217 171 116 / 0.14));
-  --c-warning-line: light-dark(rgb(196 145 70 / 0.32), rgb(217 171 116 / 0.28));
+  --c-warning: light-dark(#a3530a, #ffc266);
+  --c-warning-soft: light-dark(rgb(245 158 11 / 0.15), rgb(255 194 102 / 0.14));
+  --c-warning-line: light-dark(rgb(245 158 11 / 0.36), rgb(255 194 102 / 0.32));
+
+  /* --- レーンの色バーと札のタイル -----------------------------------
+     色は飾りではなく区別の補助。必ず名前（テキスト）と一緒に出す（二重符号化）。
+     tile-* は札の左のパステルの四角（WHITEBOARD の図標タイル）。 */
+  --c-lane-blue: #3b82f6;
+  --c-lane-orange: #f59e0b;
+  --c-lane-purple: #8b5cf6;
+  --c-lane-gray: light-dark(#94a3b8, #64748b);
+  --c-lane-green: #22c55e;
+  --c-lane-rose: #f43f5e;
+
+  --c-tile-blue: light-dark(rgb(59 130 246 / 0.14), rgb(96 150 255 / 0.2));
+  --c-tile-blue-fg: light-dark(#2456d6, #9cbcff);
+  --c-tile-orange: light-dark(rgb(245 158 11 / 0.17), rgb(255 190 90 / 0.18));
+  --c-tile-orange-fg: light-dark(#a3530a, #ffc266);
+  --c-tile-purple: light-dark(rgb(139 92 246 / 0.15), rgb(170 140 255 / 0.2));
+  --c-tile-purple-fg: light-dark(#6a3fd8, #c4b0ff);
+  --c-tile-green: light-dark(rgb(34 197 94 / 0.15), rgb(95 211 138 / 0.17));
+  --c-tile-green-fg: light-dark(#167a3e, #7fe0a4);
+  --c-tile-rose: light-dark(rgb(244 63 94 / 0.13), rgb(255 138 162 / 0.17));
+  --c-tile-rose-fg: light-dark(#c01a42, #ff9fb3);
+  --c-tile-gray: light-dark(rgb(100 116 139 / 0.13), rgb(148 163 184 / 0.16));
+  --c-tile-gray-fg: light-dark(#475569, #b6c2d6);
 
   /* --- 図（SysML の図のレンダラ） -----------------------------------
      白黒にする。本番の図は白黒で、色に頼って読む癖を付けると本番で読めない。
-     DESIGN.md §10.4 の「要素の種類で 4 色」は未決のまま（入れるなら塗りではなく
-     札の縁などの補助に留め、白ひし形と黒ひし形の区別を色に預けない）。
-
-     紙は両テーマとも不透明。ダークでは図ごと反転させる（白い紙が暗い画面で眩しいため）。
-     黒ひし形は ink で塗り、白ひし形は paper で塗る。二つの差が明暗の差そのものになるので、
-     ink と paper のコントラストが記法の読みやすさを決める（contrast が測る）。 */
-  --c-dg-paper: light-dark(#ffffff, #1e1d1b);
-  --c-dg-ink: light-dark(#1f1c18, #ece8e0);
-  /* 図枠のヘッダの札。紙と区別が付く程度に沈める */
-  --c-dg-tab: light-dark(#efece3, #2c2a27);
+     紙は両テーマとも不透明（ガラスにしない）。図は試験の対象そのもので、
+     下地が透けると線の濃さが場所で変わる。ダークでは図ごと反転させる。
+     黒ひし形は ink で塗り、白ひし形は paper で塗る。 */
+  --c-dg-paper: light-dark(#ffffff, #151c30);
+  --c-dg-ink: light-dark(#141a2b, #e6ebf6);
+  --c-dg-tab: light-dark(#eef2f8, #222b45);
+  /* 誤りを指したときの印（spot_error）。色だけに頼らず、印の形と一覧の文でも示す */
+  --c-dg-pick: light-dark(#2f6fe0, #8cb0ff);
 
   /* --- 角丸 ------------------------------------------------------- */
   --r-xs: 6px;
@@ -101,23 +117,16 @@
   --r-xl: 24px;
 
   /* --- 影 ---------------------------------------------------------
-     色は付けず、広く薄く落とす。近距離の1本で接地感、遠距離で浮遊感 */
-  /* light-dark() は引数 2 つなので、影のリストではなく「色」に対して使う */
+     ガラスの下に落ちる青灰の広い影。近距離の 1 本で接地感、遠距離で浮遊感 */
   --shadow-card:
-    0 1px 1px light-dark(rgb(60 46 32 / 0.05), rgb(0 0 0 / 0.3)),
-    0 12px 34px -14px light-dark(rgb(60 46 32 / 0.3), rgb(0 0 0 / 0.7));
+    0 1px 2px light-dark(rgb(30 50 90 / 0.06), rgb(0 0 0 / 0.3)),
+    0 14px 38px -16px light-dark(rgb(30 50 90 / 0.28), rgb(0 0 0 / 0.65));
   --shadow-pop:
-    0 2px 4px light-dark(rgb(60 46 32 / 0.05), rgb(0 0 0 / 0.4)),
-    0 14px 44px -12px light-dark(rgb(60 46 32 / 0.3), rgb(0 0 0 / 0.78));
+    0 2px 6px light-dark(rgb(30 50 90 / 0.08), rgb(0 0 0 / 0.4)),
+    0 22px 54px -14px light-dark(rgb(30 50 90 / 0.35), rgb(0 0 0 / 0.75));
 
-  /* --- シンタックスハイライト（CodeMirror と共有） ----------------- */
-  --c-syn-keyword: light-dark(#a5502e, #e2926f);
-  --c-syn-string: light-dark(#3d7a52, #8fc79a);
-  --c-syn-number: light-dark(#8a6220, #d9ab74);
-  --c-syn-comment: light-dark(#8a8175, #7a736a);
-  --c-syn-fn: light-dark(#7d4a86, #c9a0d0);
-  --c-syn-type: light-dark(#3d6a86, #8fbcd4);
-  --c-syn-punct: light-dark(#7d766c, #8a8279);
+  /* すりガラスのぼかし量。板が重なっても重くならないよう 1 段だけ掛ける */
+  --glass-blur: 22px;
 }
 
 /* 明示的に選ばれたテーマ。light-dark() はこの color-scheme を見る */
@@ -127,6 +136,16 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
   --bg-photo: url('./assets/backdrop-dark.svg');
+}
+
+/* 透明効果を減らす設定では、ガラスをやめて不透明な板にする */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --c-surface: light-dark(#f4f7fb, #182037);
+    --c-raised: light-dark(#ffffff, #222b45);
+    --c-chrome: light-dark(#f7f9fc, #141b30);
+    --glass-blur: 0px;
+  }
 }
 
 @theme inline {
@@ -156,9 +175,10 @@
   --color-warning: var(--c-warning);
   --color-warning-soft: var(--c-warning-soft);
   --color-warning-line: var(--c-warning-line);
+  --color-edge: var(--c-panel-edge);
 
   /* 器の幅。page = 画面全体、prose-wide = 読み物として無理のない上限 */
-  --container-page: 1600px;
+  --container-page: 1680px;
   --container-prose-wide: 62rem;
 
   --radius-xs: var(--r-xs);
@@ -171,17 +191,17 @@
   --shadow-pop: var(--shadow-pop);
 
   /*
-    文字の大きさ。7 段だけ。直値（text-[11.5px] など）が 13 種類まで増え、
-    どれを使うべきか判断できなくなっていたので、段を決めて名前で呼ぶ。
-    小さい側が多いのは、画面のほとんどが一覧と補助表示のため。
+    文字の大きさ。7 段だけ。直値（text-[11.5px] など）が増えると
+    どれを使うべきか判断できなくなるので、段を決めて名前で呼ぶ。
+    WHITEBOARD は札の文字がやや大きい（一覧の読みやすさ優先）ので、sql-training より半段上げた。
   */
-  --text-micro: 10.5px;
-  --text-tiny: 11.5px;
-  --text-small: 12.5px;
-  --text-body: 13.5px;
-  --text-lead: 15px;
-  --text-title: 17px;
-  --text-display: 19px;
+  --text-micro: 11px;
+  --text-tiny: 12px;
+  --text-small: 13px;
+  --text-body: 14px;
+  --text-lead: 15.5px;
+  --text-title: 18px;
+  --text-display: 21px;
 
   --font-sans:
     system-ui, -apple-system, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI',
@@ -193,12 +213,8 @@
 /* ==================================================================
    下地
    ------------------------------------------------------------------
-   視界に固定した 1 枚の写真（焦点を外した抽象）に、薄布を 1 枚掛ける。
-   面はすべて不透明なので、写真が見えるのは板と板の隙間・余白だけ。
-
-   写真そのものの値幅も狭く作ってある（src/assets/backdrop.svg）。
-   薄布と合わせて二重に抑えているのは、地の上に直接載る文字が
-   あるため。地が場所で明るくなると、そこだけコントラストが落ちる。
+   視界に固定した 1 枚の写真（焦点を外した街並み）に、薄布を 1 枚掛ける。
+   その上にすりガラスの板が浮く。
    ================================================================== */
 
 html,
@@ -225,37 +241,49 @@ body {
 }
 
 /* ==================================================================
-   面（不透明な板）
+   面（すりガラスの板）
    ------------------------------------------------------------------
-   .panel        … カード等の面
-   .panel-chrome … 固定ヘッダ
-   .panel-sticky … スクロールする内容の上に留まる帯（表の見出し）
-   .panel-pop    … 補完候補などの浮きもの
-   .panel-edge   … 小さな操作子。影は親に任せ、上辺のハイライトだけ置く
-
-   背後はぼかさない。板が不透明なら、ぼかしても見えるものは変わらず
-   backdrop-filter の描画費用だけが残る。厚みは影と上辺のハイライトで出す。
+   .panel        … 板（レーン・詳細パネル・カード）
+   .panel-chrome … 浮いたヘッダの帯
+   .panel-pop    … 絞り込みの吹き出し・検索候補などの浮きもの
+   .panel-edge   … 小さな操作子。上辺のハイライトだけ置く
 
    面の色（bg-surface 等）は呼び出し側の Tailwind ユーティリティが持つ。
    ここで background-color を書くと、レイヤの外側にあるこの規則が
    bg-warning-soft のような差し替えに勝ってしまう。
+
+   ぼかしは「板を重ねたときに外側の 1 枚だけ」に掛けるのが理想だが、
+   CSS で選べないので、札（raised）は透けを弱めてぼかさない（.panel-flat）。
+   backdrop-filter を入れ子で何十枚も掛けると、スクロールで目に見えて重くなる。
    ================================================================== */
 
 .panel {
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
   box-shadow:
     var(--shadow-card),
     inset 0 1px 0 0 var(--c-panel-edge);
 }
 
-/* 前はぼかしの量で分けていたが、不透明にした結果どちらも同じ値になった。
-   名前は役割として残す（呼び出し側が何を留めたいのか読めるように） */
-.panel-chrome,
-.panel-sticky {
+.panel-flat {
+  box-shadow:
+    0 1px 2px light-dark(rgb(30 50 90 / 0.06), rgb(0 0 0 / 0.25)),
+    inset 0 1px 0 0 var(--c-panel-edge);
+}
+
+.panel-chrome {
   background-color: var(--c-chrome);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 0 var(--c-panel-edge);
 }
 
 .panel-pop {
-  background-color: var(--c-chrome);
+  background-color: light-dark(rgb(255 255 255 / 0.86), rgb(26 34 58 / 0.9));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.6);
   box-shadow:
     var(--shadow-pop),
     inset 0 1px 0 0 var(--c-panel-edge);
@@ -265,15 +293,26 @@ body {
   box-shadow: inset 0 1px 0 0 var(--c-panel-edge);
 }
 
+/* 主行動のボタン。1 画面に 1 つだけ（DESIGN.md §4.10） */
+.btn-primary {
+  background-image: var(--g-primary);
+  color: var(--c-on-accent);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.28),
+    0 8px 22px -10px rgb(88 80 230 / 0.7);
+}
+.btn-primary:hover {
+  background-image: var(--g-primary-hover);
+}
+
 /* 塗りつぶしのボタンにも上辺のハイライトを入れて、同じ厚みに見せる */
 .raised-edge {
   box-shadow:
     inset 0 1px 0 0 rgb(255 255 255 / 0.24),
-    0 1px 2px rgb(60 46 32 / 0.18);
+    0 1px 2px rgb(30 50 90 / 0.18);
 }
 
-/* 透明効果を減らす設定では下地の写真をやめ、地を 1 色に落とす。
-   面はもともと不透明なので、ここで変えるのは下地だけ。 */
+/* 透明効果を減らす設定では下地の写真もやめ、地を 1 色に落とす */
 @media (prefers-reduced-transparency: reduce) {
   body {
     background-image: none;
@@ -361,20 +400,6 @@ body {
   scrollbar-color: var(--c-line-strong) transparent;
 }
 
-/* CodeMirror はコンテナ高に追従させる */
-.cm-editor {
-  height: 100%;
-  background: transparent;
-}
-.cm-editor.cm-focused {
-  outline: none !important;
-}
-.cm-scroller {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
 /* ==================================================================
    図（src/diagram/Diagram.tsx）
    ------------------------------------------------------------------
@@ -409,6 +434,78 @@ body {
   stroke: var(--c-dg-ink);
   stroke-width: 1;
 }
+/* 指摘できる図。押せる所に指を出し、押せることを形で示す */
+.dg-pickable [data-ref] {
+  cursor: pointer;
+}
+.dg-pickable [data-ref]:focus-visible {
+  outline: 2px solid var(--c-dg-pick);
+  outline-offset: 2px;
+}
+.dg-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+}
+/* 指した所の枠と札。色に加えて札の文字（指摘・正解・見落とし・誤りではない）で示す */
+.dg-mark > rect:first-child {
+  fill: none;
+  stroke-width: 2;
+}
+.dg-mark-pill {
+  stroke: none;
+}
+/* 線の印。線の上を太く半透明でなぞる（下の線と記号は透けて見える） */
+.dg-mark .dg-mark-trace {
+  fill: none;
+  stroke-width: 7;
+  stroke-opacity: 0.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.dg-mark-picked .dg-mark-trace {
+  stroke: var(--c-dg-pick);
+}
+.dg-mark-hit .dg-mark-trace {
+  stroke: var(--c-success);
+}
+.dg-mark-miss .dg-mark-trace {
+  stroke: var(--c-danger);
+}
+.dg-mark-wrong .dg-mark-trace {
+  stroke: var(--c-warning);
+}
+.dg .dg-mark text {
+  fill: #ffffff;
+}
+.dg-mark-picked > rect:first-child {
+  stroke: var(--c-dg-pick);
+}
+.dg-mark-picked .dg-mark-pill {
+  fill: var(--c-dg-pick);
+}
+.dg-mark-hit > rect:first-child {
+  stroke: var(--c-success);
+}
+.dg-mark-hit .dg-mark-pill {
+  fill: light-dark(#167a3e, #1f8a4c);
+}
+.dg-mark-miss > rect:first-child {
+  stroke: var(--c-danger);
+}
+.dg-mark-miss .dg-mark-pill {
+  fill: light-dark(#c01a42, #c42a52);
+}
+.dg-mark-wrong > rect:first-child {
+  stroke: var(--c-warning);
+}
+.dg-mark-wrong .dg-mark-pill {
+  fill: light-dark(#a3530a, #b5630f);
+}
+:root[data-theme='dark'] .dg-mark-picked .dg-mark-pill {
+  fill: #3a63e0;
+}
+
 .dg-tab {
   fill: var(--c-dg-tab);
   stroke: var(--c-dg-ink);
@@ -499,9 +596,4 @@ body {
 }
 .md :where(hr) { border: none; border-top: 1px solid var(--c-line); margin: 1.6em 0; }
 
-/* SQL のエラー行。エディタ側で「どの行か」が分かるようにする */
-.cm-error-line {
-  background-color: var(--c-danger-soft);
-  box-shadow: inset 2px 0 0 0 var(--c-danger);
-}
 

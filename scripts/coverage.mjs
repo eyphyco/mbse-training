@@ -7,14 +7,22 @@
  *
  *   node scripts/coverage.mjs
  *
- * 落とす条件:
+ * 落とす条件（「問題が揃った」と宣言した章の項目について）:
  *   - 問題が MIN 問未満の項目がある
  *   - その項目だけを扱う問題（専用問題）が 1 問も無い項目がある
- *   - 出題範囲に無い項目 id を指している問題がある
+ *   - 出題範囲に無い項目 id を指している問題がある（これは章に関わらず落とす）
+ *
+ * 章の札 `problemsReady: true` が「この章の項目は問題が揃っている」という宣言。
+ * 図のレンダラがまだ無い章（ibd・act など）は図を使う問題を作れないので、宣言せずに置き、
+ * 足りない数だけを報告する（落とさない）。宣言した章に 1 つでも穴があれば落ちる。
+ *
+ * 全項目を常に落とす形にしなかったのは、レンダラの順にしか問題を作れないため。
+ * そうすると CI が常に赤になり、赤が「いつものこと」になって本当の穴を見逃す。
  */
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseLesson } from '../src/data/lessonParser.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const MIN = 3; // 1 項目あたり Lv1 / Lv2 / Lv3
@@ -36,15 +44,14 @@ const problems = existsSync(dir)
       .flatMap((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')))
   : [];
 
-/*
-  まだ 1 問も無い間は落とさない。立ち上げの途中で CI が常に赤だと、
-  赤が「いつものこと」になって、本当の穴を見逃すようになる。
-*/
-if (problems.length === 0) {
-  console.log(`出題範囲 ${items.length} 項目 / 問題 0 問`);
-  console.log('まだ問題がありません。1 問でも入ったらこの検査は穴を落とし始めます。');
-  process.exit(0);
-}
+const lessonDir = join(root, 'src/data/lessons');
+const lessons = readdirSync(lessonDir)
+  .filter((f) => f.endsWith('.md'))
+  .map((f) => parseLesson(readFileSync(join(lessonDir, f), 'utf8'), f));
+/** 問題が揃ったと宣言した章の項目 */
+const ready = new Set(
+  lessons.filter((l) => l.problemsReady).flatMap((l) => l.sections.flatMap((s) => s.items)),
+);
 
 const count = new Map(items.map((i) => [i.id, 0]));
 const soleCount = new Map(items.map((i) => [i.id, 0]));
@@ -60,14 +67,26 @@ for (const p of problems) {
   if (ids.length === 1 && known.has(ids[0])) soleCount.set(ids[0], soleCount.get(ids[0]) + 1);
 }
 
-const thin = items.filter((i) => count.get(i.id) < MIN);
-const noSole = items.filter((i) => count.get(i.id) >= MIN && soleCount.get(i.id) === 0);
+const allThin = items.filter((i) => count.get(i.id) < MIN);
+const thin = allThin.filter((i) => ready.has(i.id));
+const noSole = items.filter(
+  (i) => ready.has(i.id) && count.get(i.id) >= MIN && soleCount.get(i.id) === 0,
+);
 
 console.log(`出題範囲 ${items.length} 項目 / 問題 ${problems.length} 問`);
-console.log(`充足 ${items.length - thin.length} / ${items.length} 項目（1 項目 ${MIN} 問以上）\n`);
+console.log(`充足 ${items.length - allThin.length} / ${items.length} 項目（1 項目 ${MIN} 問以上）`);
+console.log(
+  `問題が揃ったと宣言した章: ${lessons
+    .filter((l) => l.problemsReady)
+    .map((l) => `第 ${l.no} 章 ${l.title}`)
+    .join('、')}（${ready.size} 項目）`,
+);
+console.log(
+  `未作成（宣言前の章）: ${allThin.length - thin.length} 項目。レンダラが入った章から揃える\n`,
+);
 
 if (thin.length > 0) {
-  console.log(`問題が ${MIN} 問に届かない項目 ${thin.length} 件:`);
+  console.log(`宣言した章で、問題が ${MIN} 問に届かない項目 ${thin.length} 件:`);
   for (const i of thin.slice(0, 40)) {
     console.log(`  ${String(count.get(i.id)).padStart(2)} 問  [${i.exam}] ${i.id}  ${i.name}`);
   }
