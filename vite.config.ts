@@ -58,6 +58,12 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), cspMeta()],
   build: {
     target: 'esnext',
+    /*
+      elkjs（図のレイアウト）が単体で 1.4MB ある。図の画面に来たときだけ読む別チャンクなので
+      初回表示は重くならない（src/diagram/layout.ts の loadElk）。警告の線をその上に引き、
+      ほかのチャンクが太ったときにだけ鳴るようにする。
+    */
+    chunkSizeWarningLimit: 1500,
   },
   test: {
     // localStorage / sessionStorage / document を使うモジュールがあるため

@@ -1,4 +1,5 @@
 import { ALL_ITEMS, SYLLABUS, itemsOf } from '../data/syllabus';
+import { Link } from 'react-router-dom';
 import { Card, SectionTitle } from '../components/ui';
 
 /*
@@ -18,6 +19,20 @@ export default function Home() {
           対象は {SYLLABUS.standard}。範囲は公式の coverage map から写してある（{SYLLABUS.fetchedOn}{' '}
           取得）。
         </p>
+      </Card>
+
+      <Card className="p-5">
+        <h2 className="text-body font-semibold tracking-tight text-fg">図の記法見本</h2>
+        <p className="mt-1 text-small text-muted">
+          ブロック定義図を SysML v1.2
+          の記法どおりに描いたもの。ひし形・三角・多重度の置き場所を見比べる。
+        </p>
+        <Link
+          to="/notation"
+          className="mt-3 inline-block text-small font-medium text-accent underline underline-offset-2"
+        >
+          記法見本を開く
+        </Link>
       </Card>
 
       <section>

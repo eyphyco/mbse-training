@@ -80,6 +80,19 @@
   --c-warning-soft: light-dark(rgb(196 145 70 / 0.16), rgb(217 171 116 / 0.14));
   --c-warning-line: light-dark(rgb(196 145 70 / 0.32), rgb(217 171 116 / 0.28));
 
+  /* --- 図（SysML の図のレンダラ） -----------------------------------
+     白黒にする。本番の図は白黒で、色に頼って読む癖を付けると本番で読めない。
+     DESIGN.md §10.4 の「要素の種類で 4 色」は未決のまま（入れるなら塗りではなく
+     札の縁などの補助に留め、白ひし形と黒ひし形の区別を色に預けない）。
+
+     紙は両テーマとも不透明。ダークでは図ごと反転させる（白い紙が暗い画面で眩しいため）。
+     黒ひし形は ink で塗り、白ひし形は paper で塗る。二つの差が明暗の差そのものになるので、
+     ink と paper のコントラストが記法の読みやすさを決める（contrast が測る）。 */
+  --c-dg-paper: light-dark(#ffffff, #1e1d1b);
+  --c-dg-ink: light-dark(#1f1c18, #ece8e0);
+  /* 図枠のヘッダの札。紙と区別が付く程度に沈める */
+  --c-dg-tab: light-dark(#efece3, #2c2a27);
+
   /* --- 角丸 ------------------------------------------------------- */
   --r-xs: 6px;
   --r-sm: 10px;
@@ -360,6 +373,46 @@ body {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.7;
+}
+
+/* ==================================================================
+   図（src/diagram/Diagram.tsx）
+   ------------------------------------------------------------------
+   線は 1px。箱の塗りは紙の色で、線の上に重ねて交差を隠す。
+   文字は body のフォントを継ぐ（canvas で測った幅と一致させるため）。
+   ================================================================== */
+/* 角は丸めない。図枠は角の立った長方形と決まっている（丸めると枠の角が欠けて見える） */
+.dg {
+  background: var(--c-dg-paper);
+}
+.dg text {
+  fill: var(--c-dg-ink);
+  font-family: inherit;
+}
+.dg-line {
+  fill: none;
+  stroke: var(--c-dg-ink);
+  stroke-width: 1;
+}
+.dg-box {
+  fill: var(--c-dg-paper);
+  stroke: var(--c-dg-ink);
+  stroke-width: 1;
+}
+.dg-solid {
+  fill: var(--c-dg-ink);
+  stroke: var(--c-dg-ink);
+  stroke-width: 1;
+}
+.dg-frame {
+  fill: none;
+  stroke: var(--c-dg-ink);
+  stroke-width: 1;
+}
+.dg-tab {
+  fill: var(--c-dg-tab);
+  stroke: var(--c-dg-ink);
+  stroke-width: 1;
 }
 
 /* ==================================================================

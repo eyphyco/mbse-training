@@ -1,0 +1,267 @@
+[
+  {
+    "id": "bdd-structure",
+    "title": "全体と部分（コンポジション）",
+    "items": ["mu-association", "mu-multiplicity", "mu-block-features"],
+    "note_md": "黒ひし形は**全体の側**に付く。多重度とロール名は**部分の側**の端に書く（`4` は「車両 1 台が車輪を 4 つ持つ」）。ブロックの中の `parts` 区画は、同じ関係を箱の中で書いたもの。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure",
+        "name": "Vehicle Decomposition"
+      },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            { "kind": "part", "name": "engine", "type": "Engine" },
+            { "kind": "part", "name": "wheels", "type": "Wheel", "mult": "4" },
+            { "kind": "value", "name": "mass", "type": "Mass" },
+            { "kind": "value", "name": "maxSpeed", "type": "Speed" },
+            { "kind": "operation", "name": "accelerate", "params": "rate : Real" }
+          ]
+        },
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine",
+          "props": [{ "kind": "value", "name": "displacement", "type": "Volume" }]
+        },
+        {
+          "id": "Wheel",
+          "kind": "block",
+          "name": "Wheel",
+          "props": [{ "kind": "value", "name": "diameter", "type": "Length" }]
+        }
+      ],
+      "relations": [
+        {
+          "id": "comp:Vehicle-Engine",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Engine",
+          "targetRole": "engine",
+          "targetMult": "1"
+        },
+        {
+          "id": "comp:Vehicle-Wheel",
+          "kind": "composition",
+          "source": "Vehicle",
+          "target": "Wheel",
+          "targetRole": "wheels",
+          "targetMult": "4"
+        }
+      ]
+    }
+  },
+  {
+    "id": "bdd-diamonds",
+    "title": "黒ひし形・白ひし形・参照",
+    "items": ["mu-association", "mu-def-usage"],
+    "note_md": "**黒**（コンポジション）は持ち物で、全体が消えると部分も消える。**白**（共有集約）は共有してよい関係。矢じりだけの線は参照で、辿れる向きを表す。\n\n共有集約そのものは Model User の範囲外だが、黒との取り違えが `spot_error` の定番なので見分けられるようにしておく。",
+    "model": {
+      "type": "bdd",
+      "frame": { "kind": "bdd", "ownerType": "package", "owner": "Fleet" },
+      "elements": [
+        { "id": "Fleet", "kind": "block", "name": "Fleet" },
+        { "id": "Vehicle", "kind": "block", "name": "Vehicle" },
+        { "id": "Depot", "kind": "block", "name": "Depot" },
+        { "id": "Driver", "kind": "block", "name": "Driver" }
+      ],
+      "relations": [
+        {
+          "id": "agg:Fleet-Vehicle",
+          "kind": "aggregation",
+          "source": "Fleet",
+          "target": "Vehicle",
+          "targetRole": "vehicles",
+          "targetMult": "1..*"
+        },
+        {
+          "id": "comp:Fleet-Depot",
+          "kind": "composition",
+          "source": "Fleet",
+          "target": "Depot",
+          "targetRole": "depots",
+          "targetMult": "0..*"
+        },
+        {
+          "id": "ref:Vehicle-Driver",
+          "kind": "association",
+          "source": "Vehicle",
+          "target": "Driver",
+          "targetRole": "driver",
+          "targetMult": "0..1",
+          "targetNavigable": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "bdd-generalization",
+    "title": "汎化（特化）",
+    "items": ["mu-specialization"],
+    "note_md": "白三角は**一般の側**に付く。特化したブロックは一般の側の特徴をすべて受け継ぐ。斜体の名前は抽象ブロック（それ自体の実体は作らない）。",
+    "model": {
+      "type": "bdd",
+      "frame": { "kind": "bdd", "ownerType": "package", "owner": "VehicleTypes" },
+      "elements": [
+        {
+          "id": "Vehicle",
+          "kind": "block",
+          "name": "Vehicle",
+          "abstract": true,
+          "props": [{ "kind": "value", "name": "mass", "type": "Mass" }]
+        },
+        {
+          "id": "ElectricVehicle",
+          "kind": "block",
+          "name": "ElectricVehicle",
+          "props": [{ "kind": "value", "name": "batteryCapacity", "type": "Energy" }]
+        },
+        {
+          "id": "CombustionVehicle",
+          "kind": "block",
+          "name": "CombustionVehicle",
+          "props": [{ "kind": "value", "name": "tankVolume", "type": "Volume" }]
+        }
+      ],
+      "relations": [
+        {
+          "id": "gen:ElectricVehicle-Vehicle",
+          "kind": "generalization",
+          "source": "ElectricVehicle",
+          "target": "Vehicle"
+        },
+        {
+          "id": "gen:CombustionVehicle-Vehicle",
+          "kind": "generalization",
+          "source": "CombustionVehicle",
+          "target": "Vehicle"
+        }
+      ]
+    }
+  },
+  {
+    "id": "bdd-valuetypes",
+    "title": "値型・列挙・制約ブロック",
+    "items": ["mu-valuetype", "mu-constraint-block"],
+    "note_md": "`«valueType»` は単位や次元を持つ値の型で、ブロックではない（実体を区別しない）。制約ブロックは図の上では `«constraint»` と書かれ、`constraints` 区画に式、`parameters` 区画に式の変数を持つ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Types and Constraints"
+      },
+      "elements": [
+        { "id": "Mass", "kind": "valueType", "name": "Mass", "tags": { "unit": "kg" } },
+        { "id": "Force", "kind": "valueType", "name": "Force", "tags": { "unit": "N" } },
+        {
+          "id": "Acceleration",
+          "kind": "valueType",
+          "name": "Acceleration",
+          "tags": { "unit": "m/s²" }
+        },
+        {
+          "id": "Gear",
+          "kind": "enumeration",
+          "name": "GearPosition",
+          "props": [
+            { "kind": "literal", "name": "park" },
+            { "kind": "literal", "name": "reverse" },
+            { "kind": "literal", "name": "neutral" },
+            { "kind": "literal", "name": "drive" }
+          ]
+        },
+        {
+          "id": "Newton",
+          "kind": "constraintBlock",
+          "name": "NewtonsLaw",
+          "props": [
+            { "kind": "constraint", "name": "f = m * a" },
+            { "kind": "parameter", "name": "f", "type": "Force" },
+            { "kind": "parameter", "name": "m", "type": "Mass" },
+            { "kind": "parameter", "name": "a", "type": "Acceleration" }
+          ]
+        }
+      ],
+      "relations": []
+    }
+  },
+  {
+    "id": "bdd-ports",
+    "title": "フローポートと標準ポート",
+    "items": ["mu-ports"],
+    "note_md": "v1.2 のポートは 2 種類。**フローポート**は四角の中の矢印が流れの向き（入る・出る・両方）。**標準ポート**は矢印の無い四角で、サービス（操作）の出入口。流れの中身が複数あるときは `«flowSpecification»` で束ねる。\n\nフル／プロキシポートは v1.3 からで、OCSMP（v1.2）には出ない。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Powertrain",
+        "name": "Interfaces"
+      },
+      "elements": [
+        {
+          "id": "Engine",
+          "kind": "block",
+          "name": "Engine",
+          "props": [{ "kind": "value", "name": "rpm", "type": "Real" }],
+          "ports": [
+            {
+              "id": "Engine.fuelIn",
+              "name": "fuelIn",
+              "type": "Fuel",
+              "kind": "flow",
+              "direction": "in"
+            },
+            {
+              "id": "Engine.torque",
+              "name": "torqueOut",
+              "type": "Torque",
+              "kind": "flow",
+              "direction": "out"
+            },
+            {
+              "id": "Engine.ctrl",
+              "name": "ecu",
+              "type": "EngineControl",
+              "kind": "standard",
+              "side": "south"
+            }
+          ]
+        },
+        {
+          "id": "FuelTank",
+          "kind": "block",
+          "name": "FuelTank",
+          "ports": [
+            {
+              "id": "FuelTank.io",
+              "name": "line",
+              "type": "FuelLine",
+              "kind": "flow",
+              "direction": "inout"
+            }
+          ]
+        },
+        {
+          "id": "FuelLine",
+          "kind": "flowSpecification",
+          "name": "FuelLine",
+          "props": [
+            { "kind": "flowProperty", "name": "supply", "type": "Fuel", "direction": "out" },
+            { "kind": "flowProperty", "name": "return", "type": "Fuel", "direction": "in" }
+          ]
+        }
+      ],
+      "relations": []
+    }
+  }
+]

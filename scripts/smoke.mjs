@@ -3,7 +3,7 @@
  * ブラウザでの疎通確認（要: vite preview か dev サーバが起動していること）
  *   node scripts/smoke.mjs [baseUrl]
  *
- * 画面が増えたらここに足していく。今は足場の分だけ。
+ * 画面が増えたらここに足していく。今は足場と記法見本（図のレンダラ）の分。
  *
  * この環境では Playwright が既定で起動しない。CLAUDE.md の「この環境の罠」を見ること。
  */
@@ -84,6 +84,57 @@ try {
     '未実装の画面も行き先を説明する',
     (await page.locator('main').innerText()).includes('出題範囲ボード'),
   );
+
+  /*
+    記法見本（図のレンダラ）。図は製品の心臓なので、描けたかだけでなく
+    **文字が箱に収まっているか**を実描画で測る。レイアウトは canvas で測った幅で
+    箱を作るが、svg の文字が別のフォントで描かれると食い違う（その検出）。
+  */
+  const notation = JSON.parse(readFileSync(join(root, 'src/data/notation/bdd.json'), 'utf8'));
+  await page.goto(`${base}#/notation`, { waitUntil: 'networkidle' });
+  await page
+    .locator('[data-testid=diagram][data-status=ready]')
+    .nth(notation.length - 1)
+    .waitFor({ timeout: 10000 });
+  const dg = await page.evaluate(() => {
+    const svgs = [...document.querySelectorAll('[data-testid=diagram] svg')];
+    const overflow = [];
+    for (const svg of svgs) {
+      // 箱（g の直下の rect）と、その g の直下の文字。ポートの名前は箱の外に置くので対象外
+      for (const g of svg.querySelectorAll('g[data-kind=node]')) {
+        const rect = g.querySelector(':scope > rect.dg-box');
+        const texts = g.querySelectorAll(':scope > text');
+        const r = rect.getBBox();
+        for (const t of texts) {
+          const b = t.getBBox();
+          if (b.x < r.x || b.x + b.width > r.x + r.width + 0.5)
+            overflow.push(`${g.dataset.ref}: ${t.textContent}`);
+        }
+      }
+    }
+    const all = svgs.map((s) => s.textContent).join(' ');
+    return {
+      count: svgs.length,
+      overflow,
+      header: all.includes('bdd') && all.includes('[package]'),
+      filled: document.querySelectorAll('[data-testid=diagram] polygon.dg-solid').length,
+      hollow: document.querySelectorAll('[data-ref^="agg:"] polygon.dg-box').length,
+      caption: document.querySelector('[data-testid=diagram] figcaption')?.textContent ?? '',
+    };
+  });
+  check(
+    '記法見本の図がすべて描ける',
+    dg.count === notation.length,
+    `${dg.count} / ${notation.length}`,
+  );
+  check('図枠のヘッダが付く', dg.header);
+  check(
+    '図の文字が箱からはみ出さない',
+    dg.overflow.length === 0,
+    dg.overflow.slice(0, 3).join(' / '),
+  );
+  check('黒ひし形は塗り、白ひし形は中抜き', dg.filled > 0 && dg.hollow > 0);
+  check('図に読み上げ用の控えが付く', dg.caption.includes('黒ひし形'));
 
   check('コンソールにエラーが出ない', errors.length === 0, errors.slice(0, 2).join(' / '));
 } catch (e) {

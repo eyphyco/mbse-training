@@ -486,11 +486,12 @@ vitest / oxlint / Prettier / Playwright / GitHub Pages。
 
 ### 10.3 レンダラに要る記法（試験に出るもの）
 
-- `«block»` `«valueType»` `«interfaceBlock»` などのステレオタイプ表示
+- `«block»` `«valueType»` `«constraint»` `«flowSpecification»` などのステレオタイプ表示
+  （`«interfaceBlock»` とフル／プロキシポートは v1.3 からなので描かない）
 - コンパートメント（values / parts / references / operations / constraints）
 - 関連の端: **白ひし形 / 黒ひし形 / 矢じり / 多重度 / ロール名**
 - 汎化の白三角
-- ポート（四角・フロー方向・プロキシ／フル）
+- ポート（四角・フロー方向。v1.2 はフローポートと標準ポートの 2 種）
 - 要求の箱（id / text）と `«satisfy»` 等の点線矢印
 - 制約ブロックと束縛コネクタ
 - アクティビティのピン・パーティション・制御／オブジェクトフロー
@@ -545,7 +546,8 @@ sql-training の `index.css` のトークンをそのまま持ってくる。
 **範囲のデータが最初**。ここが無いと作った問題を後で全部付け直すことになる。
 
 1. ~~**`syllabus.json`** + `coverage` 検査~~ **完了**
-2. **モデル JSON → SVG レンダラ**（§10.3）。まず bdd。**ここが製品の心臓**
+2. ~~**モデル JSON → SVG レンダラ**（§10.3）。まず bdd~~ **bdd は完了**（`src/diagram/`。見本は `#/notation`）。
+   ibd / par は手順 10、ほかの図種は手順 11 で足す
 3. **`read_diagram` と `spot_error`** の採点 + 誤り解説（§6.6）
 4. **定着度と次回出題日**（純粋関数。先にテストを書く）
 5. **ホームの「今日やる分」**。毎日開く理由を最初に作る

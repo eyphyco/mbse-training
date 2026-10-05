@@ -1,6 +1,6 @@
 /**
  * 配色のコントラスト比を、実際に描画されたピクセルから測る。
- * 測る対象は画面が増えるたびに足す（図の中の文字は、レンダラが入ってから）。
+ * 測る対象は画面が増えるたびに足す。
  *
  * 面は不透明になったが、それでもトークンの値だけでは足りない。
  * *-soft（色の膜）や下地の写真の上に直接載る文字があり、実際の地は
@@ -89,7 +89,6 @@ for (const theme of ['light', 'dark']) {
   /*
     地の上に直接載る文字と、面の上の文字の両方を測る。
     下地を写真にしたので地の明るさは場所で振れる（狭く抑えてあるが 0 ではない）。
-    図のレンダラが入ったら、図の中の文字とステレオタイプもここに足す。
   */
   await measure('節の見出し (muted)', 'main h2');
   await measure('進捗の本文 (fg)', 'main p.text-lead');
@@ -98,6 +97,16 @@ for (const theme of ['light', 'dark']) {
   await measure('項目数 (subtle)', 'main span.text-subtle');
   await measure('定義リストの見出し (subtle)', 'main dt');
   await measure('ナビの現在地 (accent)', 'header nav a[aria-current="page"]');
+
+  /*
+    図の中の文字。地は紙（dg-paper）か札（dg-tab）で、どちらも不透明。
+    文字 1 つの箱を測るので、明暗の両端がそのまま文字と地になる。
+  */
+  await page.goto(`${base}/#/notation`, { waitUntil: 'networkidle' });
+  await page.locator('[data-testid=diagram][data-status=ready]').first().waitFor();
+  await measure('図枠のヘッダ (dg-tab)', 'figure svg text', 1);
+  await measure('図の区画の行 (dg-ink)', 'figure svg [data-ref="Vehicle"] > text', 3);
+  await measure('図の多重度 (dg-ink)', 'figure svg [data-ref="comp:Vehicle-Wheel"] > text', 0);
 
   await ctx.close();
 }

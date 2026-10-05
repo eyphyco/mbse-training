@@ -71,6 +71,14 @@ PDF を読む必要が出たら `poppler-utils` も同じ手で入る（依存�
 
 ## いま どこまで
 
-足場だけ。`npm run dev` でホームが開き、出題範囲 65 項目が読める。
-**次は DESIGN.md §13 の手順 2（モデル JSON → SVG レンダラ）から。**
-手順 1（`syllabus.json` と `coverage`）は完了している。
+`npm run dev` でホームが開き、出題範囲 65 項目が読める。
+手順 1（`syllabus.json` と `coverage`）と手順 2 の bdd（`src/diagram/`）は完了している。
+bdd の見本は `#/notation`（ナビには出していない）。
+**次は DESIGN.md §13 の手順 3（`read_diagram` と `spot_error` の採点 + 誤り解説）から。**
+
+図のレンダラの作り:
+
+- `model.ts`（型と「図にできるか」の検査）→ `bdd.ts`（ELK で並べて座標にする）→ `Diagram.tsx`（描くだけ）
+- 座標まではすべて Node で回る。`validate` は**本物のレイアウト**を走らせる（.ts を直接 import）
+- 文字幅はブラウザでは canvas で実測、Node では `estimateWidth` の推定。`smoke` が実描画ではみ出しを測る
+- 図の色は白黒（本番の図が白黒）。4 色の色相は未決のまま

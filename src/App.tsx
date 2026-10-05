@@ -6,6 +6,7 @@ import ThemeToggle from './components/ThemeToggle';
 import ErrorBoundary from './components/ErrorBoundary';
 import { IconLayers } from './components/icons';
 import Home from './pages/Home';
+import Notation from './pages/Notation';
 
 /*
   骨格だけ。中身は DESIGN.md §13 の順で入れていく。
@@ -86,6 +87,8 @@ function Pages() {
       <ErrorBoundary resetKey={location.pathname}>
         <Routes location={location}>
           <Route path="/" element={<Home />} />
+          {/* ナビには出さない。ボードの「図」タブができたらそこへ吸収する */}
+          <Route path="/notation" element={<Notation />} />
           <Route
             path="/board"
             element={
