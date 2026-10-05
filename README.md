@@ -50,9 +50,6 @@ npm run plan 65 365    # 項目数 65・試験日まで 365 日
 | [CAPSTONE.md](CAPSTONE.md) | 通し課題 `KS-1`（範囲を一周した後の仕上げ） |
 | [CLAUDE.md](CLAUDE.md) | 作業するときの約束と、この環境の罠 |
 
-UI と設計思想は WHITEBOARD（@\_ryu15\_ の投稿）から、
-作りと検査の構えは [sql-training](../sql-training) から引き継いでいる。
-
 ## いま どこまで
 
 足場だけ。ホームが開き、出題範囲が読める。
