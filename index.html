@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MBSE Training — OCSMP のためのハンズオン</title>
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="SysML v1.2 の図を読み・誤りを見つけ・組み立てる練習を、出題範囲を分母にして忘れた頃に出し直す。OCSMP Model User / Model Builder Fundamental 向け。"
+    />
+    <script>
+      // 描画前に配色を確定させ、リロード時のちらつきを防ぐ
+      (function () {
+        try {
+          var stored = localStorage.getItem('mbse-training:theme');
+          var dark =
+            stored === 'dark' ||
+            (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>このサイトは JavaScript で動きます。有効にしてから読み込み直してください。</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

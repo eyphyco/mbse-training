@@ -1,0 +1,13 @@
+dist
+node_modules
+package-lock.json
+
+# 問題・教材データ。整形すると差分が読めなくなる
+src/data/problems
+src/data/lessons
+
+# 手で整えている。Prettier に任せると一行で足りる規則まで展開されて読みにくい
+src/index.css
+
+# 表と図が崩れる
+*.md

@@ -1,0 +1,65 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      # 画面に触らないロジックの単体テスト（jsdom / 約 1 秒）
+      - run: npm run test
+      # 問題データの SQL を実際に DuckDB で実行して壊れていないか検証する
+      - run: npm run coverage
+      - run: npm run validate
+      # build は tsc -b を含むので、型の誤りもここで落ちる
+      - run: npm run build
+
+      # ここから画面の検査。手元でしか動かないと、UI の後退がそのまま公開される
+      - run: npx playwright install --with-deps chromium
+      - name: preview を起動する
+        run: |
+          npx vite preview --port 4173 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:4173/ > /dev/null && exit 0
+            sleep 1
+          done
+          echo 'preview が起動しませんでした' >&2
+          exit 1
+      # 通し操作（100 件以上）と、配色のコントラスト比
+      - run: npm run smoke -- http://localhost:4173/
+      - run: npm run contrast -- http://localhost:4173/
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

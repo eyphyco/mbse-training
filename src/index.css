@@ -1,0 +1,454 @@
+@import 'tailwindcss';
+
+/* ==================================================================
+   デザイントークン
+   ------------------------------------------------------------------
+   ライト/ダークの値は light-dark() で 1 か所にまとめている。
+   切り替えは :root の color-scheme を差し替えるだけ。
+   （data-theme が付く前でも color-scheme: light dark で OS に追従する）
+   ================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* --- 面 ---------------------------------------------------------
+     どの面も不透明。下地の写真は板で隠れ、透けない。
+     文字の下地がどこでも 1 色に決まるので、コントラストが「板のどこに
+     載ったか」で動かない（measure した値がそのまま効く）。 */
+  --c-canvas: light-dark(#efece3, #131211);
+  --c-surface: light-dark(#fbfaf7, #262523);
+  --c-raised: light-dark(#f4f1e9, #2f2d2a);
+  --c-sunken: light-dark(#eae6dc, #100f0e);
+  /* 溝の中で一段持ち上げるつまみ用。surface より更に白い／黒い */
+  --c-solid: light-dark(#ffffff, #2a2724);
+  /* スクロールする内容の上に留まる帯（固定ヘッダ・表の見出し） */
+  --c-chrome: light-dark(#faf9f5, #1b1a18);
+
+  /* 下地の写真。light-dark() は色にしか効かないので、画像だけは
+     data-theme で差し替える（index.html が描画前に必ず付ける）。
+     絵を 2 枚持つ理由は backdrop-dark.svg の頭に書いた。 */
+  --bg-photo: url('./assets/backdrop-light.svg');
+
+  /* 写真に掛ける薄布。写真の出方はここ 1 つで決める。
+     濃くすれば地は canvas に近づき、薄くすれば写真が出る。
+
+     ライトの地は 232..242 に収まる（canvas は 239）。暗い側へ 7 段
+     下がるので、地の上に直接載る文字はその端で測って決める。 */
+  --c-veil: light-dark(rgb(242 238 230 / 0.75), rgb(19 18 17 / 0.74));
+
+  /* --- 境界 -------------------------------------------------------
+     板の縁。上辺のハイライトで厚みを、外周のヘアラインで輪郭を出す */
+  --c-line: light-dark(rgb(60 46 32 / 0.13), rgb(255 245 230 / 0.1));
+  --c-line-strong: light-dark(rgb(60 46 32 / 0.2), rgb(255 245 230 / 0.2));
+  --c-panel-edge: light-dark(rgb(255 255 255 / 0.72), rgb(255 248 236 / 0.1));
+
+  /* --- 文字 -------------------------------------------------------
+     ライトの subtle だけ一段濃い（#6a645c → #666057）。下地を写真に
+     した分、地は暗い側へ 7 段振れる。前は平らな canvas の上で 4.95:1
+     だったが、振れた端では 4.63:1 まで落ちて 4.5:1 の縁に並ぶ。
+     端で 4.92:1 になる濃さに寄せた（面の上でも 5.60 → 5.96 に上がる）。 */
+  --c-fg: light-dark(#191714, #f4f2ec);
+  --c-fg-muted: light-dark(#5c564c, #a8a29a);
+  --c-fg-subtle: light-dark(#666057, #9b948a);
+
+  /* --- アクセント -------------------------------------------------
+     soft / line は不透明色ではなく「色の膜」。板の上で沈まないように
+
+     基準は Claude のテラコッタ #d97757。ただし明るい下地の上では
+     文字色として 4.5:1 に届かないので、ライトだけ一段濃い錆色にする
+     （膜と枠は #d97757 のままなので、印象は両テーマで揃う）。 */
+  --c-accent: light-dark(#a04a29, #e0906c);
+  --c-accent-solid: light-dark(#b3542f, #bd5c37);
+  --c-accent-solid-hover: light-dark(#9c4726, #cc6a42);
+  --c-on-accent: #ffffff;
+  --c-accent-soft: light-dark(rgb(217 119 87 / 0.13), rgb(217 119 87 / 0.18));
+  --c-accent-line: light-dark(rgb(217 119 87 / 0.32), rgb(217 119 87 / 0.34));
+
+  /* 正解は青緑ではなくセージ。テラコッタと同じ暖かさの側に寄せる */
+  --c-success: light-dark(#2f6640, #82c091);
+  --c-success-soft: light-dark(rgb(77 138 92 / 0.13), rgb(130 192 145 / 0.14));
+  --c-success-line: light-dark(rgb(77 138 92 / 0.3), rgb(130 192 145 / 0.28));
+
+  /* 不正解がテラコッタに見えないよう、色相をローズ側まで振り切る。
+     オレンジ寄りの赤にすると、隣に並んだアクセントと区別が付かない */
+  --c-danger: light-dark(#b02636, #f28b93);
+  --c-danger-soft: light-dark(rgb(200 45 60 / 0.12), rgb(242 139 147 / 0.15));
+  --c-danger-line: light-dark(rgb(200 45 60 / 0.3), rgb(242 139 147 / 0.3));
+
+  /* Anthropic の kraft #d4a27f 系 */
+  --c-warning: light-dark(#8a5a1c, #d9ab74);
+  --c-warning-soft: light-dark(rgb(196 145 70 / 0.16), rgb(217 171 116 / 0.14));
+  --c-warning-line: light-dark(rgb(196 145 70 / 0.32), rgb(217 171 116 / 0.28));
+
+  /* --- 角丸 ------------------------------------------------------- */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+
+  /* --- 影 ---------------------------------------------------------
+     色は付けず、広く薄く落とす。近距離の1本で接地感、遠距離で浮遊感 */
+  /* light-dark() は引数 2 つなので、影のリストではなく「色」に対して使う */
+  --shadow-card:
+    0 1px 1px light-dark(rgb(60 46 32 / 0.05), rgb(0 0 0 / 0.3)),
+    0 12px 34px -14px light-dark(rgb(60 46 32 / 0.3), rgb(0 0 0 / 0.7));
+  --shadow-pop:
+    0 2px 4px light-dark(rgb(60 46 32 / 0.05), rgb(0 0 0 / 0.4)),
+    0 14px 44px -12px light-dark(rgb(60 46 32 / 0.3), rgb(0 0 0 / 0.78));
+
+  /* --- シンタックスハイライト（CodeMirror と共有） ----------------- */
+  --c-syn-keyword: light-dark(#a5502e, #e2926f);
+  --c-syn-string: light-dark(#3d7a52, #8fc79a);
+  --c-syn-number: light-dark(#8a6220, #d9ab74);
+  --c-syn-comment: light-dark(#8a8175, #7a736a);
+  --c-syn-fn: light-dark(#7d4a86, #c9a0d0);
+  --c-syn-type: light-dark(#3d6a86, #8fbcd4);
+  --c-syn-punct: light-dark(#7d766c, #8a8279);
+}
+
+/* 明示的に選ばれたテーマ。light-dark() はこの color-scheme を見る */
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-photo: url('./assets/backdrop-dark.svg');
+}
+
+@theme inline {
+  --color-canvas: var(--c-canvas);
+  --color-surface: var(--c-surface);
+  --color-raised: var(--c-raised);
+  --color-sunken: var(--c-sunken);
+  --color-solid: var(--c-solid);
+  --color-chrome: var(--c-chrome);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-fg: var(--c-fg);
+  --color-muted: var(--c-fg-muted);
+  --color-subtle: var(--c-fg-subtle);
+  --color-accent: var(--c-accent);
+  --color-accent-solid: var(--c-accent-solid);
+  --color-accent-solid-hover: var(--c-accent-solid-hover);
+  --color-on-accent: var(--c-on-accent);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-accent-line: var(--c-accent-line);
+  --color-success: var(--c-success);
+  --color-success-soft: var(--c-success-soft);
+  --color-success-line: var(--c-success-line);
+  --color-danger: var(--c-danger);
+  --color-danger-soft: var(--c-danger-soft);
+  --color-danger-line: var(--c-danger-line);
+  --color-warning: var(--c-warning);
+  --color-warning-soft: var(--c-warning-soft);
+  --color-warning-line: var(--c-warning-line);
+
+  /* 器の幅。page = 画面全体、prose-wide = 読み物として無理のない上限 */
+  --container-page: 1600px;
+  --container-prose-wide: 62rem;
+
+  --radius-xs: var(--r-xs);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+
+  /*
+    文字の大きさ。7 段だけ。直値（text-[11.5px] など）が 13 種類まで増え、
+    どれを使うべきか判断できなくなっていたので、段を決めて名前で呼ぶ。
+    小さい側が多いのは、画面のほとんどが一覧と補助表示のため。
+  */
+  --text-micro: 10.5px;
+  --text-tiny: 11.5px;
+  --text-small: 12.5px;
+  --text-body: 13.5px;
+  --text-lead: 15px;
+  --text-title: 17px;
+  --text-display: 19px;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI',
+    'Noto Sans JP', sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'Noto Sans Mono', monospace;
+}
+
+/* ==================================================================
+   下地
+   ------------------------------------------------------------------
+   視界に固定した 1 枚の写真（焦点を外した抽象）に、薄布を 1 枚掛ける。
+   面はすべて不透明なので、写真が見えるのは板と板の隙間・余白だけ。
+
+   写真そのものの値幅も狭く作ってある（src/assets/backdrop.svg）。
+   薄布と合わせて二重に抑えているのは、地の上に直接載る文字が
+   あるため。地が場所で明るくなると、そこだけコントラストが落ちる。
+   ================================================================== */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--c-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  background-color: var(--c-canvas);
+  background-image:
+    linear-gradient(var(--c-veil), var(--c-veil)),
+    var(--bg-photo);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* ==================================================================
+   面（不透明な板）
+   ------------------------------------------------------------------
+   .panel        … カード等の面
+   .panel-chrome … 固定ヘッダ
+   .panel-sticky … スクロールする内容の上に留まる帯（表の見出し）
+   .panel-pop    … 補完候補などの浮きもの
+   .panel-edge   … 小さな操作子。影は親に任せ、上辺のハイライトだけ置く
+
+   背後はぼかさない。板が不透明なら、ぼかしても見えるものは変わらず
+   backdrop-filter の描画費用だけが残る。厚みは影と上辺のハイライトで出す。
+
+   面の色（bg-surface 等）は呼び出し側の Tailwind ユーティリティが持つ。
+   ここで background-color を書くと、レイヤの外側にあるこの規則が
+   bg-warning-soft のような差し替えに勝ってしまう。
+   ================================================================== */
+
+.panel {
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 0 var(--c-panel-edge);
+}
+
+/* 前はぼかしの量で分けていたが、不透明にした結果どちらも同じ値になった。
+   名前は役割として残す（呼び出し側が何を留めたいのか読めるように） */
+.panel-chrome,
+.panel-sticky {
+  background-color: var(--c-chrome);
+}
+
+.panel-pop {
+  background-color: var(--c-chrome);
+  box-shadow:
+    var(--shadow-pop),
+    inset 0 1px 0 0 var(--c-panel-edge);
+}
+
+.panel-edge {
+  box-shadow: inset 0 1px 0 0 var(--c-panel-edge);
+}
+
+/* 塗りつぶしのボタンにも上辺のハイライトを入れて、同じ厚みに見せる */
+.raised-edge {
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.24),
+    0 1px 2px rgb(60 46 32 / 0.18);
+}
+
+/* 透明効果を減らす設定では下地の写真をやめ、地を 1 色に落とす。
+   面はもともと不透明なので、ここで変えるのは下地だけ。 */
+@media (prefers-reduced-transparency: reduce) {
+  body {
+    background-image: none;
+  }
+}
+
+/* ==================================================================
+   共通
+   ================================================================== */
+
+/* 数値は桁を揃える */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+:where(a, button, input, select, textarea) {
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==================================================================
+   配色の切り替え
+   ------------------------------------------------------------------
+   白と黒が 1 フレームで入れ替わると目に痛いので、短い間だけ色をつなぐ。
+   常時 * に transition を掛けると操作のたびに重くなるため、
+   切り替えの前後だけ :root にクラスを付けて有効にする（theme.ts）。
+
+   transform と opacity は入れない。Motion が動かしているものと
+   二重に効いてしまうため。
+
+   文字だけ短くしてある。黒い文字と白い下地が入れ替わる以上、
+   途中で必ず「どちらも中間の灰色」になる瞬間を通る。同じ時間で
+   動かすとそこに長く留まるので、文字を先に着地させて短く抜ける。
+   実測（下地と文字のコントラスト比）:
+
+     200 / 200ms … 最小 1.25:1、3:1 を下回るのが 64ms
+     200 / 140ms … 最小 2.04:1、             20ms  ← これ
+     200 / 100ms … 最小 1.32:1、             78ms
+
+   「視差効果を減らす」設定でも止めない。ここで避けたいのは動きではなく
+   明暗の急変で、一瞬で飛ばすほうがつらいため。
+   ================================================================== */
+:root.theme-fading,
+:root.theme-fading *,
+:root.theme-fading *::before,
+:root.theme-fading *::after {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    outline-color 200ms ease,
+    color 140ms ease,
+    fill 140ms ease,
+    stroke 140ms ease !important;
+  transition-delay: 0s !important;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+::selection {
+  background: var(--c-accent-soft);
+  color: var(--c-fg);
+}
+
+/* 細く、色を持たないスクロールバー */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-line-strong) transparent;
+}
+
+/* CodeMirror はコンテナ高に追従させる */
+.cm-editor {
+  height: 100%;
+  background: transparent;
+}
+.cm-editor.cm-focused {
+  outline: none !important;
+}
+.cm-scroller {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ==================================================================
+   Markdown 本文
+   ================================================================== */
+.md {
+  color: var(--c-fg);
+  font-size: 0.9375rem;
+}
+/* 器が広いときでも 1 行が長くなりすぎないようにする。
+   コードブロックと表は横幅を使いたいので対象に含めない。 */
+.md :where(p, ul, ol, blockquote, h1, h2, h3) { max-width: 54em; }
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md :where(h1) { font-size: 1.125rem; font-weight: 650; letter-spacing: -0.01em; margin: 1.4em 0 0.5em; }
+.md :where(h2) {
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  margin: 1.6em 0 0.6em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--c-line);
+}
+.md :where(h3) { font-size: 0.9375rem; font-weight: 650; margin: 1.3em 0 0.4em; color: var(--c-fg); }
+.md :where(p) { margin: 0.7em 0; line-height: 1.85; }
+.md :where(ul) { list-style: disc; padding-left: 1.3em; margin: 0.7em 0; }
+.md :where(ol) { list-style: decimal; padding-left: 1.5em; margin: 0.7em 0; }
+.md :where(li) { margin: 0.3em 0; line-height: 1.8; }
+.md :where(li)::marker { color: var(--c-fg-subtle); }
+.md :where(strong) { font-weight: 650; color: var(--c-fg); }
+.md :where(code) {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--c-sunken);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-xs);
+  padding: 0.1em 0.35em;
+}
+.md :where(pre) {
+  background: var(--c-sunken);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+  padding: 0.9em 1em;
+  overflow-x: auto;
+  margin: 0.9em 0;
+}
+.md :where(pre code) {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  line-height: 1.75;
+}
+.md :where(table) {
+  border-collapse: collapse;
+  margin: 0.9em 0;
+  font-size: 0.85rem;
+  display: block;
+  overflow-x: auto;
+  font-variant-numeric: tabular-nums;
+}
+.md :where(th, td) {
+  border-bottom: 1px solid var(--c-line);
+  padding: 0.45em 0.9em 0.45em 0;
+  text-align: left;
+  vertical-align: top;
+}
+.md :where(th) {
+  font-weight: 600;
+  color: var(--c-fg-muted);
+  font-size: 0.8125rem;
+  border-bottom-color: var(--c-line-strong);
+}
+.md :where(blockquote) {
+  border-left: 2px solid var(--c-line-strong);
+  padding-left: 1em;
+  color: var(--c-fg-muted);
+  margin: 0.9em 0;
+}
+.md :where(a) {
+  color: var(--c-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.md :where(hr) { border: none; border-top: 1px solid var(--c-line); margin: 1.6em 0; }
+
+/* SQL のエラー行。エディタ側で「どの行か」が分かるようにする */
+.cm-error-line {
+  background-color: var(--c-danger-soft);
+  box-shadow: inset 2px 0 0 0 var(--c-danger);
+}
+

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <!--
+    下地に敷く「写真」のダーク版（構図は backdrop-light.svg と同じ）。
+
+    明るい絵を薄布で沈めると、地が板（--c-surface）より明るくなって
+    上下が逆さに見える。沈めきるほど濃くすれば今度は写真が消える。
+    絵そのものを暗く持つのが唯一の解なので、テーマごとに 1 枚ずつ置く。
+
+    値幅は狭く（#181614〜#302a22）保っている。この上に文字が直接載る所が
+    あるため（パンくず・見出し・前後送り）、地の明るさが場所で動くと
+    コントラストが位置によって変わってしまう。形はぼけた面で示し、
+    明暗では示さない。色相はテラコッタ〜kraft〜暖灰に絞る。
+  -->
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#232019" />
+      <stop offset="0.55" stop-color="#1e1b16" />
+      <stop offset="1" stop-color="#181614" />
+    </linearGradient>
+    <!-- 焦点外し。形の輪郭を完全に溶かす量まで掛ける -->
+    <filter
+      id="defocus"
+      x="-25%"
+      y="-25%"
+      width="150%"
+      height="150%"
+      color-interpolation-filters="sRGB"
+    >
+      <feGaussianBlur stdDeviation="52" />
+    </filter>
+    <!-- 粒子。無彩色にしてから薄く重ねる（色が乗ると下地が汚れる） -->
+    <filter id="grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="7" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#base)" />
+
+  <g filter="url(#defocus)">
+    <!-- 窓。右上から光が回る -->
+    <rect x="1010" y="-80" width="520" height="580" rx="48" fill="#2b2620" opacity="0.9" />
+    <circle cx="1430" cy="200" r="96" fill="#302a22" opacity="0.85" />
+    <!-- 葉。彩度を落とした緑を 2 枚だけ -->
+    <ellipse
+      cx="245"
+      cy="175"
+      rx="215"
+      ry="118"
+      fill="#26291f"
+      opacity="0.62"
+      transform="rotate(-18 245 175)"
+    />
+    <ellipse
+      cx="425"
+      cy="330"
+      rx="168"
+      ry="88"
+      fill="#222619"
+      opacity="0.5"
+      transform="rotate(24 425 330)"
+    />
+    <!-- 机の面。下 3 割を横に走らせて「手前」を作る -->
+    <rect x="-100" y="700" width="1800" height="440" fill="#201d18" opacity="0.78" />
+    <!-- 手前のぼけ玉 -->
+    <circle cx="1185" cy="775" r="152" fill="#2c261d" opacity="0.55" />
+    <circle cx="615" cy="885" r="225" fill="#262019" opacity="0.45" />
+  </g>
+
+  <rect width="1600" height="1000" fill="#808080" filter="url(#grain)" opacity="0.07" />
+</svg>

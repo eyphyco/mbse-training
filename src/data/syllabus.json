@@ -1,0 +1,450 @@
+{
+  "standard": "SysML v1.2",
+  "source": "https://www.omg.org/certification/sysml/ (SysML-Model-User.pdf / SysML-Model-Builder-Fundamental.pdf)",
+  "fetchedOn": "2026-10-05",
+  "exams": [
+    {
+      "id": "mu",
+      "name": "SysML Model User",
+      "questions": 90,
+      "minutes": 120,
+      "minutesNativeEnglish": 90,
+      "pass": 56,
+      "passPercent": 62,
+      "prereq": null,
+      "areas": [
+        {
+          "id": "mu-structure",
+          "name": "システム構造のモデル",
+          "weight": 0.36,
+          "groups": [
+            {
+              "id": "mu-bdd",
+              "name": "ブロック図で構造を読む",
+              "weight": 0.22,
+              "items": [
+                {
+                  "id": "mu-def-usage",
+                  "name": "定義と使用（definition vs usage）",
+                  "topic": "def-usage"
+                },
+                { "id": "mu-valuetype", "name": "valueType と単位", "topic": "valuetype" },
+                {
+                  "id": "mu-block-features",
+                  "name": "ブロックの構成要素（値属性・パート・参照・操作）",
+                  "topic": "block-features"
+                },
+                {
+                  "id": "mu-bdd-purpose",
+                  "name": "BDD の説明・目的・利点",
+                  "topic": "bdd-purpose"
+                },
+                { "id": "mu-specialization", "name": "特化（汎化）", "topic": "specialization" },
+                {
+                  "id": "mu-association",
+                  "name": "関連とコンポジット集約（共有集約は範囲外）",
+                  "topic": "association"
+                },
+                { "id": "mu-multiplicity", "name": "多重度", "topic": "multiplicity" },
+                {
+                  "id": "mu-ibd-purpose",
+                  "name": "IBD の説明・目的・利点と囲みブロック",
+                  "topic": "ibd-purpose"
+                },
+                { "id": "mu-ports", "name": "フローポートと標準ポート", "topic": "ports" },
+                {
+                  "id": "mu-connector-itemflow",
+                  "name": "コネクタと項目フロー",
+                  "topic": "connector-itemflow"
+                },
+                { "id": "mu-part-repr", "name": "パートの表現", "topic": "part-repr" }
+              ]
+            },
+            {
+              "id": "mu-pkg",
+              "name": "パッケージ図でモデル編成を読む",
+              "weight": 0.07,
+              "items": [
+                {
+                  "id": "mu-pkg-purpose",
+                  "name": "パッケージ図の説明・目的・利点",
+                  "topic": "pkg-purpose"
+                },
+                {
+                  "id": "mu-pkg-ownership",
+                  "name": "要素の所有と名前空間",
+                  "topic": "pkg-ownership"
+                },
+                { "id": "mu-pkg-relations", "name": "包含と依存", "topic": "pkg-relations" },
+                {
+                  "id": "mu-view-viewpoint",
+                  "name": "ビューとビューポイント",
+                  "topic": "view-viewpoint"
+                }
+              ]
+            },
+            {
+              "id": "mu-par",
+              "name": "BDD とパラメトリック図で制約を読む",
+              "weight": 0.07,
+              "items": [
+                {
+                  "id": "mu-constraint-block",
+                  "name": "BDD 上の制約ブロック",
+                  "topic": "constraint-block"
+                },
+                {
+                  "id": "mu-par-purpose",
+                  "name": "パラメトリック図の説明・目的・利点",
+                  "topic": "par-purpose"
+                },
+                {
+                  "id": "mu-constraint-param",
+                  "name": "制約プロパティ・パラメータ・式",
+                  "topic": "constraint-param"
+                },
+                {
+                  "id": "mu-binding",
+                  "name": "束縛コネクタで制約と値属性をつなぐ",
+                  "topic": "binding"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mu-behavior",
+          "name": "システム振る舞いのモデル",
+          "weight": 0.3,
+          "groups": [
+            {
+              "id": "mu-act",
+              "name": "アクティビティ図でフローを読む",
+              "weight": 0.13,
+              "items": [
+                {
+                  "id": "mu-act-purpose",
+                  "name": "アクティビティ図の説明・目的・利点",
+                  "topic": "act-purpose"
+                },
+                {
+                  "id": "mu-objectflow",
+                  "name": "オブジェクトフロー・パラメータ・パラメータノード・ピン",
+                  "topic": "objectflow"
+                },
+                {
+                  "id": "mu-controlflow",
+                  "name": "制御フローと制御ノード",
+                  "topic": "controlflow"
+                },
+                {
+                  "id": "mu-partition",
+                  "name": "アクティビティパーティション（スイムレーン）",
+                  "topic": "partition"
+                },
+                {
+                  "id": "mu-actions",
+                  "name": "アクション（呼び出し・シグナル送信・イベント受理）",
+                  "topic": "actions"
+                }
+              ]
+            },
+            {
+              "id": "mu-stm",
+              "name": "状態機械図でイベント駆動を読む",
+              "weight": 0.1,
+              "items": [
+                {
+                  "id": "mu-stm-purpose",
+                  "name": "状態機械図の説明・目的・利点",
+                  "topic": "stm-purpose"
+                },
+                {
+                  "id": "mu-state-region",
+                  "name": "状態と領域・初期状態・終了状態",
+                  "topic": "state-region"
+                },
+                {
+                  "id": "mu-transition",
+                  "name": "遷移（時間・シグナルのトリガ、ガード、効果）",
+                  "topic": "transition"
+                },
+                {
+                  "id": "mu-state-behavior",
+                  "name": "entry / exit / do の振る舞い",
+                  "topic": "state-behavior"
+                }
+              ]
+            },
+            {
+              "id": "mu-sd",
+              "name": "シーケンス図でメッセージを読む",
+              "weight": 0.07,
+              "items": [
+                {
+                  "id": "mu-sd-purpose",
+                  "name": "シーケンス図の説明・目的・利点",
+                  "topic": "sd-purpose"
+                },
+                {
+                  "id": "mu-lifeline-message",
+                  "name": "ライフラインと同期・非同期メッセージ",
+                  "topic": "lifeline-message"
+                },
+                { "id": "mu-interaction-ref", "name": "相互作用参照", "topic": "interaction-ref" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mu-crosscutting",
+          "name": "横断的な構成要素",
+          "weight": 0.2,
+          "groups": [
+            {
+              "id": "mu-alloc",
+              "name": "割り当てを複数の図にまたいで読む",
+              "weight": 0.1,
+              "items": [
+                {
+                  "id": "mu-alloc-purpose",
+                  "name": "割り当ての説明・目的・使い方",
+                  "topic": "alloc-purpose"
+                },
+                {
+                  "id": "mu-allocated-fromto",
+                  "name": "AllocatedFrom と AllocatedTo",
+                  "topic": "allocated-fromto"
+                },
+                {
+                  "id": "mu-alloc-repr",
+                  "name": "表現（吹き出し・コンパートメント・割り当てパーティション・表）",
+                  "topic": "alloc-repr"
+                }
+              ]
+            },
+            {
+              "id": "mu-notation",
+              "name": "そのほかの記法",
+              "weight": 0.1,
+              "items": [
+                {
+                  "id": "mu-comment",
+                  "name": "コメント・根拠・問題・制約の特別な記法",
+                  "topic": "comment"
+                },
+                {
+                  "id": "mu-frame",
+                  "name": "図枠とポート・パラメータ・アンカー",
+                  "topic": "frame"
+                },
+                { "id": "mu-header", "name": "図のヘッダと図の説明", "topic": "header" },
+                { "id": "mu-stereotype", "name": "ステレオタイプ", "topic": "stereotype" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mu-requirements",
+          "name": "要求のモデル",
+          "weight": 0.14,
+          "groups": [
+            {
+              "id": "mu-req",
+              "name": "要求図を読む",
+              "weight": 0.07,
+              "items": [
+                { "id": "mu-req-concept", "name": "「要求」という概念", "topic": "req-concept" },
+                {
+                  "id": "mu-req-relations",
+                  "name": "derive / verify / satisfy / refine / trace / 包含",
+                  "topic": "req-relations"
+                },
+                {
+                  "id": "mu-req-purpose",
+                  "name": "要求図の説明・目的・利点",
+                  "topic": "req-purpose"
+                }
+              ]
+            },
+            {
+              "id": "mu-uc",
+              "name": "ユースケース図を読む",
+              "weight": 0.07,
+              "items": [
+                {
+                  "id": "mu-uc-purpose",
+                  "name": "ユースケース図の説明・目的・利点",
+                  "topic": "uc-purpose"
+                },
+                {
+                  "id": "mu-uc-structure",
+                  "name": "ユースケース・アクター・主題",
+                  "topic": "uc-structure"
+                },
+                {
+                  "id": "mu-uc-relations",
+                  "name": "関連・include・extend・汎化",
+                  "topic": "uc-relations"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mbf",
+      "name": "SysML Model Builder – Fundamental",
+      "questions": 90,
+      "minutes": 135,
+      "minutesNativeEnglish": 105,
+      "pass": 60,
+      "passPercent": 67,
+      "prereq": "mu",
+      "areas": [
+        {
+          "id": "mbf-structure-behavior",
+          "name": "構造と振る舞いのモデリング",
+          "weight": 0.57,
+          "groups": [
+            {
+              "id": "mbf-beh",
+              "name": "振る舞いモデルを作る",
+              "weight": 0.24,
+              "items": [
+                {
+                  "id": "mbf-beh-capture",
+                  "name": "システムの振る舞いをモデルでどう捉えるか",
+                  "topic": "beh-capture"
+                },
+                { "id": "mbf-build-act", "name": "アクティビティ図を作る", "topic": "build-act" },
+                { "id": "mbf-build-sd", "name": "シーケンス図を作る", "topic": "build-sd" },
+                { "id": "mbf-build-stm", "name": "状態機械図を作る", "topic": "build-stm" }
+              ]
+            },
+            {
+              "id": "mbf-struct",
+              "name": "構造モデルを作る",
+              "weight": 0.23,
+              "items": [
+                {
+                  "id": "mbf-struct-capture",
+                  "name": "システムの構造をモデルでどう捉えるか",
+                  "topic": "struct-capture"
+                },
+                { "id": "mbf-build-bdd", "name": "ブロック定義図を作る", "topic": "build-bdd" },
+                { "id": "mbf-build-ibd", "name": "内部ブロック図を作る", "topic": "build-ibd" }
+              ]
+            },
+            {
+              "id": "mbf-par",
+              "name": "パラメトリックモデルを作る",
+              "weight": 0.1,
+              "items": [
+                {
+                  "id": "mbf-par-capture",
+                  "name": "システム解析を制約でどう捉えるか",
+                  "topic": "par-capture"
+                },
+                {
+                  "id": "mbf-define-constraint",
+                  "name": "BDD 上に制約を定義する",
+                  "topic": "define-constraint"
+                },
+                { "id": "mbf-build-par", "name": "パラメトリック図を作る", "topic": "build-par" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mbf-the-model",
+          "name": "モデルそのもの",
+          "weight": 0.19,
+          "groups": [
+            {
+              "id": "mbf-concepts",
+              "name": "モデルの概念",
+              "weight": 0.1,
+              "items": [
+                { "id": "mbf-what-is-model", "name": "モデルとは何か", "topic": "what-is-model" },
+                {
+                  "id": "mbf-model-vs-diagram",
+                  "name": "モデルと図の関係",
+                  "topic": "model-vs-diagram"
+                }
+              ]
+            },
+            {
+              "id": "mbf-organize",
+              "name": "モデルを編成する",
+              "weight": 0.09,
+              "items": [
+                { "id": "mbf-hierarchy", "name": "モデル階層を作る", "topic": "hierarchy" },
+                { "id": "mbf-build-pkg", "name": "パッケージ図を作る", "topic": "build-pkg" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mbf-requirements",
+          "name": "要求のモデリング",
+          "weight": 0.16,
+          "groups": [
+            {
+              "id": "mbf-req",
+              "name": "要求モデルを作る",
+              "weight": 0.16,
+              "items": [
+                {
+                  "id": "mbf-req-capture",
+                  "name": "システム要求をモデルでどう捉えるか",
+                  "topic": "req-capture"
+                },
+                { "id": "mbf-build-req", "name": "要求図を作る", "topic": "build-req" },
+                {
+                  "id": "mbf-req-to-elements",
+                  "name": "要求と他の要素との関係を張る",
+                  "topic": "req-to-elements"
+                },
+                { "id": "mbf-req-table", "name": "要求を表と行列で表す", "topic": "req-table" },
+                { "id": "mbf-build-uc", "name": "ユースケースモデルを作る", "topic": "build-uc" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mbf-capabilities",
+          "name": "機能と拡張",
+          "weight": 0.08,
+          "groups": [
+            {
+              "id": "mbf-alloc",
+              "name": "割り当て関係",
+              "weight": 0.04,
+              "items": [
+                {
+                  "id": "mbf-alloc-relations",
+                  "name": "割り当て関係を張る",
+                  "topic": "alloc-relations"
+                }
+              ]
+            },
+            {
+              "id": "mbf-custom",
+              "name": "モデルを拡張する",
+              "weight": 0.04,
+              "items": [
+                {
+                  "id": "mbf-apply-stereotype",
+                  "name": "ステレオタイプを適用する（プロファイル・ステレオタイプの作成は範囲外）",
+                  "topic": "apply-stereotype"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
