@@ -6,6 +6,7 @@ import {
   markRead,
   normalize,
   planStatus,
+  sectionRead,
   recordAnswer,
   todayPlan,
 } from './progress';
@@ -115,6 +116,23 @@ describe('レーン', () => {
       ['b', 'untouched', 'dropped'],
     ]);
     expect(r.data.problems.p1).toMatchObject({ attempts: 1, solved: false });
+  });
+});
+
+describe('節を読んだ', () => {
+  const T = '2026-10-06';
+  it('項目を持たない節も、節そのものを読んだにできる', () => {
+    const d = markRead(emptyProgress(), [], T, 'map-exam');
+    expect(sectionRead(d, { id: 'map-exam', items: [] })).toBe(true);
+    expect(sectionRead(d, { id: 'map-howto', items: [] })).toBe(false);
+  });
+  it('項目をすべて読んだ・解いた節は、節を押していなくても読んだ', () => {
+    const d = markRead(emptyProgress(), ['a', 'b'], T);
+    expect(sectionRead(d, { id: 's', items: ['a', 'b'] })).toBe(true);
+    expect(sectionRead(d, { id: 's', items: ['a', 'c'] })).toBe(false);
+  });
+  it('古い保存データ（節の記録が無い）も空として読める', () => {
+    expect(normalize({ version: 1, read: { a: T } }).sections).toEqual({});
   });
 });
 

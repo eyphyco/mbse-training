@@ -7,7 +7,8 @@ export interface ProgressContextValue {
   today: string;
   /** 答えを記録し、動いた項目を通知に出す */
   answer: (problemId: string, items: string[], correct: boolean) => Transition[];
-  markRead: (items: string[]) => void;
+  /** 項目を読んだにする。節 id を渡すと節も読んだにする */
+  markRead: (items: string[], sectionId?: string) => void;
   addMemo: (itemId: string, text: string) => void;
   removeMemo: (itemId: string, at: string) => void;
   setSettings: (s: Partial<Settings>) => void;

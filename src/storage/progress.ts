@@ -52,6 +52,12 @@ export interface ProgressData {
   items: Record<string, ItemState>;
   /** 教材を読んだ日。項目 id → 暦日 */
   read: Record<string, string>;
+  /**
+   * 教材の節を読んだ日。節 id → 暦日。
+   * 項目を持たない節（章 0 の「試験の構造」など）は read に記録する先が無く、
+   * 「読んだ」を付けられなかった。節そのものの記録を別に持つ（版は 1 のまま。無ければ空で読む）
+   */
+  sections: Record<string, string>;
   problems: Record<string, ProblemRecord>;
   history: HistoryEntry[];
   exams: ExamRecord[];
@@ -68,6 +74,7 @@ export function emptyProgress(): ProgressData {
     version: 1,
     items: {},
     read: {},
+    sections: {},
     problems: {},
     history: [],
     exams: [],
@@ -85,6 +92,7 @@ export function normalize(raw: unknown): ProgressData {
     version: 1,
     items: r.items ?? {},
     read: r.read ?? {},
+    sections: r.sections ?? {},
     problems: r.problems ?? {},
     history: Array.isArray(r.history) ? r.history : [],
     exams: Array.isArray(r.exams) ? r.exams : [],
@@ -182,16 +190,35 @@ export function recordAnswer(
   return { data: next, transitions };
 }
 
-/** 教材の節を読んだ。初めて読んだ日だけ残す */
-export function markRead(data: ProgressData, itemIds: string[], today: string): ProgressData {
+/** 教材の節を読んだ。初めて読んだ日だけ残す。節 id を渡すと節そのものも記録する */
+export function markRead(
+  data: ProgressData,
+  itemIds: string[],
+  today: string,
+  sectionId?: string,
+): ProgressData {
   const read = { ...data.read };
+  const sections = { ...data.sections };
   let changed = false;
   for (const id of itemIds)
     if (!read[id]) {
       read[id] = today;
       changed = true;
     }
-  return changed ? { ...data, read } : data;
+  if (sectionId && !sections[sectionId]) {
+    sections[sectionId] = today;
+    changed = true;
+  }
+  return changed ? { ...data, read, sections } : data;
+}
+
+/**
+ * 節を読み終えたか。節を「読んだ」にしたか、節の項目をすべて読んだ・解いたなら読み終えた。
+ * ボードで項目を読んだにした場合も、教材の節に反映されるように項目からも判定する
+ */
+export function sectionRead(data: ProgressData, section: { id: string; items: string[] }): boolean {
+  if (data.sections[section.id]) return true;
+  return section.items.length > 0 && section.items.every((it) => data.read[it] || data.items[it]);
 }
 
 /**

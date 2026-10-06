@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Card, CountPill, Meter, Tag, Tile } from '../components/ui';
+import { Card, Meter, Tag, Tile } from '../components/ui';
 import { LIFT, RISE, STAGGER } from '../components/motion';
 import { LESSONS, problemsOfSection } from '../data/content';
 import { KIND_TONE } from '../components/tones';
+import { sectionRead } from '../storage/progress';
 import { useProgress } from '../storage/progressContext';
 
 /**
@@ -28,8 +29,8 @@ export default function Learn() {
         className="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(300px,1fr))]"
       >
         {LESSONS.map((l) => {
-          const items = l.sections.flatMap((s) => s.items);
-          const read = items.filter((i) => data.read[i] || data.items[i]).length;
+          // 節で数える（項目を持たない節もあるので、項目で数えると読み終えても満たない章が出る）
+          const read = l.sections.filter((s) => sectionRead(data, s)).length;
           const nProblems = l.sections.reduce((n, s) => n + problemsOfSection(s).length, 0);
           return (
             <motion.li key={l.id} variants={RISE} whileHover={LIFT}>
@@ -48,11 +49,10 @@ export default function Learn() {
                   </div>
                   <p className="mt-3 flex-1 text-small leading-relaxed text-muted">{l.lead}</p>
                   <div className="mt-4 flex items-center gap-3">
-                    <Meter value={read} total={items.length} />
+                    <Meter value={read} total={l.sections.length} />
                     <span className="tnum shrink-0 text-tiny text-muted">
-                      {read} / {items.length} 項目
+                      読んだ {read} / {l.sections.length} 節
                     </span>
-                    <CountPill>{l.sections.length} 節</CountPill>
                   </div>
                 </Card>
               </Link>

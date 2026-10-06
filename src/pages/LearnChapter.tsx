@@ -6,6 +6,7 @@ import { Button, Card, Tag } from '../components/ui';
 import { IconCheck, IconChevronLeft, IconChevronRight } from '../components/icons';
 import { LESSONS, itemName, problemsOfSection } from '../data/content';
 import { NOTATION } from '../data/notation';
+import { sectionRead } from '../storage/progress';
 import { useProgress } from '../storage/progressContext';
 
 /**
@@ -53,8 +54,7 @@ export default function LearnChapter() {
         <p className="px-2 pb-3 text-body font-bold text-fg">{lesson.title}</p>
         <ol className="space-y-0.5">
           {lesson.sections.map((s) => {
-            const read =
-              s.items.length > 0 && s.items.every((it) => data.read[it] || data.items[it]);
+            const read = sectionRead(data, s);
             return (
               <li key={s.id}>
                 <Link
@@ -83,7 +83,7 @@ export default function LearnChapter() {
 
         {lesson.sections.map((s) => {
           const problems = problemsOfSection(s);
-          const read = s.items.length > 0 && s.items.every((it) => data.read[it] || data.items[it]);
+          const read = sectionRead(data, s);
           return (
             <Card
               key={s.id}
@@ -133,20 +133,19 @@ export default function LearnChapter() {
               )}
 
               <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-line pt-4">
-                {s.items.length > 0 &&
-                  (read ? (
-                    <span className="flex items-center gap-1.5 text-small font-semibold text-success">
-                      <IconCheck size={14} /> 読んだ
-                    </span>
-                  ) : (
-                    <Button
-                      size="sm"
-                      onClick={() => markRead(s.items)}
-                      data-testid={`read-${s.id}`}
-                    >
-                      <IconCheck size={14} /> 読んだ
-                    </Button>
-                  ))}
+                {read ? (
+                  <span className="flex items-center gap-1.5 text-small font-semibold text-success">
+                    <IconCheck size={14} /> 読んだ
+                  </span>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={() => markRead(s.items, s.id)}
+                    data-testid={`read-${s.id}`}
+                  >
+                    <IconCheck size={14} /> 読んだ
+                  </Button>
+                )}
                 {problems.map((p) => (
                   <Link
                     key={p.id}

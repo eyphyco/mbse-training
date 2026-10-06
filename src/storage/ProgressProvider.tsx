@@ -77,7 +77,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       data,
       today,
       answer,
-      markRead: (items: string[]) => setData((d) => markReadPure(d, items, dayOf(Date.now()))),
+      markRead: (items: string[], sectionId?: string) =>
+        setData((d) => markReadPure(d, items, dayOf(Date.now()), sectionId)),
       addMemo: (itemId: string, text: string) =>
         setData((d) => ({
           ...d,
