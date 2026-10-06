@@ -1,0 +1,426 @@
+[
+  {
+    "id": "map-model-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-what-is-model"
+    ],
+    "level": 1,
+    "title": "MBSE の正本",
+    "prompt_md": "MBSE（Model-Based Systems Engineering）で、設計の**正本**になるものはどれか。",
+    "hints_md": [],
+    "explanation_md": "MBSE は要求・構造・振る舞い・解析を**1 つのモデル**に入れ、そこを正本にする。図・表・文書はモデルから取り出した見え方。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "モデル"
+      },
+      {
+        "id": "b",
+        "text_md": "要求仕様書"
+      },
+      {
+        "id": "c",
+        "text_md": "設計書"
+      },
+      {
+        "id": "d",
+        "text_md": "試験仕様書"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "map-model-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-what-is-model"
+    ],
+    "level": 2,
+    "title": "モデルが表すもの",
+    "prompt_md": "モデルについて正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "**モデル**は、対象を**目的に必要な側面だけ**取り出して表したもの。全部を写す必要は無い。何を表すかは、何を決めたいか・確かめたいかで決まる。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "対象のうち、目的に必要な側面だけを取り出して表したもの"
+      },
+      {
+        "id": "b",
+        "text_md": "対象のすべてを細部まで写したもの"
+      },
+      {
+        "id": "c",
+        "text_md": "図を何枚か集めたもの"
+      },
+      {
+        "id": "d",
+        "text_md": "ソフトウェアのソースコード"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "map-model-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-what-is-model"
+    ],
+    "level": 3,
+    "title": "文書中心の困りごと",
+    "prompt_md": "文書中心の設計で起きる困りごとのうち、モデルを正本にすることで最も直接に解決するものはどれか。",
+    "hints_md": [
+      "モデルでは、事実を何回書くか。"
+    ],
+    "explanation_md": "モデルでは**事実を 1 回だけ**書き、図・表はその見え方として取り出す。だから 1 か所直せば全部の図に反映され、食い違わない。要素どうしの関係（満たす・割り当てる）もモデルが持つので辿れる。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "同じ事実が何か所にも書かれ、1 か所直すと他が古くなる"
+      },
+      {
+        "id": "b",
+        "text_md": "文書の文字が小さくて読みにくい"
+      },
+      {
+        "id": "c",
+        "text_md": "会議の回数が多い"
+      },
+      {
+        "id": "d",
+        "text_md": "設計者の人数が足りない"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "map-diagram-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-model-vs-diagram"
+    ],
+    "level": 1,
+    "title": "図から消したら",
+    "prompt_md": "ある図から、ブロック Engine の箱を消した（図から削除した）。モデルの Engine はどうなるか。",
+    "hints_md": [],
+    "explanation_md": "**図はモデルの見え方**。図から消しても図に描かれなくなるだけで、**モデルの要素は残る**。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "モデルには残る（その図に描かれなくなるだけ）"
+      },
+      {
+        "id": "b",
+        "text_md": "モデルからも消える"
+      },
+      {
+        "id": "c",
+        "text_md": "ほかの図からも消える"
+      },
+      {
+        "id": "d",
+        "text_md": "名前が空になる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "map-diagram-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-model-vs-diagram"
+    ],
+    "level": 2,
+    "title": "何個の要素か",
+    "prompt_md": "ブロック Engine が、bdd・ibd・パッケージ図の 3 枚の図に出ている。モデルの中の Engine はいくつか。",
+    "hints_md": [],
+    "explanation_md": "同じ要素は**モデルに 1 つ**しか無く、**何枚の図にも**出せる。3 枚の図は、同じ 1 つの Engine を別々に切り取った見え方。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "1 つ"
+      },
+      {
+        "id": "b",
+        "text_md": "3 つ"
+      },
+      {
+        "id": "c",
+        "text_md": "図の数だけ増える"
+      },
+      {
+        "id": "d",
+        "text_md": "図によって違う"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "map-diagram-3",
+    "type": "read_diagram",
+    "items": [
+      "mbf-model-vs-diagram"
+    ],
+    "level": 3,
+    "title": "描かれていないこと",
+    "prompt_md": "次の図の Vehicle には parts 区画が描かれていない。正しいものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure",
+        "name": "Values"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            },
+            {
+              "kind": "value",
+              "name": "maxSpeed",
+              "type": "Speed"
+            }
+          ]
+        },
+        {
+          "id": "m",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        },
+        {
+          "id": "s",
+          "kind": "valueType",
+          "name": "Speed",
+          "tags": {
+            "unit": "km/h"
+          }
+        }
+      ],
+      "relations": []
+    },
+    "hints_md": [
+      "図はモデルの全部を描くか。"
+    ],
+    "explanation_md": "図は**目的に要るものだけ**を描く。この図は値（values）を見せるための図なので、parts 区画を隠しているかもしれない。**図に描かれていないことは「無い」とは限らない**。",
+    "diagram": "bdd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle が部品を持たないとは言えない（この図で隠しているだけかもしれない）"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle は部品を持たない"
+      },
+      {
+        "id": "c",
+        "text_md": "Vehicle は値型である"
+      },
+      {
+        "id": "d",
+        "text_md": "この図は誤りで、parts 区画を必ず描かなければならない"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "map-header-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-header"
+    ],
+    "level": 1,
+    "title": "ヘッダを読む",
+    "prompt_md": "次の図のヘッダから分かる、「この図は何についての図か」はどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure",
+        "name": "Vehicle Decomposition"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            }
+          ]
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "composition",
+          "source": "veh",
+          "target": "eng",
+          "targetRole": "engine",
+          "targetMult": "1"
+        }
+      ]
+    },
+    "hints_md": [
+      "ヘッダの ②（[ ] の中）と ③ を見る。"
+    ],
+    "explanation_md": "ヘッダ `bdd [package] VehicleStructure [Vehicle Decomposition]` は ①種類 ②対象の型 ③対象の名前 ④図の名前。この図は**パッケージ VehicleStructure** についての bdd で、Vehicle Decomposition は図の名前。",
+    "diagram": "bdd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "パッケージ VehicleStructure（図の名前は Vehicle Decomposition）"
+      },
+      {
+        "id": "b",
+        "text_md": "ブロック Vehicle"
+      },
+      {
+        "id": "c",
+        "text_md": "ブロック Engine"
+      },
+      {
+        "id": "d",
+        "text_md": "パッケージ Vehicle Decomposition"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "map-header-2",
+    "type": "spot_error",
+    "items": [
+      "mu-header"
+    ],
+    "level": 2,
+    "title": "略号と中身",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "act",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-kind",
+        "why": "状態と遷移を描いた状態機械図なのに、略号が `act` になっている。`stm` が正しい。"
+      }
+    ],
+    "hints_md": [
+      "描かれている形（角丸の箱・遷移の札）は何の図のものか。"
+    ],
+    "explanation_md": "ヘッダの先頭は図の種類の略号で、**描かれている中身と一致**しなければならない。状態と遷移の図は `stm`。ヘッダの型 `stateMachine` とも食い違っている（act なら activity）。",
+    "diagram": "stm"
+  },
+  {
+    "id": "map-header-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-header"
+    ],
+    "level": 3,
+    "title": "図の説明",
+    "prompt_md": "図に付ける「図の説明」（diagram description）に書く欄の組として正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "図の説明は、図に付けるコメントの形で**版（version）・完成度（completion status）・説明（description）・参照（reference）**を書く。b は要求、c はビューポイント、d は状態機械の欄。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "version・completion status・description・reference"
+      },
+      {
+        "id": "b",
+        "text_md": "id・text・satisfiedBy・verifiedBy"
+      },
+      {
+        "id": "c",
+        "text_md": "stakeholders・concerns・purpose・methods"
+      },
+      {
+        "id": "d",
+        "text_md": "entry・do・exit・effect"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  }
+]

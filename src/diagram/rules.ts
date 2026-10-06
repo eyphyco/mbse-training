@@ -45,6 +45,7 @@ export type IssueKind =
   | 'connector-type-mismatch'
   | 'itemflow-reversed'
   | 'param-not-in-expr'
+  | 'expr-var-missing-param'
   | 'binding-type-mismatch'
   // pkg
   | 'conform-reversed'
@@ -70,6 +71,9 @@ export type IssueKind =
   | 'pin-type-mismatch'
   | 'initial-has-trigger'
   | 'two-initials-in-region'
+  // 割り当て
+  | 'allocate-to-requirement'
+  | 'allocate-compartment-mismatch'
   // sd
   | 'reply-without-call'
   | 'alt-operand-without-guard';
@@ -190,6 +194,11 @@ export const RULES: Record<IssueKind, RuleInfo> = {
     explain:
       '制約プロパティのパラメータ（縁の小さな四角）は、制約の式に出てくる変数です。式に出てこない名前のパラメータは、その制約では使われません。',
   },
+  'expr-var-missing-param': {
+    title: '式の変数がパラメータに無い',
+    explain:
+      '制約ブロックの constraints 区画の式に出る変数は、すべて parameters 区画に `名前 : 型` で並べます。並べていない変数は、par で値属性に束縛できません。',
+  },
   'binding-type-mismatch': {
     title: '束縛した両端の型が違う',
     explain:
@@ -292,6 +301,16 @@ export const RULES: Record<IssueKind, RuleInfo> = {
     explain:
       '開始擬似状態は 1 つの領域に 1 つだけです。2 つあると、どちらから始まるかが決まりません。同時に動かしたいなら、点線で区切った別の領域に置きます。',
   },
+  'allocate-to-requirement': {
+    title: '要求に «allocate»',
+    explain:
+      '«allocate» は機能や論理を、それを担当する部品などに割り当てる関係です。要求に応えることを表すなら «satisfy»（設計 → 要求）を使います。',
+  },
+  'allocate-compartment-mismatch': {
+    title: 'allocatedFrom と allocatedTo の取り違え',
+    explain:
+      '«allocate» の矢印の元の要素には allocatedTo（どこへ割り当てたか）、先の要素には allocatedFrom（どこから割り当てられたか）を書きます。区画と矢印の向きが食い違っています。',
+  },
   'reply-without-call': {
     title: '同期呼び出しの無い返信',
     explain:
@@ -307,6 +326,8 @@ export const RULES: Record<IssueKind, RuleInfo> = {
 /** 値属性の型として使える基本型 */
 const PRIMITIVES = new Set(['Real', 'Integer', 'Boolean', 'String', 'Number', 'Complex']);
 const isComposite = (m?: string) => m === undefined || m === '1' || m === '0..1';
+/** 式の中で変数ではない名前（関数） */
+const MATH = new Set(['sqrt', 'sin', 'cos', 'tan', 'exp', 'log', 'abs', 'min', 'max', 'pi']);
 const ACTIONS = new Set(['action', 'callBehavior', 'sendSignal', 'acceptEvent', 'acceptTime']);
 
 /** 誤りを見つける。結果は at → kind の順で並べる（比較しやすいように） */
@@ -348,6 +369,17 @@ export function findIssues(model: Model): Issue[] {
       (model.type === 'par' && el.kind === 'constraintBlock')
     )
       add(el.id, 'definition-in-usage-diagram');
+    if (el.kind === 'constraintBlock') {
+      // bdd の制約ブロック: 式の変数と parameters 区画が揃っているか
+      const exprs = props.filter((p) => p.kind === 'constraint').map((p) => p.name);
+      const params = props.filter((p) => p.kind === 'parameter').map((p) => p.name);
+      if (exprs.length > 0) {
+        const vars = new Set(exprs.flatMap((e) => e.match(/[A-Za-z_][A-Za-z0-9_]*/g) ?? []));
+        if (params.some((n) => !vars.has(n))) add(el.id, 'param-not-in-expr');
+        if ([...vars].some((v) => !params.includes(v) && !MATH.has(v)))
+          add(el.id, 'expr-var-missing-param');
+      }
+    }
     if (el.kind === 'constraintProperty' && el.expr) {
       const vars = new Set(el.expr.match(/[A-Za-z_][A-Za-z0-9_]*/g) ?? []);
       for (const p of el.ports ?? []) if (!vars.has(p.name)) add(p.id, 'param-not-in-expr');
@@ -419,6 +451,15 @@ export function findIssues(model: Model): Issue[] {
             break;
           case 'deriveReqt':
             if (!isReq(s) || !isReq(t)) add(r.id, 'derive-non-requirement');
+            break;
+          case 'allocate':
+            if (isReq(t)) add(r.id, 'allocate-to-requirement');
+            // 区画は名前で照合する（区画の行は `«activity» Drive` のように相手の名前で終わる）
+            if (
+              (s && t && (s.allocatedFrom ?? []).some((x) => x.endsWith(t.name))) ||
+              (s && t && (t.allocatedTo ?? []).some((x) => x.endsWith(s.name)))
+            )
+              add(r.id, 'allocate-compartment-mismatch');
             break;
           case 'conform':
             if (s?.kind === 'viewpoint' && t?.kind === 'view') add(r.id, 'conform-reversed');
@@ -493,8 +534,9 @@ export function findIssues(model: Model): Issue[] {
     for (const el of model.elements)
       if (el.kind === 'initial')
         inits.set(el.parent ?? '', [...(inits.get(el.parent ?? '') ?? []), el]);
+    // 2 つ目以降（余分な方）を指す。書いた順で最初のものを正とみなす
     for (const list of inits.values())
-      if (list.length > 1) for (const el of list) add(el.id, 'two-initials-in-region');
+      for (const el of list.slice(1)) add(el.id, 'two-initials-in-region');
   }
 
   /* --- シーケンス図 --- */

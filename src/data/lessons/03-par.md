@@ -4,7 +4,7 @@ no: 3
 title: 制約ブロックとパラメトリック図
 lead: 式を bdd で「部品」として定義し、par で値属性に配線する。向きの無い等式として読む。
 diagram: par
-problemsReady: false
+problemsReady: true
 ---
 
 ## 制約ブロック {#par-constraint-block}
@@ -45,6 +45,7 @@ a : Acceleration
 
 ## パラメトリック図は何を表す図か {#par-purpose}
 items: mu-par-purpose
+figures: par-newton
 term: パラメトリック図 | ぱらめとりっくず | par。制約（式）のパラメータと、システムの値属性のつながりを表す図。工学解析のための図
 term: 束縛コネクタ | そくばくこねくた | binding connector。par でパラメータと値属性（または別のパラメータ）をつなぐ実線。両端の値が等しいことを表す
 
@@ -161,6 +162,7 @@ items: mbf-define-constraint
 
 ## par を作る {#par-build}
 items: mbf-build-par
+figures: par-stopping
 
 ### 手順
 

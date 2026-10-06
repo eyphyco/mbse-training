@@ -31,23 +31,27 @@ export type Field =
   | 'item'
   | 'label';
 
+/**
+ * 欄の見出しと例示。例示は**答えと重ならない説明**にする（初版は `start` `fuel > 0` を例に出しており、
+ * 状態機械の組み立て問題の答えそのものだった。2026-10-06 の画面確認で見つけた）。
+ */
 export const FIELD_LABEL: Record<Field, { label: string; placeholder: string }> = {
-  name: { label: '名前', placeholder: 'Vehicle' },
-  type: { label: '型', placeholder: 'Engine' },
-  mult: { label: '多重度', placeholder: '1（空なら 1）' },
-  reqId: { label: 'id', placeholder: 'R1' },
+  name: { label: '名前', placeholder: '名前' },
+  type: { label: '型', placeholder: '型の名前' },
+  mult: { label: '多重度', placeholder: '空なら 1' },
+  reqId: { label: 'id', placeholder: '要求番号' },
   text: { label: 'text', placeholder: '何を求めるか' },
   parent: { label: '置く場所', placeholder: '' },
-  entry: { label: 'entry /', placeholder: '入った時' },
+  entry: { label: 'entry /', placeholder: '入るとき 1 回' },
   doActivity: { label: 'do /', placeholder: '居る間' },
-  exit: { label: 'exit /', placeholder: '出る時' },
-  targetRole: { label: '先の端のロール名', placeholder: 'wheels' },
-  targetMult: { label: '先の端の多重度', placeholder: '4' },
-  guard: { label: 'ガード [ ]', placeholder: 'fuel > 0' },
-  trigger: { label: 'トリガ', placeholder: 'start' },
-  effect: { label: '効果 /', placeholder: 'ignite' },
-  item: { label: '項目フロー', placeholder: 'fuel : Fuel' },
-  label: { label: 'メッセージ', placeholder: 'start()' },
+  exit: { label: 'exit /', placeholder: '出るとき 1 回' },
+  targetRole: { label: '先の端のロール名', placeholder: '部分の側の名前' },
+  targetMult: { label: '先の端の多重度', placeholder: '部分の側の数' },
+  guard: { label: 'ガード [ ]', placeholder: '条件' },
+  trigger: { label: 'トリガ', placeholder: 'イベント' },
+  effect: { label: '効果 /', placeholder: '遷移のときに行うこと' },
+  item: { label: '項目フロー', placeholder: '名前 : 型' },
+  label: { label: 'メッセージ', placeholder: '操作やシグナルの名前' },
 };
 
 /** 関係の端にできるもの。要素の種類か、ポートの種類 */
@@ -155,6 +159,26 @@ export const PALETTES: Record<DiagramType, Palette> = {
         hint: '白三角。特化 → 一般',
         from: ['block', 'valueType'],
         to: ['block', 'valueType'],
+        fields: [],
+      },
+      {
+        id: 'allocate',
+        kind: 'dependency',
+        stereotype: 'allocate',
+        label: '«allocate»',
+        hint: '担当させるもの → 担当するもの',
+        from: ['activity', 'block'],
+        to: ['block'],
+        fields: [],
+      },
+      {
+        id: 'satisfy',
+        kind: 'dependency',
+        stereotype: 'satisfy',
+        label: '«satisfy»',
+        hint: '設計 → 要求',
+        from: ['block'],
+        to: ['requirement'],
         fields: [],
       },
     ],

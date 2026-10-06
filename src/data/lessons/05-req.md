@@ -4,7 +4,7 @@ no: 5
 title: 要求
 lead: 要求は「文」ではなくモデル要素。6 種類の関係の名前と、矢印の向きを取り違えないことが全て。
 diagram: req
-problemsReady: false
+problemsReady: true
 ---
 
 ## 要求という概念 {#req-concept}
@@ -50,6 +50,7 @@ term: 要求図 | ようきゅうず | req。要求どうしの関係と、要�
 
 ## 要求の関係 6 種 {#req-relations}
 items: mu-req-relations
+figures: req-relations
 term: 包含（要求） | ほうがん | 要求を部分要求に分ける関係。親の側に ⊕ の付いた線で描く
 term: satisfy | さてぃすふぁい | «satisfy»。設計要素が要求を満たす。矢印は設計 → 要求
 term: verify | べりふぁい | «verify»。テストケースが要求を検証する。矢印はテストケース → 要求
@@ -96,6 +97,7 @@ verifiedBy   «testCase» SpeedTest
 
 ## 要求をモデルでどう捉えるか {#req-capture}
 items: mbf-req-capture
+figures: req-refine
 term: 根拠 | こんきょ | «rationale»。判断の理由を書き添えるコメント
 
 ### 捉え方

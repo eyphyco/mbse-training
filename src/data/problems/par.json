@@ -1,0 +1,1921 @@
+[
+  {
+    "id": "par-cb-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-constraint-block"
+    ],
+    "level": 1,
+    "title": "制約ブロックを読む",
+    "prompt_md": "次の bdd について正しいものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Constraints"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            },
+            {
+              "kind": "value",
+              "name": "force",
+              "type": "Force"
+            },
+            {
+              "kind": "value",
+              "name": "accel",
+              "type": "Acceleration"
+            }
+          ]
+        },
+        {
+          "id": "nl",
+          "kind": "constraintBlock",
+          "name": "NewtonsLaw",
+          "props": [
+            {
+              "kind": "constraint",
+              "name": "f = m * a"
+            },
+            {
+              "kind": "parameter",
+              "name": "f",
+              "type": "Force"
+            },
+            {
+              "kind": "parameter",
+              "name": "m",
+              "type": "Mass"
+            },
+            {
+              "kind": "parameter",
+              "name": "a",
+              "type": "Acceleration"
+            }
+          ]
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        },
+        {
+          "id": "Force",
+          "kind": "valueType",
+          "name": "Force",
+          "tags": {
+            "unit": "N"
+          }
+        },
+        {
+          "id": "Acceleration",
+          "kind": "valueType",
+          "name": "Acceleration",
+          "tags": {
+            "unit": "m/s²"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "composition",
+          "source": "veh",
+          "target": "nl",
+          "targetRole": "newton"
+        }
+      ]
+    },
+    "hints_md": [
+      "«constraint» の札は何の印か。",
+      "parameters 区画の f, m, a は誰のものか。"
+    ],
+    "explanation_md": "`«constraint»` の箱は**制約ブロック**。式（constraints 区画）と、式に出る変数（parameters 区画）をまとめた再利用できる部品。Vehicle から黒ひし形で使うと、ロール名 `newton` が**制約プロパティ**の名前になる。\n\n- b: 値属性は Vehicle の values 区画の mass・force・accel\n- c: f, m, a は**制約ブロックのパラメータ**。par で Vehicle の値属性に束縛して初めて結び付く\n- d: 式は等式で、向き（入力・出力）は無い",
+    "diagram": "par",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`NewtonsLaw` は式 `f = m * a` を部品として定義した制約ブロックで、Vehicle はそれを `newton` という名前で使っている"
+      },
+      {
+        "id": "b",
+        "text_md": "`NewtonsLaw` は Vehicle の値属性である"
+      },
+      {
+        "id": "c",
+        "text_md": "`f` `m` `a` は Vehicle の値属性である"
+      },
+      {
+        "id": "d",
+        "text_md": "式は f を入力にして m と a を計算する手順を表す"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-cb-2",
+    "type": "spot_error",
+    "items": [
+      "mu-constraint-block"
+    ],
+    "level": 2,
+    "title": "制約ブロックを定義する図",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "par",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Constraints"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            },
+            {
+              "kind": "value",
+              "name": "force",
+              "type": "Force"
+            },
+            {
+              "kind": "value",
+              "name": "accel",
+              "type": "Acceleration"
+            }
+          ]
+        },
+        {
+          "id": "nl",
+          "kind": "constraintBlock",
+          "name": "NewtonsLaw",
+          "props": [
+            {
+              "kind": "constraint",
+              "name": "f = m * a"
+            },
+            {
+              "kind": "parameter",
+              "name": "f",
+              "type": "Force"
+            },
+            {
+              "kind": "parameter",
+              "name": "m",
+              "type": "Mass"
+            },
+            {
+              "kind": "parameter",
+              "name": "a",
+              "type": "Acceleration"
+            }
+          ]
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        },
+        {
+          "id": "Force",
+          "kind": "valueType",
+          "name": "Force",
+          "tags": {
+            "unit": "N"
+          }
+        },
+        {
+          "id": "Acceleration",
+          "kind": "valueType",
+          "name": "Acceleration",
+          "tags": {
+            "unit": "m/s²"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "composition",
+          "source": "veh",
+          "target": "nl",
+          "targetRole": "newton"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-kind",
+        "why": "制約ブロックを定義し、Vehicle との関係（黒ひし形）を描いているのはブロック定義図。略号は `bdd` になる。"
+      }
+    ],
+    "hints_md": [
+      "«constraint» の箱と黒ひし形が描かれている。これは何の図か。"
+    ],
+    "explanation_md": "制約ブロックの**定義**は bdd に描く（`«constraint»` の箱と、使う側からの黒ひし形）。par はその**使用**（制約プロパティ）を値属性に配線する図で、角丸の箱と束縛コネクタで描く。描いている中身と略号が食い違っている。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-cb-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-constraint-block"
+    ],
+    "level": 3,
+    "title": "同じ式を使い回す",
+    "prompt_md": "同じ運動方程式 `f = m * a` を、車両（Vehicle）と台車（Cart）の両方の解析で使いたい。最も適したモデル化はどれか。",
+    "hints_md": [
+      "定義と使用（第 1 章）を式にも当てはめると？"
+    ],
+    "explanation_md": "制約ブロックは**式の定義**。1 回定義すれば、使う側（Vehicle・Cart）から黒ひし形で何度でも使える（**定義と使用**）。\n\n- b: 同じ式を 2 か所に書くと、直すときに食い違う\n- c: 制約ブロックとブロックの間に汎化は引かない（種類が違う）\n- d: 持つのは使う側。式が車両を持つことはない",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "制約ブロック `NewtonsLaw` を 1 つ定義し、Vehicle と Cart のそれぞれから黒ひし形で使う"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle と Cart の values 区画に、それぞれ `{f = m * a}` を書く"
+      },
+      {
+        "id": "c",
+        "text_md": "`NewtonsLaw` を Vehicle の特化（汎化）にし、Cart にも同じものを作る"
+      },
+      {
+        "id": "d",
+        "text_md": "Vehicle と Cart を `NewtonsLaw` の部分（パート）にする"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-par-purpose"
+    ],
+    "level": 1,
+    "title": "par が表すもの",
+    "prompt_md": "次の図が表していることはどれか。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.a",
+          "target": "accel"
+        }
+      ]
+    },
+    "hints_md": [
+      "実線（束縛コネクタ）は「等しい」。",
+      "par の式に向きはあるか。"
+    ],
+    "explanation_md": "par は**式のパラメータをシステムの値属性に配線する図**。束縛コネクタで `force = F`、`mass = m`、`accel = a` と結んでいるので、Vehicle の 3 つの値の間に `F = m * a` が成り立つ、と読む。\n\n- b: 物の流れは ibd の項目フローやアクティビティ図。par は流れを描かない\n- c: 角丸の箱は制約プロパティで、値属性の入れ物ではない\n- d: 等式なので計算の順は決まっていない",
+    "diagram": "par",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle の force・mass・accel の値の間に、`F = m * a` の関係が常に成り立つ"
+      },
+      {
+        "id": "b",
+        "text_md": "力が mass から accel へ流れる"
+      },
+      {
+        "id": "c",
+        "text_md": "newton という部品の中に mass・force・accel が入っている"
+      },
+      {
+        "id": "d",
+        "text_md": "force を計算してから accel を計算する手順"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-purpose-2",
+    "type": "spot_error",
+    "items": [
+      "mu-par-purpose"
+    ],
+    "level": 2,
+    "title": "par のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.a",
+          "target": "accel"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "par は値属性を持つブロック（または制約ブロック）の中で式を配線する図。ヘッダの [ ] は `block` か `constraintBlock` になる。"
+      }
+    ],
+    "hints_md": [
+      "par の図枠は何を表しているか。"
+    ],
+    "explanation_md": "par の図枠は、値属性を持つ**囲みブロック**（または中身を描く制約ブロック）を表す。ヘッダの最初の [ ] は `block` か `constraintBlock`。パッケージは値属性を持たないので、式を配線する相手が無い。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-purpose-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-par-purpose"
+    ],
+    "level": 3,
+    "title": "束縛コネクタに矢印が無い理由",
+    "prompt_md": "par の束縛コネクタには矢印が付かない。その理由として正しいものはどれか。",
+    "hints_md": [
+      "`f = m * a` から m を求めることはできるか。"
+    ],
+    "explanation_md": "par の式は**等式**。`f = m * a` は、m と a から f を求めても、f と a から m を求めてもよい。束縛コネクタは「両端の値が等しい」を表すだけで、**向き（入力・出力）を持たない**。どれを入力にするかは解析のときに決める。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "式は代入ではなく等式で、どの変数を入力にするかは解析のときに決めるから"
+      },
+      {
+        "id": "b",
+        "text_md": "矢印は v1.3 から入った記法だから"
+      },
+      {
+        "id": "c",
+        "text_md": "束縛コネクタは物が流れないので、向きを描く必要が無いから"
+      },
+      {
+        "id": "d",
+        "text_md": "解析ツールが向きを自動で付けるので、描くと二重になるから"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-param-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-constraint-param"
+    ],
+    "level": 1,
+    "title": "縁の四角を読む",
+    "prompt_md": "図の `newton : NewtonsLaw` の縁にある小さな四角 `m` は何か。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.a",
+          "target": "accel"
+        }
+      ]
+    },
+    "hints_md": [
+      "角丸の箱は何の使用か。その縁の四角は？"
+    ],
+    "explanation_md": "角丸の箱 `newton : NewtonsLaw` は**制約プロパティ**（制約ブロック NewtonsLaw の使用）。縁の小さな四角は、制約ブロックの parameters 区画にある**パラメータ**で、名前は区画と同じ（F, m, a）。Vehicle の値属性は角の立った箱（`mass : Mass`）のほう。",
+    "diagram": "par",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "制約ブロック NewtonsLaw のパラメータ m"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle のフローポート m"
+      },
+      {
+        "id": "c",
+        "text_md": "Vehicle の値属性 m"
+      },
+      {
+        "id": "d",
+        "text_md": "項目フロー m"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-param-2",
+    "type": "spot_error",
+    "items": [
+      "mu-constraint-param"
+    ],
+    "level": 2,
+    "title": "式とパラメータ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.v",
+              "name": "v",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.v",
+          "target": "accel"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "newton.v",
+        "kind": "param-not-in-expr",
+        "why": "式 `F = m * a` に v は出てこない。加速度のパラメータは a のはず。"
+      }
+    ],
+    "hints_md": [
+      "縁の四角の名前を、式に出る変数と見比べる。"
+    ],
+    "explanation_md": "制約プロパティのパラメータは、**式に出てくる変数**。`F = m * a` に出るのは F, m, a で、v は無い。このままでは accel をどの変数に結んだのか式から読めない。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-param-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-constraint-param"
+    ],
+    "level": 3,
+    "title": "制約ブロックと制約プロパティ",
+    "prompt_md": "制約ブロックと制約プロパティの違いとして正しいものはどれか。",
+    "hints_md": [
+      "定義と使用。それぞれどの図に、どんな箱で描いたか。"
+    ],
+    "explanation_md": "| | 制約ブロック | 制約プロパティ |\n| --- | --- | --- |\n| 図 | bdd | par |\n| 箱 | 角の立った箱 `«constraint»` | **角の丸い**箱 |\n| 名前 | `NewtonsLaw` | `newton : NewtonsLaw` |\n\nブロックとパートの関係（定義と使用）と同じ。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "制約ブロックは bdd に角の立った箱 `«constraint» NewtonsLaw` で描く定義、制約プロパティは par に角の丸い箱 `newton : NewtonsLaw` で描く使用"
+      },
+      {
+        "id": "b",
+        "text_md": "制約ブロックは par に、制約プロパティは bdd に描く"
+      },
+      {
+        "id": "c",
+        "text_md": "制約プロパティは式を持たず、制約ブロックはパラメータを持たない"
+      },
+      {
+        "id": "d",
+        "text_md": "2 つは同じもので、描く図によって呼び名が変わるだけ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-bind-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-binding"
+    ],
+    "level": 1,
+    "title": "束縛コネクタを読む",
+    "prompt_md": "図の `mass : Mass` と `newton` の `m` を結ぶ実線は何を表すか。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.a",
+          "target": "accel"
+        }
+      ]
+    },
+    "hints_md": [
+      "par の実線は束縛コネクタ。"
+    ],
+    "explanation_md": "**束縛コネクタは「両端の値が等しい」**を表す実線。矢印は無い。`mass` と `m` を束縛すると、式の m に Vehicle の質量が入る（または式から質量が決まる）。ibd のコネクタ（つながっている）とも、項目フロー（流れる）とも違う。",
+    "diagram": "par",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "mass の値と m の値が常に等しい"
+      },
+      {
+        "id": "b",
+        "text_md": "mass が m に流れ込む"
+      },
+      {
+        "id": "c",
+        "text_md": "mass が m を部分として持つ"
+      },
+      {
+        "id": "d",
+        "text_md": "mass から m へ割り当てる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-bind-2",
+    "type": "spot_error",
+    "items": [
+      "mu-binding"
+    ],
+    "level": 2,
+    "title": "束縛した両端",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param",
+              "type": "Force"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param",
+              "type": "Mass"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param",
+              "type": "Acceleration"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.a",
+          "target": "accel"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "b1",
+        "kind": "binding-type-mismatch",
+        "why": "`mass : Mass` を力のパラメータ `F : Force` に束縛している。質量と力は等しくなれない。"
+      },
+      {
+        "at": "b2",
+        "kind": "binding-type-mismatch",
+        "why": "`force : Force` を質量のパラメータ `m : Mass` に束縛している。"
+      }
+    ],
+    "hints_md": [
+      "パラメータの型と値属性の型を見比べる。",
+      "誤りは 2 本の線にある。"
+    ],
+    "explanation_md": "束縛コネクタは「等しい」なので、両端は**同じ型（同じ単位）**でなければならない。mass と force を結ぶ先が入れ替わっている。正しくは `force — F`、`mass — m`。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-bind-3",
+    "type": "spot_error",
+    "items": [
+      "mu-binding"
+    ],
+    "level": 3,
+    "title": "par の誤りを全部見つける",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param",
+              "type": "Force"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param",
+              "type": "Mass"
+            },
+            {
+              "id": "newton.b",
+              "name": "b",
+              "kind": "param",
+              "type": "Acceleration"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.b",
+          "target": "mass"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "newton.b",
+        "kind": "param-not-in-expr",
+        "why": "式 `F = m * a` に b は出てこない。加速度のパラメータは a。"
+      },
+      {
+        "at": "b3",
+        "kind": "binding-type-mismatch",
+        "why": "加速度のパラメータ（Acceleration）を `mass : Mass` に束縛している。accel に結ぶはず。"
+      }
+    ],
+    "hints_md": [
+      "縁の四角の名前は式に出てくるか。",
+      "どの値属性に結んでいるか、型を見比べる。"
+    ],
+    "explanation_md": "2 つの誤り:\n\n- `newton` のパラメータ `b` は式に出てこない（正しくは a）\n- そのパラメータ（加速度）を `mass` に束縛しており、型が合わない。`accel` に結ぶ\n\naccel の箱がどこにもつながっていないのも手掛かりになる。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-cap-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-par-capture"
+    ],
+    "level": 1,
+    "title": "式の変数をシステムの値に結ぶ",
+    "prompt_md": "解析の式の変数が、システムのどの値属性に当たるかを示すときに使うものはどれか。",
+    "hints_md": [],
+    "explanation_md": "式の変数（パラメータ）と値属性は、par で**束縛コネクタ**で結ぶ。項目フローは ibd の流れ、«satisfy» は要求、汎化は「一種である」。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "束縛コネクタ"
+      },
+      {
+        "id": "b",
+        "text_md": "項目フロー"
+      },
+      {
+        "id": "c",
+        "text_md": "«satisfy»"
+      },
+      {
+        "id": "d",
+        "text_md": "汎化"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-cap-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-par-capture"
+    ],
+    "level": 2,
+    "title": "大きな式の分け方",
+    "prompt_md": "停止距離 `d = v * t + v^2 / (2 * a)` を par で扱う。再利用を考えたとき、最も適したものはどれか。",
+    "hints_md": [
+      "意味のある単位に分けておくと、ほかの解析で何が使い回せるか。"
+    ],
+    "explanation_md": "式は**意味のある単位に分けて**制約ブロックにし、パラメータどうしを束縛してつなぐ。空走距離や制動距離は、別の解析（反応時間の評価、ブレーキの評価）でも使い回せる。\n\n- c: 既定値は値の初期値で、関係式ではない\n- d: コメントはモデルの規則にならず、解析に使えない",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "空走距離（`d1 = v * t`）と制動距離（`d2 = v^2 / (2 * a)`）と合計（`d = d1 + d2`）の制約ブロックに分け、パラメータどうしを束縛でつなぐ"
+      },
+      {
+        "id": "b",
+        "text_md": "1 つの大きな制約ブロックに全部を書く（部品が少ないほど読みやすい）"
+      },
+      {
+        "id": "c",
+        "text_md": "式を値属性の既定値に書く"
+      },
+      {
+        "id": "d",
+        "text_md": "式はモデルに入れず、図のコメントに書いておく"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-cap-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-par-capture"
+    ],
+    "level": 3,
+    "title": "値属性の型",
+    "prompt_md": "値属性 `mass` の型を `Real` ではなく、単位 kg を持つ値型 `Mass` にしておく利点として最も適したものはどれか。",
+    "hints_md": [
+      "束縛コネクタの規則を思い出す。"
+    ],
+    "explanation_md": "値属性の型を**単位を持つ値型**にしておくと、束縛の両端で型（単位）が合っているかを確かめられる（`Mass` を `Force` のパラメータに結ぶ誤りが見える）。Real のままだと、質量も力もただの数で区別が付かない。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "束縛コネクタの両端で単位（型）が合っているかを確かめられる"
+      },
+      {
+        "id": "b",
+        "text_md": "par の式が自動で解ける"
+      },
+      {
+        "id": "c",
+        "text_md": "mass がパートとして扱われる"
+      },
+      {
+        "id": "d",
+        "text_md": "ポートで受け渡せるようになる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-def-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-define-constraint"
+    ],
+    "level": 1,
+    "title": "式を書く場所",
+    "prompt_md": "bdd に制約ブロックを定義する。式はどこにどう書くか。",
+    "hints_md": [],
+    "explanation_md": "式は **constraints 区画**に `{ }` で囲んで書く。式に出る変数は **parameters 区画**に `名前 : 値型` で並べる。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "constraints 区画に `{f = m * a}` のように { } で囲んで書く"
+      },
+      {
+        "id": "b",
+        "text_md": "values 区画に `f = m * a` と書く"
+      },
+      {
+        "id": "c",
+        "text_md": "parameters 区画に `f = m * a` と書く"
+      },
+      {
+        "id": "d",
+        "text_md": "箱の名前を `f = m * a` にする"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-def-2",
+    "type": "spot_error",
+    "items": [
+      "mbf-define-constraint"
+    ],
+    "level": 2,
+    "title": "制約ブロックの区画",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Constraints"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            },
+            {
+              "kind": "value",
+              "name": "force",
+              "type": "Force"
+            },
+            {
+              "kind": "value",
+              "name": "accel",
+              "type": "Acceleration"
+            }
+          ]
+        },
+        {
+          "id": "nl",
+          "kind": "constraintBlock",
+          "name": "NewtonsLaw",
+          "props": [
+            {
+              "kind": "constraint",
+              "name": "f = m * a"
+            },
+            {
+              "kind": "parameter",
+              "name": "f",
+              "type": "Force"
+            },
+            {
+              "kind": "parameter",
+              "name": "m",
+              "type": "Mass"
+            }
+          ]
+        },
+        {
+          "id": "Mass",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        },
+        {
+          "id": "Force",
+          "kind": "valueType",
+          "name": "Force",
+          "tags": {
+            "unit": "N"
+          }
+        },
+        {
+          "id": "Acceleration",
+          "kind": "valueType",
+          "name": "Acceleration",
+          "tags": {
+            "unit": "m/s²"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "composition",
+          "source": "veh",
+          "target": "nl",
+          "targetRole": "newton"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "nl",
+        "kind": "expr-var-missing-param",
+        "why": "式 `f = m * a` の a が parameters 区画に無い。a を `a : Acceleration` として並べる。"
+      }
+    ],
+    "hints_md": [
+      "式に出る変数と、parameters 区画を見比べる。"
+    ],
+    "explanation_md": "制約ブロックの parameters 区画には、**式に出る変数をすべて**並べる。a が無いと、par で加速度の値属性を束縛する相手が無い。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-def-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-define-constraint"
+    ],
+    "level": 3,
+    "title": "制約ブロックを使う側を結ぶ",
+    "prompt_md": "Vehicle が制約ブロック `NewtonsLaw` を、制約プロパティ `newton` として使うようにする。\n\nVehicle から NewtonsLaw へ、適切な関係を引け（ロール名 `newton`）。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Constraints"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ]
+        },
+        {
+          "id": "nl",
+          "kind": "constraintBlock",
+          "name": "NewtonsLaw",
+          "props": [
+            {
+              "kind": "constraint",
+              "name": "f = m * a"
+            },
+            {
+              "kind": "parameter",
+              "name": "f",
+              "type": "Force"
+            },
+            {
+              "kind": "parameter",
+              "name": "m",
+              "type": "Mass"
+            },
+            {
+              "kind": "parameter",
+              "name": "a",
+              "type": "Acceleration"
+            }
+          ]
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Analysis",
+        "name": "Constraints"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ]
+        },
+        {
+          "id": "nl",
+          "kind": "constraintBlock",
+          "name": "NewtonsLaw",
+          "props": [
+            {
+              "kind": "constraint",
+              "name": "f = m * a"
+            },
+            {
+              "kind": "parameter",
+              "name": "f",
+              "type": "Force"
+            },
+            {
+              "kind": "parameter",
+              "name": "m",
+              "type": "Mass"
+            },
+            {
+              "kind": "parameter",
+              "name": "a",
+              "type": "Acceleration"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "composition",
+          "source": "veh",
+          "target": "nl",
+          "targetRole": "newton"
+        }
+      ]
+    },
+    "hints_md": [
+      "使う側が式を「持つ」。どのひし形か。",
+      "ロール名は部分の側（先の端）に書く。"
+    ],
+    "explanation_md": "ブロックが制約ブロックを使うときは**黒ひし形（コンポジション）**を引く。先の端のロール名 `newton` が、par に出る制約プロパティ `newton : NewtonsLaw` の名前になる。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-par"
+    ],
+    "level": 1,
+    "title": "par のヘッダ",
+    "prompt_md": "Vehicle の加速性能を解析する par を作る。ヘッダとして正しいものはどれか。",
+    "hints_md": [
+      "解析の対象（値属性を持つもの）は何か。"
+    ],
+    "explanation_md": "par の図枠は、値属性を持つ**囲みブロック**。Vehicle の解析なら `par [block] Vehicle`。制約ブロックの中身を描くときは `[constraintBlock]`（`[constraint]` ではない。図の上の札は «constraint» だが、ヘッダの型名は constraintBlock）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`par [block] Vehicle [Acceleration]`"
+      },
+      {
+        "id": "b",
+        "text_md": "`par [package] Vehicle [Acceleration]`"
+      },
+      {
+        "id": "c",
+        "text_md": "`bdd [block] Vehicle [Acceleration]`"
+      },
+      {
+        "id": "d",
+        "text_md": "`par [constraint] NewtonsLaw [Acceleration]`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "par-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-par"
+    ],
+    "level": 2,
+    "title": "束縛コネクタを引く",
+    "prompt_md": "値属性 `force` `mass` `accel` を、制約プロパティ `newton` の F・m・a にそれぞれ結べ。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonsLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.a",
+          "target": "accel"
+        }
+      ]
+    },
+    "hints_md": [
+      "par で値属性とパラメータを結ぶ線は何か。",
+      "型（単位）が合う組で結ぶ。"
+    ],
+    "explanation_md": "値属性とパラメータは**束縛コネクタ**で結ぶ。`force — F`、`mass — m`、`accel — a`。両端の型（Force・Mass・Acceleration）が合っていることを確かめる。",
+    "diagram": "par"
+  },
+  {
+    "id": "par-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-par"
+    ],
+    "level": 3,
+    "title": "式どうしを受け渡す",
+    "prompt_md": "制約ブロック `StoppingDistance` の中を組む。図枠の縁の四角は StoppingDistance 自身のパラメータ（v, t, a, d）。次の 4 本の束縛を足せ。\n\n1. 図枠の `v` を `b` の `v` に（速度は空走にも制動にも効く）\n2. `r` の `d1` を `s` の `d1` に\n3. `b` の `d2` を `s` の `d2` に\n4. `s` の `d` を図枠の `d` に",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "constraintBlock",
+        "owner": "StoppingDistance"
+      },
+      "elements": [
+        {
+          "id": "react",
+          "kind": "constraintProperty",
+          "name": "r",
+          "type": "ReactionDist",
+          "expr": "d1 = v * t",
+          "ports": [
+            {
+              "id": "r.v",
+              "name": "v",
+              "kind": "param"
+            },
+            {
+              "id": "r.t",
+              "name": "t",
+              "kind": "param"
+            },
+            {
+              "id": "r.d1",
+              "name": "d1",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "brake",
+          "kind": "constraintProperty",
+          "name": "b",
+          "type": "BrakingDist",
+          "expr": "d2 = v^2 / (2 * a)",
+          "ports": [
+            {
+              "id": "b.v",
+              "name": "v",
+              "kind": "param"
+            },
+            {
+              "id": "b.a",
+              "name": "a",
+              "kind": "param"
+            },
+            {
+              "id": "b.d2",
+              "name": "d2",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "sum",
+          "kind": "constraintProperty",
+          "name": "s",
+          "type": "Sum",
+          "expr": "d = d1 + d2",
+          "ports": [
+            {
+              "id": "s.d1",
+              "name": "d1",
+              "kind": "param"
+            },
+            {
+              "id": "s.d2",
+              "name": "d2",
+              "kind": "param"
+            },
+            {
+              "id": "s.d",
+              "name": "d",
+              "kind": "param",
+              "side": "east"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "pv",
+          "target": "r.v"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "pt",
+          "target": "r.t"
+        },
+        {
+          "id": "b4",
+          "kind": "binding",
+          "source": "pa",
+          "target": "b.a"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "pv",
+          "name": "v",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pt",
+          "name": "t",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pa",
+          "name": "a",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pd",
+          "name": "d",
+          "kind": "param",
+          "side": "east"
+        }
+      ]
+    },
+    "answer_model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "constraintBlock",
+        "owner": "StoppingDistance"
+      },
+      "elements": [
+        {
+          "id": "react",
+          "kind": "constraintProperty",
+          "name": "r",
+          "type": "ReactionDist",
+          "expr": "d1 = v * t",
+          "ports": [
+            {
+              "id": "r.v",
+              "name": "v",
+              "kind": "param"
+            },
+            {
+              "id": "r.t",
+              "name": "t",
+              "kind": "param"
+            },
+            {
+              "id": "r.d1",
+              "name": "d1",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "brake",
+          "kind": "constraintProperty",
+          "name": "b",
+          "type": "BrakingDist",
+          "expr": "d2 = v^2 / (2 * a)",
+          "ports": [
+            {
+              "id": "b.v",
+              "name": "v",
+              "kind": "param"
+            },
+            {
+              "id": "b.a",
+              "name": "a",
+              "kind": "param"
+            },
+            {
+              "id": "b.d2",
+              "name": "d2",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "sum",
+          "kind": "constraintProperty",
+          "name": "s",
+          "type": "Sum",
+          "expr": "d = d1 + d2",
+          "ports": [
+            {
+              "id": "s.d1",
+              "name": "d1",
+              "kind": "param"
+            },
+            {
+              "id": "s.d2",
+              "name": "d2",
+              "kind": "param"
+            },
+            {
+              "id": "s.d",
+              "name": "d",
+              "kind": "param",
+              "side": "east"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "pv",
+          "target": "r.v"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "pt",
+          "target": "r.t"
+        },
+        {
+          "id": "b4",
+          "kind": "binding",
+          "source": "pa",
+          "target": "b.a"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "pv",
+          "target": "b.v"
+        },
+        {
+          "id": "b5",
+          "kind": "binding",
+          "source": "r.d1",
+          "target": "s.d1"
+        },
+        {
+          "id": "b6",
+          "kind": "binding",
+          "source": "b.d2",
+          "target": "s.d2"
+        },
+        {
+          "id": "b7",
+          "kind": "binding",
+          "source": "s.d",
+          "target": "pd"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "pv",
+          "name": "v",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pt",
+          "name": "t",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pa",
+          "name": "a",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pd",
+          "name": "d",
+          "kind": "param",
+          "side": "east"
+        }
+      ]
+    },
+    "hints_md": [
+      "図枠の縁の四角も、束縛の端にできる。",
+      "式どうしの受け渡しは、パラメータどうしの束縛。"
+    ],
+    "explanation_md": "ヘッダが `[constraintBlock]` の par では、**図枠の縁の四角がその制約ブロックのパラメータ**。中の制約プロパティどうしは**パラメータどうしを束縛**して値を受け渡す。こうして小さな式を組み合わせ、`d = v * t + v^2 / (2 * a)` を作っている。",
+    "diagram": "par"
+  }
+]

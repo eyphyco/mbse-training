@@ -1,0 +1,1116 @@
+[
+  {
+    "id": "uc-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-uc-purpose"
+    ],
+    "level": 1,
+    "title": "uc から読み取れること",
+    "prompt_md": "次の図から言えることはどれか。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        },
+        {
+          "id": "e1",
+          "kind": "extend",
+          "source": "assist",
+          "target": "park"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "i2",
+          "kind": "include",
+          "source": "maint",
+          "target": "start"
+        }
+      ]
+    },
+    "hints_md": [
+      "実線はアクターとユースケースの関連。",
+      "アクターは主題の内か外か。"
+    ],
+    "explanation_md": "uc は**システムが外から誰にどう使われるか**を表す。Driver は実線で Drive と Park につながっているので、その 2 つの使われ方でシステムを使う。\n\n- b: アクターはシステムの**外**の役割\n- c: Start Engine は Drive と Maintain が `«include»` で含むユースケース（毎回中で行う）。Driver とは直接つながっていない\n- d: アクターは役割。同じ人かどうかは図から言えない",
+    "diagram": "uc",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Driver は Vehicle を「Drive」と「Park」の使われ方で使う"
+      },
+      {
+        "id": "b",
+        "text_md": "Driver は Vehicle の部品である"
+      },
+      {
+        "id": "c",
+        "text_md": "Start Engine は Driver が直接行う操作である"
+      },
+      {
+        "id": "d",
+        "text_md": "Mechanic と Driver は同じ人である"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "uc-purpose-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-uc-purpose"
+    ],
+    "level": 2,
+    "title": "uc で描かないもの",
+    "prompt_md": "ユースケース図で表さないものはどれか。",
+    "hints_md": [
+      "uc は外から見た図か、中を見た図か。"
+    ],
+    "explanation_md": "uc は**外から見た**使われ方の図で、**中の仕組み**（部品のつながり）は描かない。つながりは ibd の仕事。共通部分は `«include»` で切り出して描ける。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "エンジンと変速機がどうつながっているか"
+      },
+      {
+        "id": "b",
+        "text_md": "誰がシステムを使うか"
+      },
+      {
+        "id": "c",
+        "text_md": "システムが提供する使われ方"
+      },
+      {
+        "id": "d",
+        "text_md": "使われ方どうしの共通部分"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "uc-purpose-3",
+    "type": "spot_error",
+    "items": [
+      "mu-uc-purpose"
+    ],
+    "level": 3,
+    "title": "uc のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "block",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        },
+        {
+          "id": "e1",
+          "kind": "extend",
+          "source": "assist",
+          "target": "park"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "i2",
+          "kind": "include",
+          "source": "maint",
+          "target": "start"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "ユースケース図のヘッダの [ ] は package（または model / modelLibrary）。`block` は来ない。"
+      }
+    ],
+    "hints_md": [
+      "uc のヘッダの [ ] に来られる型は？"
+    ],
+    "explanation_md": "uc のヘッダの [ ] は **package**（または model / modelLibrary）。ユースケースとアクターをまとめたパッケージを描く図なので `uc [package] VehicleUseCases`。主題（Vehicle）は図枠ではなく中の長方形で描く。",
+    "diagram": "uc"
+  },
+  {
+    "id": "uc-struct-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-uc-structure"
+    ],
+    "level": 1,
+    "title": "アクターを読む",
+    "prompt_md": "図の `Mechanic` について正しいものはどれか。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        },
+        {
+          "id": "e1",
+          "kind": "extend",
+          "source": "assist",
+          "target": "park"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "i2",
+          "kind": "include",
+          "source": "maint",
+          "target": "start"
+        }
+      ]
+    },
+    "hints_md": [
+      "棒人間は主題の内側か外側か。"
+    ],
+    "explanation_md": "棒人間は**アクター**で、システム（主題）の**外**にいて、システムとやりとりする人や外部システムの**役割**。Mechanic は Maintain と実線（関連）でつながっている。汎化（白三角）は描かれていないので、Driver の一種とは言えない。",
+    "diagram": "uc",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle の外にいて、Maintain の使われ方で Vehicle とやりとりする役割"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle の部品の 1 つ"
+      },
+      {
+        "id": "c",
+        "text_md": "Maintain の中で動く処理"
+      },
+      {
+        "id": "d",
+        "text_md": "Driver の一種"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "uc-struct-2",
+    "type": "spot_error",
+    "items": [
+      "mu-uc-structure"
+    ],
+    "level": 2,
+    "title": "アクターの置き場所",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic",
+          "parent": "sys"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        },
+        {
+          "id": "e1",
+          "kind": "extend",
+          "source": "assist",
+          "target": "park"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "i2",
+          "kind": "include",
+          "source": "maint",
+          "target": "start"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "mech",
+        "kind": "actor-inside-subject",
+        "why": "Mechanic が Vehicle（主題）の枠の中にいる。アクターはシステムの外の役割なので、枠の外に置く。"
+      }
+    ],
+    "hints_md": [
+      "アクターは主題の内か外か。"
+    ],
+    "explanation_md": "**アクターはシステムの外**。主題の枠の中に描くと、システムの一部という意味になってしまう。",
+    "diagram": "uc"
+  },
+  {
+    "id": "uc-struct-3",
+    "type": "spot_error",
+    "items": [
+      "mu-uc-structure"
+    ],
+    "level": 3,
+    "title": "主題とアクター",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "ecu",
+          "kind": "actor",
+          "name": "ECU",
+          "parent": "sys"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "driver",
+          "target": "mech"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "ecu",
+        "kind": "actor-inside-subject",
+        "why": "ECU は車両の部品。主題の中にアクターとして置くのは誤り（部品はアクターではない）。"
+      },
+      {
+        "at": "a3",
+        "kind": "association-between-actors",
+        "why": "Driver と Mechanic を実線で結んでいる。アクターどうしは関連で結ばない。"
+      }
+    ],
+    "hints_md": [
+      "システムの部品はアクターになれるか。",
+      "実線（関連）は何と何を結ぶものか。"
+    ],
+    "explanation_md": "- **ECU**: システムの部品はアクターではない。主題の枠の中にアクターがいるのも誤り\n- **Driver — Mechanic の実線**: 関連はアクターとユースケースの間に引く。アクターどうしの関係は汎化だけ",
+    "diagram": "uc"
+  },
+  {
+    "id": "uc-rel-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-uc-relations"
+    ],
+    "level": 1,
+    "title": "extend を読む",
+    "prompt_md": "図の Parking Assist から Park への `«extend»` が表すものはどれか。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        },
+        {
+          "id": "e1",
+          "kind": "extend",
+          "source": "assist",
+          "target": "park"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "i2",
+          "kind": "include",
+          "source": "maint",
+          "target": "start"
+        }
+      ]
+    },
+    "hints_md": [
+      "extend の矢印は足す側 → 基本。毎回か、ときどきか。"
+    ],
+    "explanation_md": "`«extend»` は**足す側 → 基本**。条件が成り立つとき**だけ** Parking Assist が Park に割り込む。毎回含むなら `«include»`（基本 → 含まれる側）で、矢印の向きが逆になる。",
+    "diagram": "uc",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "ある条件のときだけ、Parking Assist が Park に振る舞いを足す"
+      },
+      {
+        "id": "b",
+        "text_md": "Park は毎回 Parking Assist を行う"
+      },
+      {
+        "id": "c",
+        "text_md": "Park は Parking Assist の一種"
+      },
+      {
+        "id": "d",
+        "text_md": "Parking Assist は Park を含む"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "uc-rel-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-uc-relations"
+    ],
+    "level": 2,
+    "title": "include の向き",
+    "prompt_md": "「Drive（運転する）」は毎回「Start Engine（エンジンをかける）」を行う。正しい描き方はどれか。",
+    "hints_md": [
+      "毎回なら include。include は基本 → 含まれる側。"
+    ],
+    "explanation_md": "**毎回**行うのは `«include»` で、矢印は**基本（Drive）→ 含まれる側（Start Engine）**。「ときどき」なら `«extend»` で、矢印は足す側 → 基本の逆向きになる。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Drive → Start Engine に `«include»`"
+      },
+      {
+        "id": "b",
+        "text_md": "Start Engine → Drive に `«include»`"
+      },
+      {
+        "id": "c",
+        "text_md": "Start Engine → Drive に `«extend»`"
+      },
+      {
+        "id": "d",
+        "text_md": "Drive → Start Engine に `«extend»`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "uc-rel-3",
+    "type": "spot_error",
+    "items": [
+      "mu-uc-relations"
+    ],
+    "level": 3,
+    "title": "ユースケースの関係",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        },
+        {
+          "id": "a4",
+          "kind": "association",
+          "source": "assist",
+          "target": "park"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "i2",
+          "kind": "include",
+          "source": "mech",
+          "target": "start"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "a4",
+        "kind": "association-between-usecases",
+        "why": "Parking Assist と Park を実線で結んでいる。ユースケースどうしは «include» / «extend» / 汎化で結ぶ（ここは条件付きの追加なので «extend»）。"
+      },
+      {
+        "at": "i2",
+        "kind": "include-with-actor",
+        "why": "Mechanic（アクター）から «include» を引いている。アクターはユースケースと実線で結ぶ。"
+      }
+    ],
+    "hints_md": [
+      "実線で結べるのは何と何か。",
+      "«include» の両端は何か。"
+    ],
+    "explanation_md": "- ユースケースどうしは `«include»`・`«extend»`・汎化で結ぶ。実線の関連はアクターとユースケースの間\n- `«include»` と `«extend»` は**ユースケースどうし**の関係。アクターには引かない",
+    "diagram": "uc"
+  },
+  {
+    "id": "uc-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-uc"
+    ],
+    "level": 1,
+    "title": "アクターに当たらないもの",
+    "prompt_md": "車両のユースケース図を作る。アクターとして置くのが**適切でない**ものはどれか。",
+    "hints_md": [
+      "アクターはシステムの外にいるか。"
+    ],
+    "explanation_md": "アクターは**システムの外**でシステムとやりとりする人・外部システム。エンジンは車両の**部品**なのでアクターではない（ibd や bdd で描く）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "エンジン"
+      },
+      {
+        "id": "b",
+        "text_md": "運転者"
+      },
+      {
+        "id": "c",
+        "text_md": "整備士"
+      },
+      {
+        "id": "d",
+        "text_md": "充電スタンド（外部システム）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "uc-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-uc"
+    ],
+    "level": 2,
+    "title": "関連と include",
+    "prompt_md": "次を表せ。\n\n- Driver は Drive の使われ方で Vehicle を使う\n- Drive は毎回 Start Engine を行う",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        }
+      ]
+    },
+    "hints_md": [
+      "アクター — ユースケースは関連（実線）。",
+      "毎回なら «include»、基本 → 含まれる側。"
+    ],
+    "explanation_md": "Driver — Drive は**関連**（実線）。Drive が毎回 Start Engine を行うので `Drive ⇢«include»⇢ Start Engine`。",
+    "diagram": "uc"
+  },
+  {
+    "id": "uc-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-uc"
+    ],
+    "level": 3,
+    "title": "ユースケースを置いて結ぶ",
+    "prompt_md": "次を組め。\n\n1. 主題 Vehicle の中にユースケース `Park` と `Parking Assist` を置く\n2. Driver は Park の使われ方で Vehicle を使う\n3. 狭い場所のときだけ、Parking Assist が Park に振る舞いを足す",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "e1",
+          "kind": "extend",
+          "source": "assist",
+          "target": "park"
+        }
+      ]
+    },
+    "hints_md": [
+      "ユースケースは「置く場所」で主題 Vehicle を選ぶ。",
+      "「ときだけ」は extend。足す側 → 基本。"
+    ],
+    "explanation_md": "ユースケースは**主題の中**、アクターは外。条件付きの追加は `«extend»` で、矢印は**足す側（Parking Assist）→ 基本（Park）**。",
+    "diagram": "uc"
+  }
+]

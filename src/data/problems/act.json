@@ -1,0 +1,2018 @@
+[
+  {
+    "id": "act-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-act-purpose"
+    ],
+    "level": 1,
+    "title": "act を読む",
+    "prompt_md": "次の図の流れとして正しいものはどれか。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "f",
+          "kind": "fork",
+          "name": ""
+        },
+        {
+          "id": "a3",
+          "kind": "callBehavior",
+          "name": "start",
+          "type": "StartEngine"
+        },
+        {
+          "id": "a4",
+          "kind": "action",
+          "name": "Check Brakes"
+        },
+        {
+          "id": "j",
+          "kind": "join",
+          "name": ""
+        },
+        {
+          "id": "t",
+          "kind": "acceptTime",
+          "name": "after(2 s)"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "d"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "f",
+          "guard": "ok"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a2",
+          "guard": "low"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a3"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a4"
+        },
+        {
+          "id": "f7",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "j"
+        },
+        {
+          "id": "f8",
+          "kind": "controlFlow",
+          "source": "a4",
+          "target": "j"
+        },
+        {
+          "id": "f9",
+          "kind": "controlFlow",
+          "source": "j",
+          "target": "t"
+        },
+        {
+          "id": "f10",
+          "kind": "controlFlow",
+          "source": "t",
+          "target": "end"
+        },
+        {
+          "id": "f11",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        }
+      ]
+    },
+    "hints_md": [
+      "フォークの棒の後は同時。ジョインの棒は全部揃うまで待つ。",
+      "ひし形の出口の [ ] は条件。"
+    ],
+    "explanation_md": "トークンの流れで読む。\n\n1. 開始 → Check Battery → 判断\n2. `[ok]` ならフォークで**同時に** start と Check Brakes\n3. ジョインで**両方揃うまで待ち**、2 秒待って二重丸で全体を終える\n4. `[low]` なら Warn Driver を送り、⊗（フロー終了）でその流れだけ終わる",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "バッテリーが ok なら、エンジン始動（start）とブレーキ点検を同時に行い、両方終わってから 2 秒待って全体を終える"
+      },
+      {
+        "id": "b",
+        "text_md": "バッテリーが ok なら、エンジン始動の後にブレーキ点検を行う"
+      },
+      {
+        "id": "c",
+        "text_md": "バッテリーが low でも、エンジン始動を行う"
+      },
+      {
+        "id": "d",
+        "text_md": "エンジン始動とブレーキ点検のどちらか一方が終われば、すぐに全体を終える"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-purpose-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-act-purpose"
+    ],
+    "level": 2,
+    "title": "アクションが始まる条件",
+    "prompt_md": "アクティビティ図で、あるアクションが始まるのはいつか。",
+    "hints_md": [
+      "トークンで読む。入口が 2 本あるアクションはどうなるか。"
+    ],
+    "explanation_md": "アクションは**入ってくる全部の流れにトークンが揃うと**始まる。どれか 1 本で進めたいなら、前にマージノードを置いて 1 本にまとめる。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "入ってくる全部の流れにトークンが揃ったとき"
+      },
+      {
+        "id": "b",
+        "text_md": "入ってくる流れのどれか 1 本にトークンが来たとき"
+      },
+      {
+        "id": "c",
+        "text_md": "前のアクションが始まったとき"
+      },
+      {
+        "id": "d",
+        "text_md": "図の上から順に、時間が来たとき"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-purpose-3",
+    "type": "spot_error",
+    "items": [
+      "mu-act-purpose"
+    ],
+    "level": 3,
+    "title": "act のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "block",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "f",
+          "kind": "fork",
+          "name": ""
+        },
+        {
+          "id": "a3",
+          "kind": "callBehavior",
+          "name": "start",
+          "type": "StartEngine"
+        },
+        {
+          "id": "a4",
+          "kind": "action",
+          "name": "Check Brakes"
+        },
+        {
+          "id": "j",
+          "kind": "join",
+          "name": ""
+        },
+        {
+          "id": "t",
+          "kind": "acceptTime",
+          "name": "after(2 s)"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "d"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "f",
+          "guard": "ok"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a2",
+          "guard": "low"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a3"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a4"
+        },
+        {
+          "id": "f7",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "j"
+        },
+        {
+          "id": "f8",
+          "kind": "controlFlow",
+          "source": "a4",
+          "target": "j"
+        },
+        {
+          "id": "f9",
+          "kind": "controlFlow",
+          "source": "j",
+          "target": "t"
+        },
+        {
+          "id": "f10",
+          "kind": "controlFlow",
+          "source": "t",
+          "target": "end"
+        },
+        {
+          "id": "f11",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "アクティビティ図が表すのはアクティビティ。ヘッダの [ ] は必ず `activity`。"
+      }
+    ],
+    "hints_md": [
+      "act のヘッダの [ ] に来られる型は 1 つだけ。"
+    ],
+    "explanation_md": "act の図枠は**アクティビティそのもの**を表す。ヘッダの [ ] は必ず `activity`（`act [activity] StartVehicle`）。",
+    "diagram": "act"
+  },
+  {
+    "id": "act-actions-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-actions"
+    ],
+    "level": 1,
+    "title": "アクションの形",
+    "prompt_md": "図の右が尖った五角形 `Warn Driver` は何か。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "f",
+          "kind": "fork",
+          "name": ""
+        },
+        {
+          "id": "a3",
+          "kind": "callBehavior",
+          "name": "start",
+          "type": "StartEngine"
+        },
+        {
+          "id": "a4",
+          "kind": "action",
+          "name": "Check Brakes"
+        },
+        {
+          "id": "j",
+          "kind": "join",
+          "name": ""
+        },
+        {
+          "id": "t",
+          "kind": "acceptTime",
+          "name": "after(2 s)"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "d"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "f",
+          "guard": "ok"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a2",
+          "guard": "low"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a3"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a4"
+        },
+        {
+          "id": "f7",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "j"
+        },
+        {
+          "id": "f8",
+          "kind": "controlFlow",
+          "source": "a4",
+          "target": "j"
+        },
+        {
+          "id": "f9",
+          "kind": "controlFlow",
+          "source": "j",
+          "target": "t"
+        },
+        {
+          "id": "f10",
+          "kind": "controlFlow",
+          "source": "t",
+          "target": "end"
+        },
+        {
+          "id": "f11",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        }
+      ]
+    },
+    "hints_md": [
+      "送信は外へ尖る、受理は内へへこむ。"
+    ],
+    "explanation_md": "**右が尖った（外へ尖る）五角形はシグナル送信**。左がへこんだ五角形はイベント受理、ひし形は判断、熊手の印が付いた角丸の箱は呼び出し動作（図の `start : StartEngine`）。",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "シグナル送信アクション"
+      },
+      {
+        "id": "b",
+        "text_md": "イベント受理アクション"
+      },
+      {
+        "id": "c",
+        "text_md": "判断ノード"
+      },
+      {
+        "id": "d",
+        "text_md": "呼び出し動作"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-actions-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-actions"
+    ],
+    "level": 2,
+    "title": "熊手の印",
+    "prompt_md": "角丸の箱の右下に熊手（⋔）の印が付いたアクション `start : StartEngine` が表すものはどれか。",
+    "hints_md": [],
+    "explanation_md": "熊手の印は**呼び出し動作**（call behavior action）。別のアクティビティを呼んで、処理を分解している。中身は呼ばれる側（StartEngine）の act に描く。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "別のアクティビティ StartEngine を呼び出す（中身は別の act に描いてある）"
+      },
+      {
+        "id": "b",
+        "text_md": "StartEngine というシグナルを送る"
+      },
+      {
+        "id": "c",
+        "text_md": "StartEngine という部品が行う"
+      },
+      {
+        "id": "d",
+        "text_md": "StartEngine が終わるまで待つ時間イベント"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-actions-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-actions"
+    ],
+    "level": 3,
+    "title": "待つアクションを選ぶ",
+    "prompt_md": "「ドアが開いたというシグナルが届くまで待ち、届いたら次へ進む」を表すアクションはどれか。",
+    "hints_md": [
+      "待つのはシグナルか、時間か。"
+    ],
+    "explanation_md": "**シグナルが来るまで待つ**のはイベント受理（左がへこんだ五角形）。時間が来るまで待つなら砂時計（`after(5 s)`）、送るならシグナル送信。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "イベント受理アクション（左がへこんだ五角形）"
+      },
+      {
+        "id": "b",
+        "text_md": "シグナル送信アクション（右が尖った五角形）"
+      },
+      {
+        "id": "c",
+        "text_md": "時間イベント受理アクション（砂時計）"
+      },
+      {
+        "id": "d",
+        "text_md": "呼び出し動作（熊手）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-ctl-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-controlflow"
+    ],
+    "level": 1,
+    "title": "終わり方を読む",
+    "prompt_md": "図で `[low]` のときに通る、丸に × のノード（フロー終了）に着くとどうなるか。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "f",
+          "kind": "fork",
+          "name": ""
+        },
+        {
+          "id": "a3",
+          "kind": "callBehavior",
+          "name": "start",
+          "type": "StartEngine"
+        },
+        {
+          "id": "a4",
+          "kind": "action",
+          "name": "Check Brakes"
+        },
+        {
+          "id": "j",
+          "kind": "join",
+          "name": ""
+        },
+        {
+          "id": "t",
+          "kind": "acceptTime",
+          "name": "after(2 s)"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "d"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "f",
+          "guard": "ok"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a2",
+          "guard": "low"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a3"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a4"
+        },
+        {
+          "id": "f7",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "j"
+        },
+        {
+          "id": "f8",
+          "kind": "controlFlow",
+          "source": "a4",
+          "target": "j"
+        },
+        {
+          "id": "f9",
+          "kind": "controlFlow",
+          "source": "j",
+          "target": "t"
+        },
+        {
+          "id": "f10",
+          "kind": "controlFlow",
+          "source": "t",
+          "target": "end"
+        },
+        {
+          "id": "f11",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        }
+      ]
+    },
+    "hints_md": [
+      "二重丸と丸に × の違い。"
+    ],
+    "explanation_md": "**丸に ×（フロー終了）は、そこに着いたトークンだけを消す**。アクティビティ全体を終えるのは二重丸（アクティビティ終了）で、こちらは並行に動いている流れも止める。",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "その流れのトークンだけが消え、アクティビティ全体は終わらない"
+      },
+      {
+        "id": "b",
+        "text_md": "アクティビティ全体が終わる"
+      },
+      {
+        "id": "c",
+        "text_md": "Check Battery に戻る"
+      },
+      {
+        "id": "d",
+        "text_md": "ほかの並行の流れも止まる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-ctl-2",
+    "type": "spot_error",
+    "items": [
+      "mu-controlflow"
+    ],
+    "level": 2,
+    "title": "判断の出口",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "f",
+          "kind": "fork",
+          "name": ""
+        },
+        {
+          "id": "a3",
+          "kind": "callBehavior",
+          "name": "start",
+          "type": "StartEngine"
+        },
+        {
+          "id": "a4",
+          "kind": "action",
+          "name": "Check Brakes"
+        },
+        {
+          "id": "j",
+          "kind": "join",
+          "name": ""
+        },
+        {
+          "id": "t",
+          "kind": "acceptTime",
+          "name": "after(2 s)"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "d"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "f",
+          "guard": "ok"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a2"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a3"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a4"
+        },
+        {
+          "id": "f7",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "j"
+        },
+        {
+          "id": "f8",
+          "kind": "controlFlow",
+          "source": "a4",
+          "target": "j"
+        },
+        {
+          "id": "f9",
+          "kind": "controlFlow",
+          "source": "j",
+          "target": "t"
+        },
+        {
+          "id": "f10",
+          "kind": "controlFlow",
+          "source": "t",
+          "target": "end"
+        },
+        {
+          "id": "f11",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "f4",
+        "kind": "decision-without-guard",
+        "why": "判断から Warn Driver への出口に [ガード] が無い。どのときにこちらへ進むかが決まらない（ここは [low]）。"
+      }
+    ],
+    "hints_md": [
+      "ひし形から出る線を全部見る。"
+    ],
+    "explanation_md": "判断ノードの出口には、それぞれ `[ガード]` を付ける。ガードは**重ならず、漏れが無い**ように書く（ok と low）。ガードの無い出口があると、どちらへ進むかが決まらない。",
+    "diagram": "act"
+  },
+  {
+    "id": "act-ctl-3",
+    "type": "spot_error",
+    "items": [
+      "mu-controlflow"
+    ],
+    "level": 3,
+    "title": "開始と終了",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "Wash"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Fill Water"
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Wash"
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "a3",
+          "kind": "action",
+          "name": "Drain"
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "a2"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "d"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "i",
+          "guard": "dirty"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "end",
+          "guard": "clean"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "end",
+          "target": "a3"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "f4",
+        "kind": "initial-has-incoming",
+        "why": "やり直しの流れを開始ノードに戻している。開始は出ていく線しか持たない。戻すならマージノードを置き、そこへ入れる。"
+      },
+      {
+        "at": "f6",
+        "kind": "final-has-outgoing",
+        "why": "アクティビティ終了から Drain へ線が出ている。二重丸に着いたらアクティビティは終わるので、その後は無い。"
+      }
+    ],
+    "hints_md": [
+      "黒丸に入ってくる線は描けるか。",
+      "二重丸の後に何かを続けられるか。"
+    ],
+    "explanation_md": "- **開始ノード**は流れの出発点で、出ていく線しか持たない。戻る流れは**マージノード**（ひし形）で受ける\n- **アクティビティ終了**は全体を終える行き止まり。Drain を行いたいなら、終了の前に置く",
+    "diagram": "act"
+  },
+  {
+    "id": "act-obj-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-objectflow"
+    ],
+    "level": 1,
+    "title": "ピンを読む",
+    "prompt_md": "図の `Burn Fuel` の下の辺にある小さな四角 `heat : Heat` は何か。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "GeneratePower"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Burn Fuel",
+          "ports": [
+            {
+              "id": "a1.in",
+              "name": "fuel",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "a1.out",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Heat"
+            }
+          ]
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Convert",
+          "ports": [
+            {
+              "id": "a2.in",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Heat"
+            },
+            {
+              "id": "a2.out",
+              "name": "torque",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "o1",
+          "kind": "objectFlow",
+          "source": "fuel",
+          "target": "a1.in"
+        },
+        {
+          "id": "o2",
+          "kind": "objectFlow",
+          "source": "a1.out",
+          "target": "a2.in"
+        },
+        {
+          "id": "o3",
+          "kind": "objectFlow",
+          "source": "a2.out",
+          "target": "torque"
+        },
+        {
+          "id": "c2",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "end"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuel",
+          "name": "fuel",
+          "kind": "param",
+          "direction": "in",
+          "type": "Fuel"
+        },
+        {
+          "id": "torque",
+          "name": "torque",
+          "kind": "param",
+          "direction": "out",
+          "type": "Torque"
+        }
+      ]
+    },
+    "hints_md": [
+      "アクションの縁の小さな四角は何か。"
+    ],
+    "explanation_md": "アクションの縁の小さな四角は**ピン**（アクションの入出力）。`heat` から Convert の `heat` へ実線の矢印（オブジェクトフロー）が出ているので出力ピン。図枠の縁にまたがる長方形 `fuel : Fuel` がアクティビティパラメータノード。",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Burn Fuel の出力ピン（熱を出す）"
+      },
+      {
+        "id": "b",
+        "text_md": "Burn Fuel の入力ピン"
+      },
+      {
+        "id": "c",
+        "text_md": "アクティビティパラメータノード"
+      },
+      {
+        "id": "d",
+        "text_md": "フローポート"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-obj-2",
+    "type": "spot_error",
+    "items": [
+      "mu-objectflow"
+    ],
+    "level": 2,
+    "title": "物の受け渡し",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "GeneratePower"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Burn Fuel",
+          "ports": [
+            {
+              "id": "a1.in",
+              "name": "fuel",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "a1.out",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Heat"
+            }
+          ]
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Convert",
+          "ports": [
+            {
+              "id": "a2.in",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Heat"
+            },
+            {
+              "id": "a2.out",
+              "name": "torque",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "o1",
+          "kind": "objectFlow",
+          "source": "fuel",
+          "target": "a1.in"
+        },
+        {
+          "id": "o2",
+          "kind": "objectFlow",
+          "source": "a1",
+          "target": "a2.in"
+        },
+        {
+          "id": "o3",
+          "kind": "objectFlow",
+          "source": "a2.out",
+          "target": "torque"
+        },
+        {
+          "id": "c2",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "end"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuel",
+          "name": "fuel",
+          "kind": "param",
+          "direction": "in",
+          "type": "Fuel"
+        },
+        {
+          "id": "torque",
+          "name": "torque",
+          "kind": "param",
+          "direction": "out",
+          "type": "Torque"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "o2",
+        "kind": "objectflow-without-pin",
+        "why": "熱のオブジェクトフローが Burn Fuel の本体から出ている。出力ピン `heat` から出す。"
+      }
+    ],
+    "hints_md": [
+      "物を運ぶ線は、どこから出てどこへ入るか。"
+    ],
+    "explanation_md": "物・データは**ピンを通して**受け渡す。オブジェクトフローをアクションの本体に直接つなぐと、何がどの出口から出るのかが書けない。",
+    "diagram": "act"
+  },
+  {
+    "id": "act-obj-3",
+    "type": "spot_error",
+    "items": [
+      "mu-objectflow"
+    ],
+    "level": 3,
+    "title": "ピンの型と線の種類",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "GeneratePower"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Burn Fuel",
+          "ports": [
+            {
+              "id": "a1.in",
+              "name": "fuel",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "a1.out",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Heat"
+            }
+          ]
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Convert",
+          "ports": [
+            {
+              "id": "a2.in",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "a2.out",
+              "name": "torque",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1.in"
+        },
+        {
+          "id": "o1",
+          "kind": "objectFlow",
+          "source": "fuel",
+          "target": "a1.in"
+        },
+        {
+          "id": "o2",
+          "kind": "objectFlow",
+          "source": "a1.out",
+          "target": "a2.in"
+        },
+        {
+          "id": "o3",
+          "kind": "objectFlow",
+          "source": "a2.out",
+          "target": "torque"
+        },
+        {
+          "id": "c2",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "end"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuel",
+          "name": "fuel",
+          "kind": "param",
+          "direction": "in",
+          "type": "Fuel"
+        },
+        {
+          "id": "torque",
+          "name": "torque",
+          "kind": "param",
+          "direction": "out",
+          "type": "Torque"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "c1",
+        "kind": "controlflow-on-pin",
+        "why": "開始からの制御フローが入力ピン `fuel` に入っている。制御フローはアクションの本体につなぐ。"
+      },
+      {
+        "at": "o2",
+        "kind": "pin-type-mismatch",
+        "why": "出力ピン `heat : Heat` から入力ピン `heat : Fuel` へ流している。熱を燃料の入口には流せない。"
+      }
+    ],
+    "hints_md": [
+      "破線（制御フロー）がどこに入っているか。",
+      "つないだピンの型を見比べる。"
+    ],
+    "explanation_md": "- ピンは物の出入口。「次をやってよい」の**制御フローはアクションの本体**につなぐ\n- オブジェクトフローでつないだピンどうしは**型が一致**していなければならない（Heat → Heat）",
+    "diagram": "act"
+  },
+  {
+    "id": "act-part-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-partition"
+    ],
+    "level": 1,
+    "title": "パーティションを読む",
+    "prompt_md": "図の `Increase Torque` を行うのは誰か。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "Accelerate"
+      },
+      "elements": [
+        {
+          "id": "p1",
+          "kind": "partition",
+          "name": "",
+          "type": "Driver"
+        },
+        {
+          "id": "p2",
+          "kind": "partition",
+          "name": "",
+          "type": "Vehicle",
+          "stereotypes": [
+            "allocate"
+          ]
+        },
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": "",
+          "parent": "p1"
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Press Pedal",
+          "parent": "p1"
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Increase Torque",
+          "parent": "p2"
+        },
+        {
+          "id": "a3",
+          "kind": "action",
+          "name": "Feel Acceleration",
+          "parent": "p1"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": "",
+          "parent": "p1"
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "a2"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "a3"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "end"
+        }
+      ]
+    },
+    "hints_md": [
+      "アクションが入っている帯の見出しを見る。"
+    ],
+    "explanation_md": "帯（パーティション）の中のアクションは、**見出しの部品が行う**。Increase Torque は `: Vehicle` の帯の中。見出しに `«allocate»` が付いているので、Vehicle に**割り当てた**意味になる（第 10 章）。",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle（«allocate» が付いているので Vehicle に割り当てられている）"
+      },
+      {
+        "id": "b",
+        "text_md": "Driver"
+      },
+      {
+        "id": "c",
+        "text_md": "Driver と Vehicle の両方"
+      },
+      {
+        "id": "d",
+        "text_md": "図からは分からない"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-part-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-partition"
+    ],
+    "level": 2,
+    "title": "«allocate» の無い帯",
+    "prompt_md": "アクティビティ図のパーティションの見出しに `«allocate»` が**付いていない**。この帯が表すものはどれか。",
+    "hints_md": [],
+    "explanation_md": "`«allocate»` の付いていないパーティションは、**責任の分担を示しただけ**。割り当て（モデルとしての関係）にするには `«allocate»` を付ける。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "責任の分担を示しているだけで、割り当てではない"
+      },
+      {
+        "id": "b",
+        "text_md": "帯の中のアクションをその部品に割り当てている"
+      },
+      {
+        "id": "c",
+        "text_md": "その部品が持つ値属性"
+      },
+      {
+        "id": "d",
+        "text_md": "その部品の状態"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-part-3",
+    "type": "read_diagram",
+    "items": [
+      "mu-partition"
+    ],
+    "level": 3,
+    "title": "帯の種類を見分ける",
+    "prompt_md": "次の図について正しいものはどれか。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "Accelerate"
+      },
+      "elements": [
+        {
+          "id": "p1",
+          "kind": "partition",
+          "name": "",
+          "type": "Driver"
+        },
+        {
+          "id": "p2",
+          "kind": "partition",
+          "name": "",
+          "type": "Vehicle",
+          "stereotypes": [
+            "allocate"
+          ]
+        },
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": "",
+          "parent": "p1"
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Press Pedal",
+          "parent": "p1"
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Increase Torque",
+          "parent": "p2"
+        },
+        {
+          "id": "a3",
+          "kind": "action",
+          "name": "Feel Acceleration",
+          "parent": "p1"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": "",
+          "parent": "p1"
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "a2"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "a3"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "end"
+        }
+      ]
+    },
+    "hints_md": [
+      "2 つの帯の見出しを見比べる。"
+    ],
+    "explanation_md": "見出しに `«allocate»` が付いているのは `: Vehicle` の帯だけ。その中の Increase Torque は Vehicle に**割り当て**られている。`: Driver` の帯は責任の分担を示すだけ。",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Increase Torque は Vehicle に割り当てられている。Press Pedal は Driver の担当として示しただけ"
+      },
+      {
+        "id": "b",
+        "text_md": "Press Pedal と Feel Acceleration は Driver に割り当てられている"
+      },
+      {
+        "id": "c",
+        "text_md": "どちらの帯も割り当てではない"
+      },
+      {
+        "id": "d",
+        "text_md": "Vehicle の帯のアクションは Driver が行う"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-act"
+    ],
+    "level": 1,
+    "title": "act のヘッダ",
+    "prompt_md": "アクティビティ「Accelerate」の act のヘッダとして正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "act のヘッダの型は必ず **`activity`**。stateMachine は stm、interaction は sd、block は bdd・ibd・par。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`act [activity] Accelerate`"
+      },
+      {
+        "id": "b",
+        "text_md": "`act [block] Accelerate`"
+      },
+      {
+        "id": "c",
+        "text_md": "`act [stateMachine] Accelerate`"
+      },
+      {
+        "id": "d",
+        "text_md": "`act [interaction] Accelerate`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "act-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-act"
+    ],
+    "level": 2,
+    "title": "流れをつなぐ",
+    "prompt_md": "開始 → `Press Pedal` → `Increase Torque` → アクティビティ終了 の順に流れるよう、制御フローを 3 本引け。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "Accelerate"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Press Pedal"
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Increase Torque"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "Accelerate"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Press Pedal"
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Increase Torque"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "a2"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "end"
+        }
+      ]
+    },
+    "hints_md": [
+      "制御フローは前 → 後。"
+    ],
+    "explanation_md": "制御フローは「次をやってよい」を伝える矢印で、**前 → 後**に引く。開始から始まり、二重丸（アクティビティ終了）で全体が終わる。",
+    "diagram": "act"
+  },
+  {
+    "id": "act-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-act"
+    ],
+    "level": 3,
+    "title": "判断を組む",
+    "prompt_md": "`Check Battery` の結果で分岐させる。\n\n1. 判断ノードを置き、Check Battery から判断へ制御フローを引く\n2. 判断から `Start Engine` へ、ガード `ok` の制御フロー\n3. 判断から `Warn Driver` へ、ガード `low` の制御フロー",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "a3",
+          "kind": "action",
+          "name": "Start Engine"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "end"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        }
+      ]
+    },
+    "answer_model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "a3",
+          "kind": "action",
+          "name": "Start Engine"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "end"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "d"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a3",
+          "guard": "ok"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a2",
+          "guard": "low"
+        }
+      ]
+    },
+    "hints_md": [
+      "分岐はひし形（判断）。",
+      "ガードは [ ] を付けずに書いてよい。"
+    ],
+    "explanation_md": "分岐は**判断ノード**（ひし形・入 1 出 複数）で、出口ごとに `[ガード]` を付ける。ok と low は重ならず漏れも無い。Warn Driver の後はフロー終了（その流れだけ終わる）にしてある。",
+    "diagram": "act"
+  }
+]

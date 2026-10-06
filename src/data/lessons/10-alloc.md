@@ -4,7 +4,7 @@ no: 10
 title: 割り当て
 lead: 「この機能はこの部品が担当する」を図をまたいで結ぶ。矢印の元が from、先が to。
 diagram: map
-problemsReady: false
+problemsReady: true
 ---
 
 ## 割り当てとは {#alloc-purpose}
@@ -52,6 +52,7 @@ term: allocatedFrom | あろけーてっどふろむ | その要素に割り当�
 
 ## 割り当ての表し方 {#alloc-repr}
 items: mu-alloc-repr
+figures: alloc-compartment
 term: 割り当てパーティション | わりあてぱーてぃしょん | «allocate» の付いたアクティビティパーティション。中のアクションをその部品に割り当てる
 
 ### 表し方の一覧

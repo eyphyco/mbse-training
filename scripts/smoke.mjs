@@ -8,7 +8,7 @@
  *
  * この環境では Playwright が既定で起動しない。CLAUDE.md の「この環境の罠」を見ること。
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -20,8 +20,17 @@ const itemCount = syllabus.exams.reduce(
   (n, e) => n + e.areas.reduce((m, a) => m + a.groups.reduce((k, g) => k + g.items.length, 0), 0),
   0,
 );
-const problems = JSON.parse(readFileSync(join(root, 'src/data/problems/bdd.json'), 'utf8'));
-const notation = JSON.parse(readFileSync(join(root, 'src/data/notation/bdd.json'), 'utf8'));
+const readDir = (d) =>
+  readdirSync(join(root, d))
+    .filter((f) => f.endsWith('.json'))
+    .flatMap((f) => JSON.parse(readFileSync(join(root, d, f), 'utf8')));
+const problems = readDir('src/data/problems');
+const notation = readDir('src/data/notation');
+const itemName = new Map(
+  syllabus.exams.flatMap((e) =>
+    e.areas.flatMap((a) => a.groups.flatMap((g) => g.items.map((i) => [i.id, i.name]))),
+  ),
+);
 
 const results = [];
 const check = (name, ok, extra = '') => {
@@ -111,7 +120,8 @@ try {
   /* --- ボード -------------------------------------------------------- */
   await go('/board');
   const solvedLane = await page.locator('[data-testid=lane-solved]').innerText();
-  check('解いた項目が「解いた」レーンに来る', solvedLane.includes('BDD の説明'));
+  const firstItem = itemName.get(p1.items[0]);
+  check('解いた項目が「解いた」レーンに来る', solvedLane.includes(firstItem), firstItem);
   check(
     '空のレーンを消さずに残す',
     (await page.locator('[data-testid=lane-dropped]').innerText()).includes('空なのが正常'),
@@ -251,13 +261,17 @@ try {
     const svgs = [...document.querySelectorAll('[data-testid=diagram] svg')];
     const overflow = [];
     for (const svg of svgs) {
-      // 箱（g の直下の rect）と、その g の直下の文字。ポートの名前は箱の外に置くので対象外
+      // 箱（レイアウトが見込んだ矩形 data-box）と、その g の直下の文字。ポートの名前は箱の外に置くので対象外
       for (const g of svg.querySelectorAll('g[data-kind=node]')) {
-        const rect = g.querySelector(':scope > rect.dg-box');
-        const r = rect.getBBox();
+        const [x, y, w, h] = g.dataset.box.split(' ').map(Number);
         for (const t of g.querySelectorAll(':scope > text')) {
           const b = t.getBBox();
-          if (b.x < r.x || b.x + b.width > r.x + r.width + 0.5)
+          if (
+            b.x < x - 0.5 ||
+            b.x + b.width > x + w + 0.5 ||
+            b.y < y - 2 ||
+            b.y + b.height > y + h + 2
+          )
             overflow.push(`${g.dataset.ref}: ${t.textContent}`);
         }
       }
@@ -285,10 +299,78 @@ try {
   check('図の紙は不透明', dg.paperOpaque);
   check('黒ひし形は塗り、白ひし形は中抜き', dg.filled > 0 && dg.hollow > 0);
   check('図に読み上げ用の控えが付く', dg.caption.includes('黒ひし形'));
+  const kinds = await page.evaluate(() => ({
+    ellipse: document.querySelectorAll('[data-testid=diagram] ellipse').length,
+    dashedLine: document.querySelectorAll('[data-testid=diagram] polyline[stroke-dasharray]')
+      .length,
+  }));
+  check(
+    '楕円（ユースケース・開始）と点線（依存・制御フロー）も描く',
+    kinds.ellipse > 0 && kinds.dashedLine > 0,
+  );
+  await page.click('button[aria-pressed]:has-text("act")');
+  await page.waitForTimeout(300);
+  const actCount = notation.filter((n) => n.model.type === 'act').length;
+  check(
+    '記法見本を図種で絞れる',
+    (await page.locator('[data-testid=diagram]').count()) === actCount,
+    `${actCount} 枚`,
+  );
+
+  /* --- 組み立て問題（パレット） ------------------------------------------ */
+  await go('/problems/stm-build-2');
+  await page.waitForSelector('[data-testid=diagram][data-status=ready]');
+  const edgesBefore = await page.locator('[data-testid=build] g[data-kind=edge]').count();
+  const transition = async (from, to, trigger) => {
+    await page.selectOption('[data-field=from]', { label: from });
+    await page.selectOption('[data-field=to]', { label: to });
+    if (trigger) await page.fill('[data-field=trigger]', trigger);
+    await page.click('[data-testid=place-relation]');
+    await page.waitForTimeout(250);
+  };
+  await page.click('[data-tool=rel-transition]');
+  await transition('開始（黒丸）', 'Off（状態）');
+  check(
+    '置いた瞬間に図が描き直される',
+    (await page.locator('[data-testid=build] g[data-kind=edge]').count()) === edgesBefore + 1,
+  );
+  await transition('Off（状態）', 'Running（状態）', 'start');
+  await transition('Running（状態）', 'Off（状態）', 'stop');
+  await page.click('[data-testid=check-build]');
+  check('検査で図の中の食い違いを見る', (await main()).includes('食い違いは見つかりませんでした'));
+  await page.click('[data-testid=submit]');
+  await page.waitForSelector('[data-testid=result]');
+  check(
+    '組み立て問題: 正解の図と同じモデルなら正解',
+    (await page.getAttribute('[data-testid=result]', 'data-correct')) === 'true',
+  );
+  check('採点後に正解の図を出す', (await main()).includes('正解の図'));
+  await go('/problems/uc-build-2');
+  await page.waitForSelector('[data-testid=diagram][data-status=ready]');
+  await page.click('[data-tool=rel-include]');
+  await page.selectOption('[data-field=from]', { label: 'Start Engine（ユースケース）' });
+  await page.selectOption('[data-field=to]', { label: 'Drive（ユースケース）' });
+  await page.click('[data-testid=place-relation]');
+  await page.click('[data-testid=submit]');
+  await page.waitForSelector('[data-testid=result]');
+  const wrong = await main();
+  check(
+    '組み立て問題: 向きを誤ると足りない・余分を言う',
+    (await page.getAttribute('[data-testid=result]', 'data-correct')) === 'false' &&
+      wrong.includes('足りないもの') &&
+      wrong.includes('余分なもの'),
+  );
 
   /* --- 狭い画面 ------------------------------------------------------ */
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const path of ['/', '/board', '/learn/bdd', '/problems/bdd-assoc-2']) {
+  for (const path of [
+    '/',
+    '/board',
+    '/learn/act',
+    '/notation',
+    '/problems/bdd-assoc-2',
+    '/problems/stm-build-3',
+  ]) {
     await go(path);
     const over = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth,
@@ -296,7 +378,33 @@ try {
     check(`狭い画面で横にはみ出さない ${path}`, over <= 1, `${over}px`);
   }
 
-  check('コンソールにエラーが出ない', errors.length === 0, errors.slice(0, 2).join(' / '));
+  /* --- Service Worker（再訪と圏外） ------------------------------------- */
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await go('/learn/act');
+  const sw = await page.evaluate(async () => {
+    if (!('serviceWorker' in navigator)) return 'なし';
+    const reg = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise((r) => setTimeout(() => r(null), 5000)),
+    ]);
+    const names = await caches.keys();
+    return reg?.active ? names.join(',') : '登録されない';
+  });
+  check(
+    'Service Worker が入り、自分の名前のキャッシュだけを使う',
+    /^(mbse-training-v\d+,?)+$/.test(sw),
+    sw,
+  );
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.context().setOffline(true);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('[data-testid=diagram][data-status=ready]', { timeout: 10000 });
+  check('圏外でも開いたことのある画面と図が出る', (await main()).includes('アクティビティ図'));
+  await page.context().setOffline(false);
+
+  // 圏外で読み込みに失敗した資源の報告は、圏外の確かめの副作用なので数えない
+  const real = errors.filter((e) => !/ERR_INTERNET_DISCONNECTED|Failed to load resource/.test(e));
+  check('コンソールにエラーが出ない', real.length === 0, real.slice(0, 2).join(' / '));
 } catch (e) {
   check('通し操作', false, String(e).split('\n')[0]);
 }

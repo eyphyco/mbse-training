@@ -16,6 +16,8 @@ import type { ElementTool, EndKind, Field, RelationTool } from '../diagram/palet
 export type Values = Partial<Record<Field, string>>;
 
 const norm = (s?: string) => (s ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
+/** 式・札の欄（ガード・トリガ・効果・メッセージ）は空白も無視する（`fuel>0` と `fuel > 0` を同じに） */
+const normExpr = (s?: string) => (s ?? '').replace(/\s+/g, '').toLowerCase();
 const blank = (s?: string) => (s && s.trim() ? s.trim() : undefined);
 
 /** 利用者が置いたものの id。土台の id と重ならないよう u の連番 */
@@ -125,9 +127,19 @@ export function elementLabel(el: Element): string {
 export function endCandidates(model: Model, kinds: EndKind[]): { id: string; label: string }[] {
   const out: { id: string; label: string }[] = [];
   const want = new Set(kinds);
-  for (const el of model.elements)
-    if (want.has(el.kind))
-      out.push({ id: el.id, label: `${elementLabel(el)}（${KIND_LABEL[el.kind]}）` });
+  const seen = new Map<string, number>();
+  for (const el of model.elements) {
+    if (!want.has(el.kind)) continue;
+    const name = elementLabel(el);
+    // 名前の無い形（判断・フォーク…）は種類名だけ。同じ種類が複数あれば番号で分ける
+    if (name === KIND_LABEL[el.kind]) {
+      const n = (seen.get(el.kind) ?? 0) + 1;
+      seen.set(el.kind, n);
+      const many =
+        model.elements.filter((e) => e.kind === el.kind && !e.name && !e.type).length > 1;
+      out.push({ id: el.id, label: many ? `${name} ${n}` : name });
+    } else out.push({ id: el.id, label: `${name}（${KIND_LABEL[el.kind]}）` });
+  }
   for (const { port, owner } of allPorts(model)) {
     const k: EndKind =
       owner === null
@@ -180,10 +192,12 @@ function sameRelation(a: Relation, aModel: Model, b: Relation, bModel: Model): b
   // 向きの無い線（関連・コネクタ・束縛）は両端を入れ替えても同じ
   const undirected = a.kind === 'association' || a.kind === 'connector' || a.kind === 'binding';
   if (!((as === bs && at === bt) || (undirected && as === bt && at === bs))) return false;
-  for (const k of ['targetRole', 'targetMult', 'guard', 'trigger', 'effect'] as const)
+  for (const k of ['targetRole', 'targetMult'] as const)
     if (a[k] !== undefined && norm(a[k]) !== norm(b[k])) return false;
+  for (const k of ['guard', 'trigger', 'effect'] as const)
+    if (a[k] !== undefined && normExpr(a[k]) !== normExpr(b[k])) return false;
   const ai = a.itemFlows?.[0]?.item;
-  if (ai !== undefined && norm(ai) !== norm(b.itemFlows?.[0]?.item)) return false;
+  if (ai !== undefined && normExpr(ai) !== normExpr(b.itemFlows?.[0]?.item)) return false;
   return true;
 }
 
@@ -243,7 +257,7 @@ export function judgeBuild(answer: Model, built: Model): BuildResult {
   const am = flattenSteps(answer.steps).filter((s): s is MessageStep => s.kind === 'message');
   const bm = flattenSteps(built.steps).filter((s): s is MessageStep => s.kind === 'message');
   const key = (m: Model, s: MessageStep) =>
-    `${s.sort}|${norm(endName(m, s.from))}|${norm(endName(m, s.to))}|${norm(s.label)}`;
+    `${s.sort}|${norm(endName(m, s.from))}|${norm(endName(m, s.to))}|${normExpr(s.label)}`;
   for (let i = 0; i < Math.max(am.length, bm.length); i += 1) {
     const a = am[i];
     const b = bm[i];

@@ -1,0 +1,720 @@
+[
+  {
+    "id": "note-comment-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-comment"
+    ],
+    "level": 1,
+    "title": "根拠を読む",
+    "prompt_md": "次の図の、`«rationale»` の付いた角の折れた箱は何か。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Usage"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "Parking",
+          "reqId": "R5",
+          "text": "運転者が車庫入れできること"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "Visibility",
+          "reqId": "R6",
+          "text": "後方 3 m を視認できること"
+        },
+        {
+          "id": "why",
+          "kind": "comment",
+          "name": "",
+          "text": "狭い車庫の利用者が多いという調査結果による",
+          "stereotypes": [
+            "rationale"
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "t1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r1",
+          "stereotype": "trace"
+        },
+        {
+          "id": "a1",
+          "kind": "anchor",
+          "source": "why",
+          "target": "r2"
+        }
+      ]
+    },
+    "hints_md": [
+      "角の折れた箱はコメント。ステレオタイプで種類が分かれる。"
+    ],
+    "explanation_md": "角の折れた長方形は**コメント**で、破線（アンカー）で説明する要素と結ぶ。`«rationale»` は**根拠**（なぜそう決めたか）、`«problem»` は**問題**（欠陥・課題）。どちらもコメントの一種で、モデルの規則にはならない。",
+    "diagram": "req",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Visibility を決めた理由（根拠）を書き添えたコメント"
+      },
+      {
+        "id": "b",
+        "text_md": "Visibility の欠陥を書いた問題"
+      },
+      {
+        "id": "c",
+        "text_md": "Visibility が守るべき制約"
+      },
+      {
+        "id": "d",
+        "text_md": "Visibility の部分要求"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-comment-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-comment"
+    ],
+    "level": 2,
+    "title": "制約とコメント",
+    "prompt_md": "ブロック Vehicle に `{mass <= 1500}` と書いたものと、コメント「もう少し軽くしたい」を付けたものの違いとして正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "`{ }` で囲んだ文は**制約**で、モデルが守るべき条件（規則）。コメントは**説明**で、モデルの規則にはならない。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`{ }` は制約で、モデルが守るべき規則。コメントは意味を持たない説明"
+      },
+      {
+        "id": "b",
+        "text_md": "どちらもモデルの規則"
+      },
+      {
+        "id": "c",
+        "text_md": "どちらも意味を持たない説明"
+      },
+      {
+        "id": "d",
+        "text_md": "コメントが規則で、`{ }` は説明"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-comment-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-comment"
+    ],
+    "level": 3,
+    "title": "欠陥を書き添える",
+    "prompt_md": "レビューで「この配管は高温部に近すぎる」という設計上の欠陥が見つかった。モデルに書き添えるのに最も適したものはどれか。",
+    "hints_md": [],
+    "explanation_md": "欠陥・課題は**問題**（`«problem»` のコメント）で書き添える。`«rationale»` は判断の理由、`{ }` は守るべき条件。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`«problem»` のコメントを配管の要素にアンカーで付ける"
+      },
+      {
+        "id": "b",
+        "text_md": "`«rationale»` のコメントを付ける"
+      },
+      {
+        "id": "c",
+        "text_md": "`{ }` の制約を付ける"
+      },
+      {
+        "id": "d",
+        "text_md": "新しい要求を作って «satisfy» で結ぶ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-frame-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-frame"
+    ],
+    "level": 1,
+    "title": "ibd の図枠の縁",
+    "prompt_md": "次の図の、図枠の縁の小さな四角 `fuelIn` は何か。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Power"
+      },
+      "elements": [
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "fuelIn",
+          "target": "engine.fuel"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine",
+          "target": "trans"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuelIn",
+          "name": "fuelIn",
+          "kind": "flow",
+          "direction": "in",
+          "type": "Fuel"
+        }
+      ]
+    },
+    "hints_md": [
+      "図枠は何を表しているか。その縁に載るものは？"
+    ],
+    "explanation_md": "図枠は**ヘッダの対象そのもの**（ここでは Vehicle）を表す。だから縁に載る四角は **Vehicle 自身のポート**。外から来た燃料を、中の engine のポートへ受け渡している。",
+    "diagram": "ibd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "囲みブロック Vehicle 自身のポート"
+      },
+      {
+        "id": "b",
+        "text_md": "engine のポート"
+      },
+      {
+        "id": "c",
+        "text_md": "項目フロー"
+      },
+      {
+        "id": "d",
+        "text_md": "アクティビティパラメータノード"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-frame-2",
+    "type": "read_diagram",
+    "items": [
+      "mu-frame"
+    ],
+    "level": 2,
+    "title": "act の図枠の縁",
+    "prompt_md": "次の図の、図枠の縁にまたがる長方形 `fuel : Fuel` は何か。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "GeneratePower"
+      },
+      "elements": [
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Burn Fuel",
+          "ports": [
+            {
+              "id": "a1.in",
+              "name": "fuel",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "a1.out",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Heat"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "o1",
+          "kind": "objectFlow",
+          "source": "fuel",
+          "target": "a1.in"
+        },
+        {
+          "id": "o2",
+          "kind": "objectFlow",
+          "source": "a1.out",
+          "target": "heat"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuel",
+          "name": "fuel",
+          "kind": "param",
+          "direction": "in",
+          "type": "Fuel"
+        },
+        {
+          "id": "heat",
+          "name": "heat",
+          "kind": "param",
+          "direction": "out",
+          "type": "Heat"
+        }
+      ]
+    },
+    "hints_md": [
+      "図枠はアクティビティそのもの。"
+    ],
+    "explanation_md": "act の図枠は**アクティビティそのもの**。縁にまたがる長方形は**アクティビティパラメータノード**で、アクティビティ全体の入出力。アクションの縁の小さな四角（Burn Fuel の `fuel`）はピン。",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "アクティビティ GeneratePower 全体の入力（アクティビティパラメータノード）"
+      },
+      {
+        "id": "b",
+        "text_md": "Burn Fuel の入力ピン"
+      },
+      {
+        "id": "c",
+        "text_md": "GeneratePower を持つブロックのポート"
+      },
+      {
+        "id": "d",
+        "text_md": "オブジェクトノード"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-frame-3",
+    "type": "read_diagram",
+    "items": [
+      "mu-frame"
+    ],
+    "level": 3,
+    "title": "par の図枠の縁",
+    "prompt_md": "次の図の、図枠の左の縁の四角 `v` は何か。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "constraintBlock",
+        "owner": "StoppingDistance"
+      },
+      "elements": [
+        {
+          "id": "react",
+          "kind": "constraintProperty",
+          "name": "r",
+          "type": "ReactionDist",
+          "expr": "d1 = v * t",
+          "ports": [
+            {
+              "id": "r.v",
+              "name": "v",
+              "kind": "param"
+            },
+            {
+              "id": "r.t",
+              "name": "t",
+              "kind": "param"
+            },
+            {
+              "id": "r.d1",
+              "name": "d1",
+              "kind": "param"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "pv",
+          "target": "r.v"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "pt",
+          "target": "r.t"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "r.d1",
+          "target": "pd"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "pv",
+          "name": "v",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pt",
+          "name": "t",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pd",
+          "name": "d1",
+          "kind": "param",
+          "side": "east"
+        }
+      ]
+    },
+    "hints_md": [
+      "ヘッダの [ ] は何か。図枠はその対象。"
+    ],
+    "explanation_md": "ヘッダが `[constraintBlock] StoppingDistance` なので、図枠は StoppingDistance そのもの。縁の四角は **StoppingDistance のパラメータ**で、中の制約プロパティ r のパラメータ v と束縛されている。",
+    "diagram": "par",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "制約ブロック StoppingDistance のパラメータ v"
+      },
+      {
+        "id": "b",
+        "text_md": "制約プロパティ r のパラメータ"
+      },
+      {
+        "id": "c",
+        "text_md": "Vehicle の値属性 v"
+      },
+      {
+        "id": "d",
+        "text_md": "フローポート"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-st-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-stereotype"
+    ],
+    "level": 1,
+    "title": "複数のステレオタイプ",
+    "prompt_md": "次の図の `«block, system»` が表すものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Context"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "stereotypes": [
+            "system"
+          ]
+        },
+        {
+          "id": "env",
+          "kind": "block",
+          "name": "Road",
+          "stereotypes": [
+            "external"
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "veh",
+          "target": "env"
+        }
+      ]
+    },
+    "hints_md": [
+      "複数のステレオタイプはどう並べるか。"
+    ],
+    "explanation_md": "**複数のステレオタイプは 1 つの «» の中にカンマで並べる**。Vehicle はブロックであり、さらに «system» が適用されている（1 つの要素）。",
+    "diagram": "bdd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle に «block» と «system» の 2 つのステレオタイプが付いている"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle は block と system の 2 つの要素"
+      },
+      {
+        "id": "c",
+        "text_md": "Vehicle は system の一種"
+      },
+      {
+        "id": "d",
+        "text_md": "system という名前の値属性"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-st-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-stereotype"
+    ],
+    "level": 2,
+    "title": "SysML とプロファイル",
+    "prompt_md": "SysML と UML の関係として正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "SysML 自体が UML の**プロファイル**（ステレオタイプの集まり）。だから SysML の要素の多くは「UML の要素 + ステレオタイプ」でできている（ブロック = クラス + «block»）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "SysML は UML のプロファイルで、ブロックは UML のクラスに «block» を適用したもの"
+      },
+      {
+        "id": "b",
+        "text_md": "SysML は UML とは無関係の言語"
+      },
+      {
+        "id": "c",
+        "text_md": "UML は SysML のプロファイル"
+      },
+      {
+        "id": "d",
+        "text_md": "SysML はステレオタイプを使わない"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-st-3",
+    "type": "read_diagram",
+    "items": [
+      "mu-stereotype"
+    ],
+    "level": 3,
+    "title": "ステレオタイプのプロパティ",
+    "prompt_md": "次の図の値型 `Mass` の名前の下にある `{unit = kg}` は何か。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Units"
+      },
+      "elements": [
+        {
+          "id": "m",
+          "kind": "valueType",
+          "name": "Mass",
+          "tags": {
+            "unit": "kg"
+          }
+        },
+        {
+          "id": "v",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "value",
+              "name": "mass",
+              "type": "Mass"
+            }
+          ]
+        }
+      ],
+      "relations": []
+    },
+    "hints_md": [
+      "名前の下の { } は、«» と組で使う何か。"
+    ],
+    "explanation_md": "名前の下の `{名前 = 値}` は**ステレオタイプのプロパティ**。«valueType» の `unit` に kg を入れている。制約の `{ }`（`{mass <= 1500}`）とは置く場所と形が違う。",
+    "diagram": "bdd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "ステレオタイプのプロパティ（値型の単位）"
+      },
+      {
+        "id": "b",
+        "text_md": "Mass が守るべき制約式"
+      },
+      {
+        "id": "c",
+        "text_md": "コメント"
+      },
+      {
+        "id": "d",
+        "text_md": "Mass の既定値"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-apply-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-apply-stereotype"
+    ],
+    "level": 1,
+    "title": "試験の範囲",
+    "prompt_md": "Model Builder – Fundamental で、ステレオタイプについて問われる範囲はどれか。",
+    "hints_md": [],
+    "explanation_md": "Fundamental で問われるのは**ステレオタイプを使う（適用する）**ことだけ。プロファイルやステレオタイプを**作る**ことは範囲外（試験情報シートに明記）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "既にあるステレオタイプを要素に適用すること"
+      },
+      {
+        "id": "b",
+        "text_md": "新しいプロファイルとステレオタイプを作ること"
+      },
+      {
+        "id": "c",
+        "text_md": "UML のメタモデルを書き換えること"
+      },
+      {
+        "id": "d",
+        "text_md": "ステレオタイプを使わずにモデルを作ること"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-apply-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-apply-stereotype"
+    ],
+    "level": 2,
+    "title": "適用の前にすること",
+    "prompt_md": "要素に «system» を適用したい。その前に必要なことはどれか。",
+    "hints_md": [],
+    "explanation_md": "手順は **1. プロファイルをパッケージに適用 → 2. 要素にステレオタイプを適用 → 3. プロパティに値を入れる**（`{criticality = high}`）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "«system» を持つプロファイルを、要素の入っているパッケージに適用する"
+      },
+      {
+        "id": "b",
+        "text_md": "«system» を作る"
+      },
+      {
+        "id": "c",
+        "text_md": "要素を «modelLibrary» に移す"
+      },
+      {
+        "id": "d",
+        "text_md": "要素を削除して作り直す"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "note-apply-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-apply-stereotype"
+    ],
+    "level": 3,
+    "title": "適用できる相手",
+    "prompt_md": "ブロックを拡張するために定義されたステレオタイプ «system» を、要求に適用しようとした。正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "ステレオタイプは**拡張する種類の要素にだけ**適用できる。ブロック用の «system» を要求に付けることはできない。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "適用できない。ステレオタイプは、拡張する種類の要素にだけ適用できる"
+      },
+      {
+        "id": "b",
+        "text_md": "適用できる。ステレオタイプはどの要素にも付けられる"
+      },
+      {
+        "id": "c",
+        "text_md": "要求を先にブロックに変えれば、要求のまま適用できる"
+      },
+      {
+        "id": "d",
+        "text_md": "«» を 2 重にすれば適用できる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  }
+]

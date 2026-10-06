@@ -4,7 +4,7 @@ no: 11
 title: 図の共通記法
 lead: どの図にも出るもの。図枠の縁・コメント・ステレオタイプを読む。
 diagram: map
-problemsReady: false
+problemsReady: true
 ---
 
 ## コメント・根拠・問題・制約 {#notation-comment}

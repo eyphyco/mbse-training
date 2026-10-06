@@ -4,7 +4,7 @@ no: 8
 title: 状態機械図
 lead: イベントが来たら、今の状態から出る遷移を探す。トリガ［ガード］/効果 の 3 つの欄を分けて読む。
 diagram: stm
-problemsReady: false
+problemsReady: true
 ---
 
 ## 状態機械図は何を表す図か {#stm-purpose}
@@ -28,6 +28,7 @@ term: 状態 | じょうたい | ある条件が成り立っている間。角�
 
 ## 状態と領域・初期と終了 {#stm-state}
 items: mu-state-region
+figures: stm-regions
 term: 初期状態 | しょきじょうたい | 黒丸 ●。状態機械（または領域）が始まったとき最初に入る状態を指す擬似状態
 term: 終了状態 | しゅうりょうじょうたい | 二重丸 ◉。そこに着くとその領域が終わる
 term: 領域 | りょういき | region。状態の中を破線で区切った部分。それぞれが同時に（並行に）動く
@@ -78,6 +79,7 @@ term: exit | えぐじっと | 状態を出るときに 1 回行う振る舞い
 
 ## 遷移 {#stm-transition}
 items: mu-transition
+figures: stm-engine
 term: 遷移 | せんい | 状態から状態への矢印。`トリガ [ガード] / 効果` の形でラベルを付ける
 
 ### ラベルの 3 つの欄

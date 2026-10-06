@@ -1,0 +1,1339 @@
+[
+  {
+    "id": "ibd-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-ibd-purpose"
+    ],
+    "level": 1,
+    "title": "ibd から読み取れること",
+    "prompt_md": "次の図から言えることはどれか。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            },
+            {
+              "id": "trans.ctl",
+              "name": "ctl",
+              "kind": "standard",
+              "side": "south"
+            }
+          ]
+        },
+        {
+          "id": "driver",
+          "kind": "reference",
+          "name": "driver",
+          "type": "Driver"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel",
+          "itemFlows": [
+            {
+              "item": "fuel : Fuel"
+            }
+          ]
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in",
+          "itemFlows": [
+            {
+              "item": "torque : Torque"
+            }
+          ]
+        },
+        {
+          "id": "c3",
+          "kind": "connector",
+          "source": "driver",
+          "target": "trans.ctl"
+        }
+      ]
+    },
+    "hints_md": [
+      "図枠のヘッダの [block] の後ろが、中身を描いている対象（囲みブロック）。",
+      "実線は「つながっている」。一種かどうかは描けない。"
+    ],
+    "explanation_md": "ibd は**囲みブロック**（ヘッダの `[block] Vehicle`）の内部を描く。中の箱はパート、実線はコネクタで「つながっている」を表す。\n\n- b: 「一種である」は bdd の汎化（白三角）。ibd では描かない\n- c: 描いているのは Vehicle の中身。Engine は中にいるパートの型\n- d: 持つのは Vehicle（図枠）の側。パートが囲みブロックを持つことはない",
+    "diagram": "ibd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle の中で、tank の `out` ポートと engine の `fuelIn` ポートがつながっている"
+      },
+      {
+        "id": "b",
+        "text_md": "FuelTank は Engine の一種である"
+      },
+      {
+        "id": "c",
+        "text_md": "図は Engine というブロックの中身を描いている"
+      },
+      {
+        "id": "d",
+        "text_md": "engine と trans は Vehicle を部分として持つ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "ibd-purpose-2",
+    "type": "spot_error",
+    "items": [
+      "mu-ibd-purpose"
+    ],
+    "level": 2,
+    "title": "ibd のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "package",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "ibd は 1 つのブロックの内部を描く図なので、ヘッダの [ ] は必ず `block`。`package` の中身を描くなら bdd かパッケージ図になる。"
+      }
+    ],
+    "hints_md": [
+      "ibd の図枠は何を表しているか。",
+      "ヘッダの [ ] に書ける型は図の種類ごとに決まっている。"
+    ],
+    "explanation_md": "ibd の図枠は**囲みブロックそのもの**を表す。だからヘッダの最初の [ ] は必ず `block`（`ibd [block] Vehicle`）。パートとコネクタは正しく描けている。",
+    "diagram": "ibd"
+  },
+  {
+    "id": "ibd-purpose-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-ibd-purpose"
+    ],
+    "level": 3,
+    "title": "同じ型の部品を区別する",
+    "prompt_md": "車両は同じ型 `Wheel` の車輪を 4 つ持つ。「前の 2 つだけがブレーキ配管につながっている」ことを表したい。最も適したものはどれか。",
+    "hints_md": [
+      "bdd の線は型どうしの関係。同じ型の中の「どれか」を指せるか。"
+    ],
+    "explanation_md": "**同じ型のパートを区別して、どれがどこにつながるかを示すのが ibd の利点**。bdd は型（Wheel）の関係しか描けないので、4 つのうちどれが配管につながるかは表せない。\n\n- a: 4 つ持つことは言えるが、どれがつながるかは言えない\n- c: 同じものを 2 回定義することになる（定義と使用の取り違え）\n- d: par は値の等式を描く図で、物理的な接続は描かない",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "bdd で Vehicle から Wheel へ黒ひし形を引き、多重度を 4 にする"
+      },
+      {
+        "id": "b",
+        "text_md": "ibd で `front : Wheel [2]` と `rear : Wheel [2]` の 2 つのパートを置き、`front` だけを配管のパートにコネクタでつなぐ"
+      },
+      {
+        "id": "c",
+        "text_md": "bdd で FrontWheel と RearWheel の 2 つのブロックを定義する"
+      },
+      {
+        "id": "d",
+        "text_md": "パラメトリック図で配管と車輪を束縛する"
+      }
+    ],
+    "answer": [
+      "b"
+    ]
+  },
+  {
+    "id": "ibd-parts-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-part-repr"
+    ],
+    "level": 1,
+    "title": "箱の種類を読む",
+    "prompt_md": "図の破線の箱 `driver : Driver` について正しいものはどれか。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Parts"
+      },
+      "elements": [
+        {
+          "id": "pt",
+          "kind": "part",
+          "name": "powertrain",
+          "type": "Powertrain"
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "parent": "pt"
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "parent": "pt"
+        },
+        {
+          "id": "wheels",
+          "kind": "part",
+          "name": "wheels",
+          "type": "Wheel",
+          "mult": "4"
+        },
+        {
+          "id": "driver",
+          "kind": "reference",
+          "name": "driver",
+          "type": "Driver"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "engine",
+          "target": "trans"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "trans",
+          "target": "wheels"
+        },
+        {
+          "id": "c3",
+          "kind": "connector",
+          "source": "driver",
+          "target": "pt"
+        }
+      ]
+    },
+    "hints_md": [
+      "実線の箱と破線の箱は何が違ったか。"
+    ],
+    "explanation_md": "ibd の**破線の箱は参照プロパティ**（bdd の references 区画に当たる）。囲みブロックが持たずに指しているだけなので、Vehicle が無くなっても Driver は残る。\n\n実線の箱（`engine` `wheels`）がパート（持ち物）。`wheels : Wheel [4]` の `[4]` は多重度、`powertrain` の中の箱は入れ子のパート。",
+    "diagram": "ibd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle が持たずに指している参照で、Vehicle が無くなっても Driver は残る"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle が持つパートで、Vehicle が無くなると一緒に無くなる"
+      },
+      {
+        "id": "c",
+        "text_md": "まだ設計が決まっていない仮の部品"
+      },
+      {
+        "id": "d",
+        "text_md": "Driver というブロックの定義"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "ibd-parts-2",
+    "type": "spot_error",
+    "items": [
+      "mu-part-repr"
+    ],
+    "level": 2,
+    "title": "ibd に描くもの",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "engine",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission"
+        },
+        {
+          "id": "wheels",
+          "kind": "part",
+          "name": "wheels",
+          "type": "Wheel",
+          "mult": "4"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "engine",
+          "target": "trans"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "trans",
+          "target": "wheels"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "engine",
+        "kind": "definition-in-usage-diagram",
+        "why": "`«block» Engine` は定義の箱。ibd に置くのは Vehicle の中での使用なので `engine : Engine` と書く。"
+      }
+    ],
+    "hints_md": [
+      "ibd の箱の文字は `名前 : 型` の形だったか。",
+      "«block» の札が付いた箱はどの図に描くものか。"
+    ],
+    "explanation_md": "ibd の箱は**使用**（パート）。`«block» Engine` は**定義**で、bdd に描くもの。ibd では `engine : Engine` の形で、囲みブロックの中での名前と型を書く。",
+    "diagram": "ibd"
+  },
+  {
+    "id": "ibd-parts-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-part-repr"
+    ],
+    "level": 3,
+    "title": "ドット記法を読む",
+    "prompt_md": "par や ibd で `powertrain.engine : Engine` と書かれた箱がある。これの意味として正しいものはどれか。",
+    "hints_md": [
+      "`.` は何と何をつないでいるか。"
+    ],
+    "explanation_md": "**ドット記法**は入れ子のパートを外から指す書き方。`powertrain.engine` は「パート `powertrain` の中のパート `engine`」で、`: Engine` がその型。入れ子を箱の中に描く代わりに使う（par で値属性を指すときの `vehicle.mass` も同じ書き方）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`Powertrain` と `Engine` の 2 つのブロックを継承した要素"
+      },
+      {
+        "id": "b",
+        "text_md": "囲みブロックのパート `powertrain` の中にあるパート `engine`（型は Engine）を、外から指している"
+      },
+      {
+        "id": "c",
+        "text_md": "`powertrain` という名前の Engine 型のパートが 2 つある"
+      },
+      {
+        "id": "d",
+        "text_md": "`Engine` が `powertrain` に割り当てられている"
+      }
+    ],
+    "answer": [
+      "b"
+    ]
+  },
+  {
+    "id": "ibd-ports-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-ports"
+    ],
+    "level": 1,
+    "title": "ポートの種類を読む",
+    "prompt_md": "図の `trans` の下の辺にある、矢印の無い四角 `ctl` は何か。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            },
+            {
+              "id": "trans.ctl",
+              "name": "ctl",
+              "kind": "standard",
+              "side": "south"
+            }
+          ]
+        },
+        {
+          "id": "driver",
+          "kind": "reference",
+          "name": "driver",
+          "type": "Driver"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in"
+        },
+        {
+          "id": "c3",
+          "kind": "connector",
+          "source": "driver",
+          "target": "trans.ctl"
+        }
+      ]
+    },
+    "hints_md": [
+      "v1.2 のポートは 2 種類。中の矢印の有無で分かれる。"
+    ],
+    "explanation_md": "v1.2 のポートは**フローポート**（中に矢印。物・エネルギー・データの流れ）と**標準ポート**（矢印なし。操作の呼び出し）の 2 種類。`ctl` は矢印の無い四角なので標準ポート。\n\n- a: 両方向のフローポートは中に両向きの矢印がある\n- c: プロキシポートは v1.3 からで、試験の範囲外（混乱よけ）\n- d: 項目フローはコネクタの上の黒三角",
+    "diagram": "ibd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "フローポート（両方向）"
+      },
+      {
+        "id": "b",
+        "text_md": "標準ポート（操作の呼び出しの出入口）"
+      },
+      {
+        "id": "c",
+        "text_md": "プロキシポート"
+      },
+      {
+        "id": "d",
+        "text_md": "項目フロー"
+      }
+    ],
+    "answer": [
+      "b"
+    ]
+  },
+  {
+    "id": "ibd-ports-2",
+    "type": "spot_error",
+    "items": [
+      "mu-ports"
+    ],
+    "level": 2,
+    "title": "フローポートの向き",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            },
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            },
+            {
+              "id": "trans.ctl",
+              "name": "ctl",
+              "kind": "standard",
+              "side": "south"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "c1",
+        "kind": "flow-direction-mismatch",
+        "why": "tank の `out` も engine の `fuelIn` も出る向き（out）になっている。燃料を受ける側は in でなければ流れが噛み合わない。"
+      }
+    ],
+    "hints_md": [
+      "隣り合うパートのポートをつなぐとき、向きはどう組むか。"
+    ],
+    "explanation_md": "隣り合うパートのフローポートは **out から in へ**つなぐ（inout はどちらとも組める）。`tank.out`（out）と `engine.fuelIn`（out）は両方とも出る向きで、燃料の行き場が無い。`fuelIn` は in が正しい。",
+    "diagram": "ibd"
+  },
+  {
+    "id": "ibd-ports-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-ports"
+    ],
+    "level": 3,
+    "title": "複数の流れを 1 つのポートで",
+    "prompt_md": "エンジンの 1 つの出入口から、燃料（入る）と排気（出る）の 2 つが流れる。SysML v1.2 で最も適した表し方はどれか。",
+    "hints_md": [
+      "複数の流れを束ねるもの（v1.2）は何だったか。",
+      "プロキシポートは何版から？"
+    ],
+    "explanation_md": "複数の流れを 1 つのフローポートで扱うときは、**フロー仕様**（`«flowSpecification»`）で束ね、向き付きのフロー属性を並べる。それで型付けしたポートが**非アトミックフローポート**。\n\n- b: プロキシポートとインタフェースブロックは v1.3 から（試験の範囲外）\n- c: 標準ポートは操作の呼び出しの出入口で、物の流れではない\n- d: 1 つの値型にすると向きの違い（入る・出る）を表せない",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`«flowSpecification»` に `in fuel : Fuel` と `out exhaust : Gas` を書き、それでフローポートを型付けする（非アトミックフローポート）"
+      },
+      {
+        "id": "b",
+        "text_md": "プロキシポートに 2 つのフロー属性を持つインタフェースブロックを付ける"
+      },
+      {
+        "id": "c",
+        "text_md": "標準ポートを置き、`fuel()` と `exhaust()` の操作を持たせる"
+      },
+      {
+        "id": "d",
+        "text_md": "燃料と排気を 1 つの値型にまとめ、in のフローポートで型付けする"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "ibd-flow-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-connector-itemflow"
+    ],
+    "level": 1,
+    "title": "項目フローを読む",
+    "prompt_md": "図の `tank` と `engine` の間の線にある黒三角と `fuel : Fuel` が表すものはどれか。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            },
+            {
+              "id": "trans.ctl",
+              "name": "ctl",
+              "kind": "standard",
+              "side": "south"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel",
+          "itemFlows": [
+            {
+              "item": "fuel : Fuel"
+            }
+          ]
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in",
+          "itemFlows": [
+            {
+              "item": "torque : Torque"
+            }
+          ]
+        }
+      ]
+    },
+    "hints_md": [
+      "コネクタ自体は「つながっている」だけ。何が流れるかは何が表す？"
+    ],
+    "explanation_md": "コネクタ（実線）は「つながっている」だけを表す。その上の**黒三角と名前が項目フロー**で、**何がどちらへ流れるか**を表す。`fuel` が項目プロパティ、`Fuel` が流れるものの型、三角の向きが流れる向き（tank → engine）。",
+    "diagram": "ibd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "燃料（型 Fuel）が tank から engine へ流れる"
+      },
+      {
+        "id": "b",
+        "text_md": "tank と engine の間に燃料管という部品がある"
+      },
+      {
+        "id": "c",
+        "text_md": "engine が tank を持っている"
+      },
+      {
+        "id": "d",
+        "text_md": "tank から engine へ fuel という操作を呼ぶ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "ibd-flow-2",
+    "type": "spot_error",
+    "items": [
+      "mu-connector-itemflow"
+    ],
+    "level": 2,
+    "title": "項目フローの向き",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            },
+            {
+              "id": "trans.ctl",
+              "name": "ctl",
+              "kind": "standard",
+              "side": "south"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel",
+          "itemFlows": [
+            {
+              "item": "fuel : Fuel",
+              "reverse": true
+            }
+          ]
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in",
+          "itemFlows": [
+            {
+              "item": "torque : Torque"
+            }
+          ]
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "c1",
+        "kind": "itemflow-reversed",
+        "why": "`tank.out` は出る、`engine.fuelIn` は入るポートなのに、黒三角が engine → tank を向いている。燃料は tank から engine へ流れる。"
+      }
+    ],
+    "hints_md": [
+      "黒三角の向きと、両端のポートの向きを見比べる。"
+    ],
+    "explanation_md": "項目フローの黒三角は**出るポート（out）から入るポート（in）**へ向く。ポートは tank → engine の向きに組んであるのに、三角だけが逆を向いている。ポートの向きと項目フローの向きは噛み合わなければならない。",
+    "diagram": "ibd"
+  },
+  {
+    "id": "ibd-flow-3",
+    "type": "spot_error",
+    "items": [
+      "mu-connector-itemflow"
+    ],
+    "level": 3,
+    "title": "つないだものの型",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Powertrain"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            },
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel",
+          "itemFlows": [
+            {
+              "item": "fuel : Fuel"
+            }
+          ]
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in",
+          "itemFlows": [
+            {
+              "item": "torque : Torque",
+              "reverse": true
+            }
+          ]
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "c1",
+        "kind": "connector-type-mismatch",
+        "why": "`tank.out` は Fuel、`engine.fuelIn` は Torque で型付けされている。燃料の出口をトルクの入口にはつなげない。"
+      },
+      {
+        "at": "c2",
+        "kind": "itemflow-reversed",
+        "why": "`engine.shaft`（out）から `trans.in`（in）へ流れるはずが、黒三角が trans → engine を向いている。"
+      }
+    ],
+    "hints_md": [
+      "ポートの名前の後ろの型を見比べる。",
+      "黒三角の向きはポートの向きと合っているか。"
+    ],
+    "explanation_md": "コネクタでつないだフローポートは、**型が一致**し、**向きが out → in** で噛み合わなければならない。\n\n- c1: 出口は Fuel、入口は Torque で型が合わない\n- c2: ポートは engine → trans の向きなのに、項目フローが逆を向いている",
+    "diagram": "ibd"
+  },
+  {
+    "id": "ibd-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-ibd"
+    ],
+    "level": 1,
+    "title": "ibd に並べるパート",
+    "prompt_md": "ある Vehicle の ibd を作る。図に並べるパート（名前・型・多重度）は、どこに合わせるのが正しいか。",
+    "hints_md": [
+      "ibd のパートは、bdd のどの関係と一致していなければならなかったか。"
+    ],
+    "explanation_md": "ibd のパートは、**bdd の parts 区画（＝黒ひし形）と一致**していなければならない。名前・型・多重度を bdd に合わせて並べる。bdd に無いパートが ibd に突然出てきたら誤り。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle の bdd の parts 区画（Vehicle から出る黒ひし形の先）"
+      },
+      {
+        "id": "b",
+        "text_md": "パッケージ図のフォルダの中身"
+      },
+      {
+        "id": "c",
+        "text_md": "要求図で Vehicle が満たす要求"
+      },
+      {
+        "id": "d",
+        "text_md": "シーケンス図のライフライン"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "ibd-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-ibd"
+    ],
+    "level": 2,
+    "title": "コネクタと項目フローを引く",
+    "prompt_md": "燃料タンクからエンジンへ燃料を送る配線を足す。\n\n- `tank` の `out` ポートと `engine` の `fuelIn` ポートを**コネクタ**でつなぐ\n- そのコネクタに、燃料が流れることを**項目フロー** `fuel : Fuel` で示す\n\n右のパレットで「関係を引く → コネクタ」を選び、元と先のポートを選んで項目フロー欄を埋める。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Fuel"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            }
+          ]
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Fuel"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel",
+          "itemFlows": [
+            {
+              "item": "fuel : Fuel"
+            }
+          ]
+        }
+      ]
+    },
+    "hints_md": [
+      "コネクタはポートとポートを結べる。",
+      "項目フローの欄に `fuel : Fuel` と書く。向きは元 → 先になる。"
+    ],
+    "explanation_md": "コネクタは「つながっている」、項目フロー `fuel : Fuel` は「燃料がその上を流れる」。元を `tank.out`（out）、先を `engine.fuelIn`（in）にすれば、三角は tank → engine を向き、ポートの向きと噛み合う。",
+    "diagram": "ibd"
+  },
+  {
+    "id": "ibd-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-ibd"
+    ],
+    "level": 3,
+    "title": "囲みブロックのポートと新しいパート",
+    "prompt_md": "Vehicle の ibd に次を足す。\n\n1. パート `trans`（型 `Transmission`）を置く\n2. 図枠の縁にある Vehicle 自身のポート `fuelIn` を、`engine` の `fuelIn` ポートにコネクタでつなぐ\n3. `engine` と `trans` をコネクタでつなぐ（ポートは無いのでパートどうし）",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Power"
+      },
+      "elements": [
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            }
+          ]
+        }
+      ],
+      "relations": [],
+      "framePorts": [
+        {
+          "id": "fuelIn",
+          "name": "fuelIn",
+          "kind": "flow",
+          "direction": "in",
+          "type": "Fuel"
+        }
+      ]
+    },
+    "answer_model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Power"
+      },
+      "elements": [
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "fuelIn",
+          "target": "engine.fuel"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "engine",
+          "target": "trans"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuelIn",
+          "name": "fuelIn",
+          "kind": "flow",
+          "direction": "in",
+          "type": "Fuel"
+        }
+      ]
+    },
+    "hints_md": [
+      "図枠の縁の四角は、囲みブロック（Vehicle）自身のポート。",
+      "外から入る燃料は、図枠のポート → 中のパートのポートへ受け渡す。向きは同じ in どうしでよい。"
+    ],
+    "explanation_md": "図枠の縁のポートは**囲みブロック自身のポート**。外から来た燃料を中のパートへ受け渡すので、図枠の `fuelIn`（in）と `engine.fuelIn`（in）は**同じ向き**どうしでつなぐ（隣どうしの out → in とは違う）。パートどうしはポートが無くても直接コネクタでつなげる。",
+    "diagram": "ibd"
+  }
+]

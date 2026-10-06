@@ -4,11 +4,12 @@ no: 2
 title: 内部ブロック図とポート
 lead: ibd は 1 つのブロックの「中身の配線図」。bdd で決めたパートが、どこでどうつながるかを読む。
 diagram: ibd
-problemsReady: false
+problemsReady: true
 ---
 
 ## ibd は何を表す図か {#ibd-purpose}
 items: mu-ibd-purpose
+figures: ibd-power
 term: 内部ブロック図 | ないぶぶろっくず | ibd。1 つのブロックの内部で、パートどうしがどうつながるかを表す図
 term: 囲みブロック | かこみぶろっく | ibd が中身を描いている対象のブロック。図枠そのものが囲みブロックを表す
 term: コネクタ | こねくた | ibd のパート（またはポート）どうしをつなぐ実線。つながっていることだけを表す
@@ -47,6 +48,7 @@ ibd [block] Vehicle [Powertrain]
 
 ## パートの表し方 {#ibd-parts}
 items: mu-part-repr
+figures: ibd-nested
 term: 参照パート | さんしょうぱーと | ibd で破線の箱で描く、参照プロパティ。囲みブロックが持たずに指している相手
 
 ### 箱の種類

@@ -1,0 +1,1205 @@
+[
+  {
+    "id": "stm-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-stm-purpose"
+    ],
+    "level": 1,
+    "title": "stm を読む",
+    "prompt_md": "次の図で、状態 Off のときにイベント `start` が来て、`fuel` が 10 だった。どうなるか。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running",
+          "entry": "startPump",
+          "doActivity": "controlIdle",
+          "exit": "stopPump"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start",
+          "guard": "fuel > 0",
+          "effect": "ignite"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "off",
+          "target": "end",
+          "trigger": "after(30 s)"
+        }
+      ]
+    },
+    "hints_md": [
+      "Off から出る遷移のうち、トリガが start のものを探す。",
+      "ガード [fuel > 0] は真か。"
+    ],
+    "explanation_md": "1. 今の状態 Off から出る遷移で、トリガが `start` のものを探す → Off → Running\n2. ガード `[fuel > 0]` は fuel = 10 なので真\n3. 遷移する。効果 `/ ignite` を行い Running に入る（Running の entry `startPump` が続く）",
+    "diagram": "stm",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "ignite を行って Running に移る"
+      },
+      {
+        "id": "b",
+        "text_md": "何もしない（Off のまま）"
+      },
+      {
+        "id": "c",
+        "text_md": "終了状態に移る"
+      },
+      {
+        "id": "d",
+        "text_md": "Running に移ってから ignite を行う、とは限らず、順は決まっていない"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-purpose-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-stm-purpose"
+    ],
+    "level": 2,
+    "title": "どの図で表すか",
+    "prompt_md": "エアコンは「停止中」「冷房中」「暖房中」のモードを持ち、同じ「温度変化」の入力でもモードによって反応が違う。これを表すのに最も適した図はどれか。",
+    "hints_md": [
+      "モードがあり、同じイベントでも今の状態で反応が変わる。"
+    ],
+    "explanation_md": "**モード**があり、**同じイベントでも今の状態で反応が違う**なら状態機械図。アクティビティ図は処理と流れるもの、シーケンス図は部品間のやりとりの順序を描く。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "状態機械図（stm）"
+      },
+      {
+        "id": "b",
+        "text_md": "アクティビティ図（act）"
+      },
+      {
+        "id": "c",
+        "text_md": "シーケンス図（sd）"
+      },
+      {
+        "id": "d",
+        "text_md": "ブロック定義図（bdd）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-purpose-3",
+    "type": "spot_error",
+    "items": [
+      "mu-stm-purpose"
+    ],
+    "level": 3,
+    "title": "stm のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "block",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running",
+          "entry": "startPump",
+          "doActivity": "controlIdle",
+          "exit": "stopPump"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start",
+          "guard": "fuel > 0",
+          "effect": "ignite"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "off",
+          "target": "end",
+          "trigger": "after(30 s)"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "状態機械図が表すのは状態機械。ヘッダの [ ] は必ず `stateMachine`。"
+      }
+    ],
+    "hints_md": [
+      "stm のヘッダの [ ] に来られる型は 1 つだけ。"
+    ],
+    "explanation_md": "stm の図枠は**状態機械そのもの**を表す。ヘッダの [ ] は必ず `stateMachine`。状態機械はブロックの振る舞いとして持たせるが、図のヘッダに書くのは状態機械の型と名前。",
+    "diagram": "stm"
+  },
+  {
+    "id": "stm-region-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-state-region"
+    ],
+    "level": 1,
+    "title": "領域を読む",
+    "prompt_md": "次の図で、状態 Operating にいる間について正しいものはどれか。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "Vehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "op",
+          "kind": "state",
+          "name": "Operating"
+        },
+        {
+          "id": "r1",
+          "kind": "region",
+          "name": "",
+          "parent": "op"
+        },
+        {
+          "id": "r2",
+          "kind": "region",
+          "name": "",
+          "parent": "op"
+        },
+        {
+          "id": "i1",
+          "kind": "initial",
+          "name": "",
+          "parent": "r1"
+        },
+        {
+          "id": "idle",
+          "kind": "state",
+          "name": "Idle",
+          "parent": "r1"
+        },
+        {
+          "id": "mov",
+          "kind": "state",
+          "name": "Moving",
+          "parent": "r1"
+        },
+        {
+          "id": "i2",
+          "kind": "initial",
+          "name": "",
+          "parent": "r2"
+        },
+        {
+          "id": "lo",
+          "kind": "state",
+          "name": "LightsOff",
+          "parent": "r2"
+        },
+        {
+          "id": "ln",
+          "kind": "state",
+          "name": "LightsOn",
+          "parent": "r2"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "op"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "i1",
+          "target": "idle"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "idle",
+          "target": "mov",
+          "trigger": "accelerate"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "i2",
+          "target": "lo"
+        },
+        {
+          "id": "t4",
+          "kind": "transition",
+          "source": "lo",
+          "target": "ln",
+          "trigger": "dark"
+        }
+      ]
+    },
+    "hints_md": [
+      "破線で区切った部分（領域）は、同時に動くか順に動くか。"
+    ],
+    "explanation_md": "複合状態を**破線で区切った部分が領域**で、それぞれが**同時に**状態を持つ（直交領域）。左で走行の状態、右でライトの状態を、同時に 1 つずつ持つ。各領域に開始擬似状態が 1 つある。",
+    "diagram": "stm",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Idle か Moving のどちらかと、LightsOff か LightsOn のどちらかを同時に持つ"
+      },
+      {
+        "id": "b",
+        "text_md": "Idle・Moving・LightsOff・LightsOn のどれか 1 つだけを持つ"
+      },
+      {
+        "id": "c",
+        "text_md": "左の領域が終わってから右の領域が始まる"
+      },
+      {
+        "id": "d",
+        "text_md": "点線は遷移を表す"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-region-2",
+    "type": "spot_error",
+    "items": [
+      "mu-state-region"
+    ],
+    "level": 2,
+    "title": "開始擬似状態の数",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "Vehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "op",
+          "kind": "state",
+          "name": "Operating"
+        },
+        {
+          "id": "r1",
+          "kind": "region",
+          "name": "",
+          "parent": "op"
+        },
+        {
+          "id": "r2",
+          "kind": "region",
+          "name": "",
+          "parent": "op"
+        },
+        {
+          "id": "i1",
+          "kind": "initial",
+          "name": "",
+          "parent": "r1"
+        },
+        {
+          "id": "idle",
+          "kind": "state",
+          "name": "Idle",
+          "parent": "r1"
+        },
+        {
+          "id": "mov",
+          "kind": "state",
+          "name": "Moving",
+          "parent": "r1"
+        },
+        {
+          "id": "i2",
+          "kind": "initial",
+          "name": "",
+          "parent": "r2"
+        },
+        {
+          "id": "lo",
+          "kind": "state",
+          "name": "LightsOff",
+          "parent": "r2"
+        },
+        {
+          "id": "ln",
+          "kind": "state",
+          "name": "LightsOn",
+          "parent": "r2"
+        },
+        {
+          "id": "i3",
+          "kind": "initial",
+          "name": "",
+          "parent": "r1"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "op"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "i1",
+          "target": "idle"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "idle",
+          "target": "mov",
+          "trigger": "accelerate"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "i2",
+          "target": "lo"
+        },
+        {
+          "id": "t4",
+          "kind": "transition",
+          "source": "lo",
+          "target": "ln",
+          "trigger": "dark"
+        },
+        {
+          "id": "t5",
+          "kind": "transition",
+          "source": "i3",
+          "target": "mov"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "i3",
+        "kind": "two-initials-in-region",
+        "why": "左の領域に開始擬似状態が 2 つある（Idle へ向かうものと Moving へ向かうもの）。どちらから始まるかが決まらない。"
+      }
+    ],
+    "hints_md": [
+      "1 つの領域にいくつ開始を置けるか。"
+    ],
+    "explanation_md": "開始擬似状態は**1 つの領域に 1 つ**。Moving からも始めたいなら、開始は 1 つにして、Idle から Moving への遷移で表す。同時に動かしたいなら別の領域に分ける。",
+    "diagram": "stm"
+  },
+  {
+    "id": "stm-region-3",
+    "type": "spot_error",
+    "items": [
+      "mu-state-region"
+    ],
+    "level": 3,
+    "title": "開始からの遷移",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running",
+          "entry": "startPump",
+          "doActivity": "controlIdle",
+          "exit": "stopPump"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off",
+          "trigger": "power"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start",
+          "guard": "fuel > 0",
+          "effect": "ignite"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "off",
+          "target": "end",
+          "trigger": "after(30 s)"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "t0",
+        "kind": "initial-has-trigger",
+        "why": "開始擬似状態からの遷移にトリガ `power` が付いている。開始からはすぐに最初の状態へ入るので、トリガもガードも付けない。"
+      }
+    ],
+    "hints_md": [
+      "黒丸は状態か。そこで何かを待てるか。"
+    ],
+    "explanation_md": "黒丸は**擬似状態**で、とどまれない。状態機械が始まったらすぐ矢印の先に入るので、開始からの遷移にトリガ（待つイベント）もガードも書かない（効果だけは書ける）。",
+    "diagram": "stm"
+  },
+  {
+    "id": "stm-beh-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-state-behavior"
+    ],
+    "level": 1,
+    "title": "entry / do / exit",
+    "prompt_md": "図の Running の `startPump` が行われるのはいつか。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running",
+          "entry": "startPump",
+          "doActivity": "controlIdle",
+          "exit": "stopPump"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start",
+          "guard": "fuel > 0",
+          "effect": "ignite"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "off",
+          "target": "end",
+          "trigger": "after(30 s)"
+        }
+      ]
+    },
+    "hints_md": [
+      "`entry /` の意味。"
+    ],
+    "explanation_md": "| 欄 | いつ |\n| --- | --- |\n| `entry / startPump` | **入るとき 1 回** |\n| `do / controlIdle` | いる間ずっと（遷移で中断） |\n| `exit / stopPump` | 出るとき 1 回 |",
+    "diagram": "stm",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Running に入るとき 1 回"
+      },
+      {
+        "id": "b",
+        "text_md": "Running にいる間ずっと"
+      },
+      {
+        "id": "c",
+        "text_md": "Running を出るとき 1 回"
+      },
+      {
+        "id": "d",
+        "text_md": "start イベントが来るたびに"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-beh-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-state-behavior"
+    ],
+    "level": 2,
+    "title": "遷移の実行順",
+    "prompt_md": "状態 A（`exit / closeValve`）から状態 B（`entry / openDoor`、`do / monitor`）へ、効果 `/ beep` の遷移が起きる。実行される順はどれか。",
+    "hints_md": [
+      "出る → 移る → 入る → 居る。"
+    ],
+    "explanation_md": "遷移の順は**元の exit → 効果 → 先の entry → 先の do**。A を出る（closeValve）、遷移の効果（beep）、B に入る（openDoor）、B に居る間（monitor）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "closeValve → beep → openDoor → monitor"
+      },
+      {
+        "id": "b",
+        "text_md": "beep → closeValve → openDoor → monitor"
+      },
+      {
+        "id": "c",
+        "text_md": "closeValve → openDoor → beep → monitor"
+      },
+      {
+        "id": "d",
+        "text_md": "openDoor → monitor → closeValve → beep"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-beh-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-state-behavior"
+    ],
+    "level": 3,
+    "title": "自分自身へ戻る遷移",
+    "prompt_md": "状態 Running（`entry / startPump`、`exit / stopPump`）から Running 自身へ戻る遷移 `reset / clear` が起きた。正しいものはどれか。",
+    "hints_md": [
+      "自分自身へ戻る遷移も、いったん出て入り直す。"
+    ],
+    "explanation_md": "自分自身へ戻る遷移（外部遷移）でも、**いったん出て入り直す**ので exit と entry が実行される。順は **exit（stopPump）→ 効果（clear）→ entry（startPump）**。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "stopPump → clear → startPump の順に実行される"
+      },
+      {
+        "id": "b",
+        "text_md": "clear だけが実行される"
+      },
+      {
+        "id": "c",
+        "text_md": "startPump → clear → stopPump の順"
+      },
+      {
+        "id": "d",
+        "text_md": "stopPump だけが実行される"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-tr-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-transition"
+    ],
+    "level": 1,
+    "title": "時間のトリガ",
+    "prompt_md": "図の Off から終了状態への `after(30 s)` が表すものはどれか。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running",
+          "entry": "startPump",
+          "doActivity": "controlIdle",
+          "exit": "stopPump"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start",
+          "guard": "fuel > 0",
+          "effect": "ignite"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "off",
+          "target": "end",
+          "trigger": "after(30 s)"
+        }
+      ]
+    },
+    "hints_md": [
+      "after の起点はどこか。"
+    ],
+    "explanation_md": "`after(30 s)` は**時間イベント**で、**その状態に入った時から**数える。Off に 30 秒いたら（その間に start が来なければ）終了状態に移る。Running から戻ってきたら、また 0 から数え直す。",
+    "diagram": "stm",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Off に入ってから 30 秒たつと終了状態に移る"
+      },
+      {
+        "id": "b",
+        "text_md": "状態機械が始まってから 30 秒後に移る"
+      },
+      {
+        "id": "c",
+        "text_md": "30 秒ごとに繰り返し移る"
+      },
+      {
+        "id": "d",
+        "text_md": "30 秒たつまで Off に入れない"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-tr-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-transition"
+    ],
+    "level": 2,
+    "title": "ガードと変化イベント",
+    "prompt_md": "遷移の札 `[speed > 0]` と `when(speed > 0)` の違いとして正しいものはどれか。",
+    "hints_md": [
+      "[ ] の中はどの欄か。"
+    ],
+    "explanation_md": "`[ ]` は**ガード**（トリガが来たときに確かめる条件）で、それ自体は何も起こさない。`when(…)` は**変化イベント**で、条件が真になった瞬間に遷移を起こすトリガ。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`[speed > 0]` は条件（ガード）でイベントではない。`when(speed > 0)` は条件が真になった瞬間に起きる変化イベント（トリガ）"
+      },
+      {
+        "id": "b",
+        "text_md": "どちらもガード"
+      },
+      {
+        "id": "c",
+        "text_md": "どちらもトリガ"
+      },
+      {
+        "id": "d",
+        "text_md": "`[speed > 0]` が時間イベント、`when` がガード"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-tr-3",
+    "type": "read_diagram",
+    "items": [
+      "mu-transition"
+    ],
+    "level": 3,
+    "title": "ガードで行き先が分かれる",
+    "prompt_md": "次の図で、状態 Ready のときにイベント `go` が来た。battery は 15 だった。どうなるか。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "Robot"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "ready",
+          "kind": "state",
+          "name": "Ready"
+        },
+        {
+          "id": "drv",
+          "kind": "state",
+          "name": "Driving"
+        },
+        {
+          "id": "chg",
+          "kind": "state",
+          "name": "Charging",
+          "entry": "plugIn"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "ready"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "ready",
+          "target": "drv",
+          "trigger": "go",
+          "guard": "battery > 20"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "ready",
+          "target": "chg",
+          "trigger": "go",
+          "guard": "battery <= 20",
+          "effect": "warn"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "chg",
+          "target": "ready",
+          "trigger": "full"
+        }
+      ]
+    },
+    "hints_md": [
+      "トリガが go の遷移は 2 本。ガードが真なのはどちらか。"
+    ],
+    "explanation_md": "Ready から出る `go` の遷移は 2 本。ガードを評価すると `[battery > 20]` は偽、`[battery <= 20]` は真。真の方だけを通り、効果 warn → Charging の entry plugIn の順。ガードは**重ならず漏れが無い**ように書いてあるので、行き先は必ず 1 つに決まる。",
+    "diagram": "stm",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "warn を行って Charging に入り、plugIn を行う"
+      },
+      {
+        "id": "b",
+        "text_md": "Driving に移る"
+      },
+      {
+        "id": "c",
+        "text_md": "どちらにも移らない"
+      },
+      {
+        "id": "d",
+        "text_md": "Driving と Charging の両方に移る"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-stm"
+    ],
+    "level": 1,
+    "title": "stm のヘッダ",
+    "prompt_md": "状態機械 EngineControl の stm のヘッダとして正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "stm のヘッダの型は必ず **`stateMachine`**。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`stm [stateMachine] EngineControl`"
+      },
+      {
+        "id": "b",
+        "text_md": "`stm [activity] EngineControl`"
+      },
+      {
+        "id": "c",
+        "text_md": "`stm [block] EngineControl`"
+      },
+      {
+        "id": "d",
+        "text_md": "`stm [state] EngineControl`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "stm-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-stm"
+    ],
+    "level": 2,
+    "title": "遷移を引く",
+    "prompt_md": "次の遷移を引け。\n\n- 始まったら Off に入る\n- Off でイベント `start` が来たら Running へ\n- Running でイベント `stop` が来たら Off へ",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        }
+      ]
+    },
+    "hints_md": [
+      "開始からの遷移にはトリガを書かない。",
+      "トリガの欄にイベント名を書く。"
+    ],
+    "explanation_md": "開始（●）→ Off はトリガなし（始まったらすぐ入る）。Off → Running はトリガ `start`、Running → Off はトリガ `stop`。",
+    "diagram": "stm"
+  },
+  {
+    "id": "stm-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-stm"
+    ],
+    "level": 3,
+    "title": "状態と札の 3 つの欄",
+    "prompt_md": "次を組め。\n\n1. 状態 `Running` を置く。入るときに 1 回 `startPump` を行う\n2. Off で `start` が来て、燃料が残っている（`fuel > 0`）ときだけ、`ignite` を行って Running へ移る\n3. Running で `stop` が来たら Off へ",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        }
+      ]
+    },
+    "answer_model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running",
+          "entry": "startPump"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start",
+          "guard": "fuel > 0",
+          "effect": "ignite"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        }
+      ]
+    },
+    "hints_md": [
+      "入るとき 1 回は entry。",
+      "札は トリガ [ガード] / 効果 の 3 つの欄に分けて入れる。"
+    ],
+    "explanation_md": "`entry / startPump` は Running に入るたびに 1 回。Off → Running の札は `start [fuel > 0] / ignite` で、**トリガ・ガード・効果**の 3 つの欄に分かれる。",
+    "diagram": "stm"
+  }
+]

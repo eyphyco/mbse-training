@@ -1,0 +1,1259 @@
+[
+  {
+    "id": "sd-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-sd-purpose"
+    ],
+    "level": 1,
+    "title": "sd を読む",
+    "prompt_md": "次の図で、最初に起きることはどれか。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "fragment",
+          "id": "f1",
+          "operator": "alt",
+          "operands": [
+            {
+              "guard": "battery ok",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m4",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showReady"
+                }
+              ]
+            },
+            {
+              "guard": "else",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m5",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showWarning"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": [
+            "e",
+            "g"
+          ]
+        }
+      ]
+    },
+    "hints_md": [
+      "時間はどちら向きに流れるか。"
+    ],
+    "explanation_md": "シーケンス図の時間は**上から下**。いちばん上のメッセージ pushStart（driver → ecu）が最初に起きる。",
+    "diagram": "sd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "driver が ecu に pushStart を送る"
+      },
+      {
+        "id": "b",
+        "text_md": "ecu が engine の crank() を呼ぶ"
+      },
+      {
+        "id": "c",
+        "text_md": "engine が running を返す"
+      },
+      {
+        "id": "d",
+        "text_md": "ecu が driver に showReady を送る"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "sd-purpose-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-sd-purpose"
+    ],
+    "level": 2,
+    "title": "どの図で表すか",
+    "prompt_md": "「エンジン始動の場面で、運転者・ECU・エンジンがどの順にメッセージを交わすか」を表すのに最も適した図はどれか。",
+    "hints_md": [
+      "特定の場面での「誰が誰に・どの順で」。"
+    ],
+    "explanation_md": "特定の**シナリオ**で、部品どうしが**誰が誰に・どの順で**メッセージを交わすかはシーケンス図。act は処理と流れるもの、stm はイベントで変わる状態、ibd は部品のつながり（順序は描かない）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "シーケンス図（sd）"
+      },
+      {
+        "id": "b",
+        "text_md": "アクティビティ図（act）"
+      },
+      {
+        "id": "c",
+        "text_md": "状態機械図（stm）"
+      },
+      {
+        "id": "d",
+        "text_md": "内部ブロック図（ibd）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "sd-purpose-3",
+    "type": "spot_error",
+    "items": [
+      "mu-sd-purpose"
+    ],
+    "level": 3,
+    "title": "sd のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "activity",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "fragment",
+          "id": "f1",
+          "operator": "alt",
+          "operands": [
+            {
+              "guard": "battery ok",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m4",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showReady"
+                }
+              ]
+            },
+            {
+              "guard": "else",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m5",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showWarning"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": [
+            "e",
+            "g"
+          ]
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "シーケンス図が表すのは相互作用。ヘッダの [ ] は必ず `interaction`。"
+      }
+    ],
+    "hints_md": [
+      "sd のヘッダの [ ] に来られる型は 1 つだけ。"
+    ],
+    "explanation_md": "sd の図枠は**相互作用**（interaction）を表す。ヘッダの [ ] は必ず `interaction`。`activity` は act のヘッダ。",
+    "diagram": "sd"
+  },
+  {
+    "id": "sd-msg-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-lifeline-message"
+    ],
+    "level": 1,
+    "title": "矢じりの形",
+    "prompt_md": "図の `crank()` の矢じりは塗りつぶされている。正しいものはどれか。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "fragment",
+          "id": "f1",
+          "operator": "alt",
+          "operands": [
+            {
+              "guard": "battery ok",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m4",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showReady"
+                }
+              ]
+            },
+            {
+              "guard": "else",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m5",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showWarning"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": [
+            "e",
+            "g"
+          ]
+        }
+      ]
+    },
+    "hints_md": [
+      "塗った矢じりと開いた矢じりの違い。"
+    ],
+    "explanation_md": "**塗った矢じり = 同期**（呼んで返事を待つ）。engine からの**破線**の矢印 running がその返信。pushStart のような**開いた矢じり**は非同期で、送った側は待たない。",
+    "diagram": "sd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "同期メッセージで、ecu は engine の返事（running）が来るまで待つ"
+      },
+      {
+        "id": "b",
+        "text_md": "非同期メッセージで、ecu は待たずに次へ進む"
+      },
+      {
+        "id": "c",
+        "text_md": "engine から ecu への返信"
+      },
+      {
+        "id": "d",
+        "text_md": "ecu が engine を作る"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "sd-msg-2",
+    "type": "spot_error",
+    "items": [
+      "mu-lifeline-message"
+    ],
+    "level": 2,
+    "title": "返信の相手",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "async",
+          "from": "e",
+          "to": "g",
+          "label": "crank"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": [
+            "e",
+            "g"
+          ]
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "m3",
+        "kind": "reply-without-call",
+        "why": "ecu → engine の crank は開いた矢じり（非同期）。返事を待たないメッセージに返信は付かない。返事を受けたいなら crank() を同期（塗った矢じり）にする。"
+      }
+    ],
+    "hints_md": [
+      "返信（破線）はどのメッセージへの返事か。",
+      "その呼び出しの矢じりの形は？"
+    ],
+    "explanation_md": "返信（破線の矢印）は、先に送った**同期**メッセージへの返事。非同期メッセージ（開いた矢じり）は返事を待たないので、返信は付かない。",
+    "diagram": "sd"
+  },
+  {
+    "id": "sd-msg-3",
+    "type": "read_diagram",
+    "items": [
+      "mu-lifeline-message"
+    ],
+    "level": 3,
+    "title": "待つか待たないか",
+    "prompt_md": "次の図で、driver が pushStart を送った直後について正しいものはどれか。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "fragment",
+          "id": "f1",
+          "operator": "alt",
+          "operands": [
+            {
+              "guard": "battery ok",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m4",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showReady"
+                }
+              ]
+            },
+            {
+              "guard": "else",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m5",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showWarning"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": [
+            "e",
+            "g"
+          ]
+        }
+      ]
+    },
+    "hints_md": [
+      "pushStart の矢じりは塗りか、開きか。"
+    ],
+    "explanation_md": "pushStart は**開いた矢じり（非同期）**なので、driver は返事を待たない。running は crank()（同期）への返信で、driver とは関係しない。",
+    "diagram": "sd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "driver は返事を待たない。ecu の処理と並んで driver は次に進める"
+      },
+      {
+        "id": "b",
+        "text_md": "driver は running が返るまで待つ"
+      },
+      {
+        "id": "c",
+        "text_md": "driver は crank() の返事を待つ"
+      },
+      {
+        "id": "d",
+        "text_md": "pushStart は ecu から driver への返信である"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "sd-ref-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-interaction-ref"
+    ],
+    "level": 1,
+    "title": "ref の箱",
+    "prompt_md": "図の `ref CheckSystems` の箱が表すものはどれか。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "fragment",
+          "id": "f1",
+          "operator": "alt",
+          "operands": [
+            {
+              "guard": "battery ok",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m4",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showReady"
+                }
+              ]
+            },
+            {
+              "guard": "else",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m5",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showWarning"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": [
+            "e",
+            "g"
+          ]
+        }
+      ]
+    },
+    "hints_md": [
+      "ref は呼び出しか、図の差し込みか。"
+    ],
+    "explanation_md": "`ref` の箱は**相互作用参照**で、別の相互作用（シーケンス図）を**ここに差し込む**意味。箱がまたいでいるライフライン（ecu・engine）が参照先に参加する。操作の呼び出しではない。",
+    "diagram": "sd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "別のシーケンス図 CheckSystems をここに差し込む。ecu と engine が参加する"
+      },
+      {
+        "id": "b",
+        "text_md": "CheckSystems という操作を呼ぶ"
+      },
+      {
+        "id": "c",
+        "text_md": "CheckSystems という部品"
+      },
+      {
+        "id": "d",
+        "text_md": "CheckSystems を繰り返す"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "sd-ref-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-interaction-ref"
+    ],
+    "level": 2,
+    "title": "opt と alt",
+    "prompt_md": "「ナビが接続されているときだけ、経路を送る」を表す複合フラグメントはどれか。",
+    "hints_md": [
+      "区画が 1 つで「やるかやらないか」。"
+    ],
+    "explanation_md": "**区画 1 つで、条件が真のときだけ**行うのは `opt`。`alt` は複数の区画から 1 つを選ぶ、`loop` は繰り返し、`par` は並行。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`opt`"
+      },
+      {
+        "id": "b",
+        "text_md": "`alt`"
+      },
+      {
+        "id": "c",
+        "text_md": "`loop`"
+      },
+      {
+        "id": "d",
+        "text_md": "`par`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "sd-ref-3",
+    "type": "spot_error",
+    "items": [
+      "mu-interaction-ref"
+    ],
+    "level": 3,
+    "title": "alt の区画",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "fragment",
+          "id": "f1",
+          "operator": "alt",
+          "operands": [
+            {
+              "guard": "battery ok",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m4",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showReady"
+                }
+              ]
+            },
+            {
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m5",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showWarning"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": [
+            "e",
+            "g"
+          ]
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "f1",
+        "kind": "alt-operand-without-guard",
+        "why": "alt の 2 つ目の区画にガードが無い。いつ showWarning を送るのかが決まらない（ここは [else]）。"
+      }
+    ],
+    "hints_md": [
+      "alt の区画ごとに何を書くか。"
+    ],
+    "explanation_md": "`alt` は点線で区切った区画ごとに `[ガード]` を書く。最後の区画は `[else]` にできる。ガードの無い区画は、いつ選ばれるかが決まらない。",
+    "diagram": "sd"
+  },
+  {
+    "id": "sd-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-sd"
+    ],
+    "level": 1,
+    "title": "sd のヘッダ",
+    "prompt_md": "相互作用 StartEngine のシーケンス図のヘッダとして正しいものはどれか。",
+    "hints_md": [],
+    "explanation_md": "sd のヘッダの型は必ず **`interaction`**（相互作用）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`sd [interaction] StartEngine`"
+      },
+      {
+        "id": "b",
+        "text_md": "`sd [activity] StartEngine`"
+      },
+      {
+        "id": "c",
+        "text_md": "`sd [block] StartEngine`"
+      },
+      {
+        "id": "d",
+        "text_md": "`sd [sequence] StartEngine`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "sd-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-sd"
+    ],
+    "level": 2,
+    "title": "シグナルを送り合う",
+    "prompt_md": "次の順にメッセージを引け（どちらも返事を待たないシグナル）。\n\n1. driver が ecu に `pushStart` を送る\n2. ecu が driver に `showReady` を送る",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        }
+      ],
+      "relations": [],
+      "steps": []
+    },
+    "answer_model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "async",
+          "from": "e",
+          "to": "d",
+          "label": "showReady"
+        }
+      ]
+    },
+    "hints_md": [
+      "返事を待たないのは非同期（開いた矢じり）。",
+      "上から順に引く。引いた順が時間の順になる。"
+    ],
+    "explanation_md": "シグナルは返事を待たないので**非同期**（開いた矢じり）。メッセージは**上から下へ時間の順**に並ぶので、引く順も大切。",
+    "diagram": "sd"
+  },
+  {
+    "id": "sd-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-sd"
+    ],
+    "level": 3,
+    "title": "呼び出しと返信",
+    "prompt_md": "pushStart の後に、次の順でメッセージを足せ。\n\n1. ecu が engine の `crank()` を呼び、返事を待つ\n2. engine が ecu に `running` を返す\n3. ecu が driver に `showReady` を送る（返事は待たない）",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        }
+      ]
+    },
+    "answer_model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "message",
+          "id": "m4",
+          "sort": "async",
+          "from": "e",
+          "to": "d",
+          "label": "showReady"
+        }
+      ]
+    },
+    "hints_md": [
+      "返事を待つ呼び出しは同期。",
+      "返事は返信（破線）。"
+    ],
+    "explanation_md": "返事を待つ呼び出しは**同期**（塗った矢じり）、その返事は**返信**（破線・開いた矢じり）、待たないシグナルは**非同期**（開いた矢じり）。",
+    "diagram": "sd"
+  },
+  {
+    "id": "beh-cap-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-beh-capture"
+    ],
+    "level": 1,
+    "title": "変換の流れ",
+    "prompt_md": "「燃料を燃やして熱にし、熱をトルクに変える」という、入力を変換して出力する流れを表す道具はどれか。",
+    "hints_md": [],
+    "explanation_md": "入力を**変換して出力する**流れ（燃料 → 熱 → トルク）はアクティビティ。ピンとオブジェクトフローで、何が流れるかまで描ける。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "アクティビティ（act）"
+      },
+      {
+        "id": "b",
+        "text_md": "状態機械（stm）"
+      },
+      {
+        "id": "c",
+        "text_md": "相互作用（sd）"
+      },
+      {
+        "id": "d",
+        "text_md": "ユースケース（uc）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "beh-cap-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-beh-capture"
+    ],
+    "level": 2,
+    "title": "道具を選ぶ",
+    "prompt_md": "信号機の制御を設計する。「青・黄・赤のどれにいるかで、同じ『タイマー満了』に対する反応が違う」。最も適した道具はどれか。",
+    "hints_md": [],
+    "explanation_md": "**モード**（青・黄・赤）があり、同じイベントでも今の状態で反応が違うなら状態機械。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "状態機械（stm）"
+      },
+      {
+        "id": "b",
+        "text_md": "アクティビティ（act）"
+      },
+      {
+        "id": "c",
+        "text_md": "相互作用（sd）"
+      },
+      {
+        "id": "d",
+        "text_md": "パラメトリック（par）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "beh-cap-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-beh-capture"
+    ],
+    "level": 3,
+    "title": "問いと道具の組",
+    "prompt_md": "問いと道具の組のうち、**適切でない**ものはどれか。",
+    "hints_md": [],
+    "explanation_md": "**外から見た使われ方はユースケース（uc）**。相互作用（sd）は特定のシナリオで部品どうしがどの順にやりとりするかを描く。\n\n| 問い | 道具 |\n| --- | --- |\n| 何をどの順で行い、何が流れるか | act |\n| イベントでどの状態に変わるか | stm |\n| 部品どうしがどの順にやりとりするか | sd |\n| 外から見た使われ方 | uc |",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "外から見た使われ方 → 相互作用（sd）"
+      },
+      {
+        "id": "b",
+        "text_md": "何をどの順で行い、何が流れるか → アクティビティ（act）"
+      },
+      {
+        "id": "c",
+        "text_md": "イベントでどの状態に変わるか → 状態機械（stm）"
+      },
+      {
+        "id": "d",
+        "text_md": "部品どうしがどの順にやりとりするか → 相互作用（sd）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  }
+]

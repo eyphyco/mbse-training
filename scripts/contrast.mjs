@@ -64,7 +64,29 @@ for (const theme of ['light', 'dark']) {
     deviceScaleFactor: SCALE,
   });
   const page = await ctx.newPage();
-  await page.addInitScript((t) => localStorage.setItem('mbse-training:theme', t), theme);
+  await page.addInitScript((t) => {
+    localStorage.setItem('mbse-training:theme', t);
+    /*
+      札の補足（定着度・次の出題日）は解いた項目にしか出ない。1 項目だけ解いた状態にして測る。
+      全項目に問題が揃うまでは「問題は準備中」を測っていたが、揃った今はその文字が無い
+    */
+    localStorage.setItem(
+      'mbse-training:progress',
+      JSON.stringify({
+        version: 1,
+        items: {
+          'mu-association': {
+            level: 1,
+            dueOn: '2099-01-01',
+            streak: 1,
+            lapses: 0,
+            lastOn: '2026-10-01',
+            introducedOn: '2026-10-01',
+          },
+        },
+      }),
+    );
+  }, theme);
 
   const measure = async (label, selector, nth = 0) => {
     const loc = page.locator(selector).nth(nth);
@@ -73,6 +95,7 @@ for (const theme of ['light', 'dark']) {
     await page.waitForTimeout(250);
     const shot = await page.screenshot();
     const r = await loc.boundingBox();
+    if (!r || r.width < 1 || r.height < 1) throw new Error(`大きさが 0: ${label}（${selector}）`);
     const box = {
       x: Math.round(r.x * SCALE),
       y: Math.round(r.y * SCALE),
@@ -107,7 +130,8 @@ for (const theme of ['light', 'dark']) {
   await measure('レーンの副題 (muted)', '[data-testid=lane-untouched] h2 + span');
   await measure('空レーンの文 (muted)', '[data-testid=lane-dropped] .border-dashed');
   await measure('札の名前 (fg)', '[data-item] span.line-clamp-2');
-  await measure('札の補足 (muted)', '[data-item="mu-ibd-purpose"] span.text-micro');
+  await measure('札の補足 (muted)', '[data-item="mu-association"] span.text-micro.text-muted');
+  await measure('札の問題数 (subtle)', '[data-item="mu-ibd-purpose"] span.tnum');
   await measure('詳細の項目名 (muted)', '[data-testid=detail] dt');
   await measure('タブの現在地 (accent)', '[data-testid=detail] [role=tab][aria-selected=true]');
 
@@ -115,6 +139,12 @@ for (const theme of ['light', 'dark']) {
   await measure('本文 (fg)', '[data-testid=section-bdd-purpose] .md p');
   await measure('表の見出し (muted)', '[data-testid=section-bdd-purpose] .md th');
   await measure('初出の語の札 (purple)', '[data-testid=section-bdd-purpose] p.text-tiny');
+
+  // 組み立て問題のパレット。範囲外の札は薄くして「使えない」を示すが、読めなければ意味が無い
+  await open('/problems/stm-build-2');
+  await measure('パレットの副題 (muted)', '[data-tool] span.text-muted');
+  await measure('範囲外の札 (muted)', '[data-testid=build] li span.border-dashed');
+  await measure('範囲外の理由 (muted)', '[data-testid=build] li span[data-reason]');
 
   /*
     図の中の文字。地は紙（dg-paper）か札（dg-tab）で、どちらも不透明。

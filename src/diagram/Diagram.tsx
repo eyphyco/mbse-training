@@ -151,7 +151,13 @@ function NodeG({ n, focusable }: { n: NodeShape; focusable: Focusable }) {
   );
   if (n.inert) return <g aria-hidden="true">{body}</g>;
   return (
-    <g data-ref={n.id} data-kind="node" {...focusable(n.id)}>
+    // data-box はレイアウトが見込んだ箱。smoke が文字のはみ出しをこの矩形で測る（形が楕円・棒人間でも同じに測れる）
+    <g
+      data-ref={n.id}
+      data-kind="node"
+      data-box={`${n.x} ${n.y} ${n.w} ${n.h}`}
+      {...focusable(n.id)}
+    >
       {body}
     </g>
   );

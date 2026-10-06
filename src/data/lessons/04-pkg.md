@@ -4,11 +4,12 @@ no: 4
 title: パッケージとモデルの編成
 lead: パッケージはモデルのフォルダ。何がどこに属し、どこから何を見てよいかを読む。
 diagram: pkg
-problemsReady: false
+problemsReady: true
 ---
 
 ## パッケージ図は何を表す図か {#pkg-purpose}
 items: mu-pkg-purpose
+figures: pkg-model
 term: パッケージ | ぱっけーじ | モデル要素を入れる入れ物。左上に札の付いたフォルダの形で描く
 term: パッケージ図 | ぱっけーじず | pkg。パッケージの入れ子と、パッケージ間の依存を表す図
 
@@ -84,6 +85,7 @@ B が変わると A が影響を受ける、と読む。
 
 ## ビューとビューポイント {#pkg-view}
 items: mu-view-viewpoint
+figures: pkg-view
 term: ビューポイント | びゅーぽいんと | «viewpoint»。誰の（stakeholders）どんな関心（concerns）に、何の目的で応えるかを定めたもの
 term: ビュー | びゅー | «view»。ビューポイントに従って、モデルから必要な部分を集めたもの
 

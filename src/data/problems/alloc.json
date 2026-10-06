@@ -1,0 +1,811 @@
+[
+  {
+    "id": "alloc-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-alloc-purpose"
+    ],
+    "level": 1,
+    "title": "割り当てを読む",
+    "prompt_md": "次の図から言えることはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Functions to Parts"
+      },
+      "elements": [
+        {
+          "id": "gp",
+          "kind": "activity",
+          "name": "Generate Power"
+        },
+        {
+          "id": "dc",
+          "kind": "activity",
+          "name": "Decelerate"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "dependency",
+          "source": "gp",
+          "target": "eng",
+          "stereotype": "allocate"
+        },
+        {
+          "id": "a2",
+          "kind": "dependency",
+          "source": "dc",
+          "target": "brk",
+          "stereotype": "allocate"
+        }
+      ]
+    },
+    "hints_md": [
+      "«allocate» は「担当させる」。矢印の元と先はどちらが機能か。"
+    ],
+    "explanation_md": "`«allocate»` は**ある要素（機能）を別の要素（部品）に担当させる**関係。`Generate Power ⇢«allocate»⇢ Engine` は「Generate Power を Engine が担当する」。持つ（黒ひし形）でも一種（白三角）でもなく、要求に応える（«satisfy»）でもない。",
+    "diagram": "bdd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "機能 Generate Power を Engine が担当する"
+      },
+      {
+        "id": "b",
+        "text_md": "Engine が Generate Power を部分として持つ"
+      },
+      {
+        "id": "c",
+        "text_md": "Generate Power は Engine の一種"
+      },
+      {
+        "id": "d",
+        "text_md": "Engine は Generate Power という要求を満たす"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-purpose-2",
+    "type": "spot_error",
+    "items": [
+      "mu-alloc-purpose"
+    ],
+    "level": 2,
+    "title": "«allocate» の先",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Functions to Parts"
+      },
+      "elements": [
+        {
+          "id": "gp",
+          "kind": "activity",
+          "name": "Generate Power"
+        },
+        {
+          "id": "dc",
+          "kind": "activity",
+          "name": "Decelerate"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "req",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "dependency",
+          "source": "gp",
+          "target": "eng",
+          "stereotype": "allocate"
+        },
+        {
+          "id": "a2",
+          "kind": "dependency",
+          "source": "dc",
+          "target": "brk",
+          "stereotype": "allocate"
+        },
+        {
+          "id": "a3",
+          "kind": "dependency",
+          "source": "brk",
+          "target": "req",
+          "stereotype": "allocate"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "a3",
+        "kind": "allocate-to-requirement",
+        "why": "BrakeSystem が要求 StoppingDistance に応えることを «allocate» で描いている。要求に応えるのは «satisfy»。"
+      }
+    ],
+    "hints_md": [
+      "矢印の先が要求のとき、どの関係を使うか。"
+    ],
+    "explanation_md": "`«allocate»` の先は部品など（担当するもの）で、**要求ではない**。設計が要求に応えるなら `«satisfy»`。\n\n| | «satisfy» | «allocate» |\n| --- | --- | --- |\n| 先 | 要求 | 部品など |\n| 意味 | 要求に応える | 仕事を担当させる |",
+    "diagram": "bdd"
+  },
+  {
+    "id": "alloc-purpose-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-alloc-purpose"
+    ],
+    "level": 3,
+    "title": "割り当ての種類",
+    "prompt_md": "アクティビティ図の「燃料」のオブジェクトフローを、ibd の燃料管のコネクタに割り当てた。これはどの種類の割り当てか。",
+    "hints_md": [],
+    "explanation_md": "| 種類 | 元 | 先 |\n| --- | --- | --- |\n| 振る舞いの割り当て | アクション・アクティビティ | ブロック・パート |\n| **流れの割り当て** | **オブジェクトフロー** | **コネクタ・項目フロー** |\n| 構造の割り当て | 論理的なブロック | 物理的なブロック |",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "流れの割り当て"
+      },
+      {
+        "id": "b",
+        "text_md": "振る舞いの割り当て"
+      },
+      {
+        "id": "c",
+        "text_md": "構造の割り当て"
+      },
+      {
+        "id": "d",
+        "text_md": "要求の割り当て"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-fromto-1",
+    "type": "choose_construct",
+    "items": [
+      "mu-allocated-fromto"
+    ],
+    "level": 1,
+    "title": "先の側の区画",
+    "prompt_md": "`Generate Power ⇢«allocate»⇢ Engine` を区画で表す。Engine の箱に書く区画の名前はどれか。",
+    "hints_md": [
+      "Engine は矢印の先。どこから割り当てられたか。"
+    ],
+    "explanation_md": "矢印の**先**（Engine）は「どこ**から**割り当てられたか」を `allocatedFrom` に書く。矢印の**元**（Generate Power）は「どこ**へ**割り当てたか」を `allocatedTo` に書く。同じ 1 本の矢印を両端から見た名前。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "allocatedFrom"
+      },
+      {
+        "id": "b",
+        "text_md": "allocatedTo"
+      },
+      {
+        "id": "c",
+        "text_md": "satisfiedBy"
+      },
+      {
+        "id": "d",
+        "text_md": "parts"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-fromto-2",
+    "type": "spot_error",
+    "items": [
+      "mu-allocated-fromto"
+    ],
+    "level": 2,
+    "title": "区画の名前",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Functions to Parts"
+      },
+      "elements": [
+        {
+          "id": "gp",
+          "kind": "activity",
+          "name": "Generate Power"
+        },
+        {
+          "id": "dc",
+          "kind": "activity",
+          "name": "Decelerate"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "allocatedTo": [
+            "«activity» Generate Power"
+          ]
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "dependency",
+          "source": "gp",
+          "target": "eng",
+          "stereotype": "allocate"
+        },
+        {
+          "id": "a2",
+          "kind": "dependency",
+          "source": "dc",
+          "target": "brk",
+          "stereotype": "allocate"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "a1",
+        "kind": "allocate-compartment-mismatch",
+        "why": "Generate Power は Engine に割り当てられている（矢印の先が Engine）。Engine の区画は allocatedFrom でなければならないのに、allocatedTo になっている。"
+      }
+    ],
+    "hints_md": [
+      "Engine は矢印の元か、先か。"
+    ],
+    "explanation_md": "矢印の先（Engine）が持つのは `allocatedFrom`（割り当ての元）。`allocatedTo` は元の側（Generate Power）が持つ区画。区画で書くときは**向きを取り違えやすい**ので、矢印の元・先を先に確かめる。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "alloc-fromto-3",
+    "type": "read_diagram",
+    "items": [
+      "mu-allocated-fromto"
+    ],
+    "level": 3,
+    "title": "区画を矢印に読み替える",
+    "prompt_md": "次の図の BrakeSystem の区画 `allocatedFrom «activity» Decelerate` と同じ意味の矢印はどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation"
+      },
+      "elements": [
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem",
+          "allocatedFrom": [
+            "«activity» Decelerate"
+          ]
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "allocatedFrom": [
+            "«activity» Generate Power"
+          ]
+        }
+      ],
+      "relations": []
+    },
+    "hints_md": [
+      "allocatedFrom に書かれているのは、矢印の元か先か。"
+    ],
+    "explanation_md": "`allocatedFrom` に書かれているのは**矢印の元**。BrakeSystem の allocatedFrom に Decelerate があるので、`Decelerate ⇢«allocate»⇢ BrakeSystem`（Decelerate を BrakeSystem が担当）。区画・吹き出し・矢印は同じ関係の別の表し方。",
+    "diagram": "bdd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Decelerate ⇢«allocate»⇢ BrakeSystem"
+      },
+      {
+        "id": "b",
+        "text_md": "BrakeSystem ⇢«allocate»⇢ Decelerate"
+      },
+      {
+        "id": "c",
+        "text_md": "BrakeSystem ⇢«satisfy»⇢ Decelerate"
+      },
+      {
+        "id": "d",
+        "text_md": "Decelerate を BrakeSystem が黒ひし形で持つ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-repr-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-alloc-repr"
+    ],
+    "level": 1,
+    "title": "吹き出しを読む",
+    "prompt_md": "次の図のコメント（吹き出し）が表すものはどれか。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Callout"
+      },
+      "elements": [
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "note",
+          "kind": "comment",
+          "name": "",
+          "text": "allocatedFrom\n«activity» Generate Power"
+        }
+      ],
+      "relations": [
+        {
+          "id": "n1",
+          "kind": "anchor",
+          "source": "note",
+          "target": "eng"
+        }
+      ]
+    },
+    "hints_md": [
+      "吹き出しの見出しは何か。"
+    ],
+    "explanation_md": "吹き出し（コールアウト）に `allocatedFrom «activity» Generate Power` と書いたのは、**割り当ての別の表し方**。`Generate Power ⇢«allocate»⇢ Engine` の矢印と同じ意味。図が混むときに矢印の代わりに使う。",
+    "diagram": "bdd",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Generate Power が Engine に割り当てられている（矢印で描いたのと同じ意味）"
+      },
+      {
+        "id": "b",
+        "text_md": "Engine についての感想で、モデルの関係ではない"
+      },
+      {
+        "id": "c",
+        "text_md": "Engine が Generate Power を呼び出す"
+      },
+      {
+        "id": "d",
+        "text_md": "Generate Power は Engine の部品"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-repr-2",
+    "type": "read_diagram",
+    "items": [
+      "mu-alloc-repr"
+    ],
+    "level": 2,
+    "title": "割り当てパーティション",
+    "prompt_md": "次のアクティビティ図の `«allocate» : Vehicle` の帯と同じ意味を、矢印で書いたものはどれか。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "Accelerate"
+      },
+      "elements": [
+        {
+          "id": "p1",
+          "kind": "partition",
+          "name": "",
+          "type": "Driver"
+        },
+        {
+          "id": "p2",
+          "kind": "partition",
+          "name": "",
+          "type": "Vehicle",
+          "stereotypes": [
+            "allocate"
+          ]
+        },
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": "",
+          "parent": "p1"
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Press Pedal",
+          "parent": "p1"
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Increase Torque",
+          "parent": "p2"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": "",
+          "parent": "p2"
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "a2"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "end"
+        }
+      ]
+    },
+    "hints_md": [
+      "«allocate» が付いているのはどの帯か。",
+      "帯の中のアクションが元、帯の見出しが先。"
+    ],
+    "explanation_md": "`«allocate»` の付いたパーティションは、**中のアクションを見出しの部品に割り当てる**。Increase Torque → Vehicle。`: Driver` の帯には «allocate» が無いので、責任の分担を示すだけで割り当てではない。",
+    "diagram": "act",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Increase Torque ⇢«allocate»⇢ Vehicle"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle ⇢«allocate»⇢ Increase Torque"
+      },
+      {
+        "id": "c",
+        "text_md": "Press Pedal ⇢«allocate»⇢ Driver"
+      },
+      {
+        "id": "d",
+        "text_md": "Vehicle ⇢«satisfy»⇢ Increase Torque"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-repr-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-alloc-repr"
+    ],
+    "level": 3,
+    "title": "割り当てを表さないもの",
+    "prompt_md": "次のうち、割り当ての関係を**表さない**ものはどれか。",
+    "hints_md": [],
+    "explanation_md": "`«allocate»` の付いていないパーティションは**責任の分担を示すだけ**で、モデルとしての割り当ての関係にはならない。区画・吹き出し・矢印・割り当てパーティション・表は、どれも同じ割り当ての関係の表し方。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`«allocate»` の付いていないアクティビティパーティション"
+      },
+      {
+        "id": "b",
+        "text_md": "ブロックの allocatedFrom 区画"
+      },
+      {
+        "id": "c",
+        "text_md": "`allocatedTo` と書いた吹き出し"
+      },
+      {
+        "id": "d",
+        "text_md": "`«allocate»` の付いた破線の矢印"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-alloc-relations"
+    ],
+    "level": 1,
+    "title": "割り当ての向き",
+    "prompt_md": "論理的な制御ロジック `SpeedControl` を、物理的な部品 `ECU` で実現する。«allocate» の向きはどれか。",
+    "hints_md": [],
+    "explanation_md": "«allocate» は**担当させるもの → 担当するもの**。論理（SpeedControl）を物理（ECU）に割り当てるので SpeedControl → ECU（構造の割り当て）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "SpeedControl → ECU"
+      },
+      {
+        "id": "b",
+        "text_md": "ECU → SpeedControl"
+      },
+      {
+        "id": "c",
+        "text_md": "両方向"
+      },
+      {
+        "id": "d",
+        "text_md": "向きは無い"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "alloc-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-alloc-relations"
+    ],
+    "level": 2,
+    "title": "機能を部品に割り当てる",
+    "prompt_md": "機能 `Generate Power` を `Engine` に、機能 `Decelerate` を `BrakeSystem` に担当させよ。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Functions to Parts"
+      },
+      "elements": [
+        {
+          "id": "gp",
+          "kind": "activity",
+          "name": "Generate Power"
+        },
+        {
+          "id": "dc",
+          "kind": "activity",
+          "name": "Decelerate"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Functions to Parts"
+      },
+      "elements": [
+        {
+          "id": "gp",
+          "kind": "activity",
+          "name": "Generate Power"
+        },
+        {
+          "id": "dc",
+          "kind": "activity",
+          "name": "Decelerate"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "dependency",
+          "source": "gp",
+          "target": "eng",
+          "stereotype": "allocate"
+        },
+        {
+          "id": "a2",
+          "kind": "dependency",
+          "source": "dc",
+          "target": "brk",
+          "stereotype": "allocate"
+        }
+      ]
+    },
+    "hints_md": [
+      "担当させるもの（機能）→ 担当するもの（部品）。"
+    ],
+    "explanation_md": "`Generate Power ⇢«allocate»⇢ Engine`、`Decelerate ⇢«allocate»⇢ BrakeSystem`。矢印の元（機能）には allocatedTo、先（部品）には allocatedFrom が付く。",
+    "diagram": "bdd"
+  },
+  {
+    "id": "alloc-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-alloc-relations"
+    ],
+    "level": 3,
+    "title": "allocate と satisfy を使い分ける",
+    "prompt_md": "次の 2 つを表せ。\n\n- 機能 `Decelerate` を `BrakeSystem` が担当する\n- `BrakeSystem` は要求 `StoppingDistance` に応える",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Functions to Parts"
+      },
+      "elements": [
+        {
+          "id": "gp",
+          "kind": "activity",
+          "name": "Generate Power"
+        },
+        {
+          "id": "dc",
+          "kind": "activity",
+          "name": "Decelerate"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "req",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation",
+        "name": "Functions to Parts"
+      },
+      "elements": [
+        {
+          "id": "gp",
+          "kind": "activity",
+          "name": "Generate Power"
+        },
+        {
+          "id": "dc",
+          "kind": "activity",
+          "name": "Decelerate"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "req",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a2",
+          "kind": "dependency",
+          "source": "dc",
+          "target": "brk",
+          "stereotype": "allocate"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brk",
+          "target": "req",
+          "stereotype": "satisfy"
+        }
+      ]
+    },
+    "hints_md": [
+      "担当は «allocate»、要求に応えるのは «satisfy»。"
+    ],
+    "explanation_md": "仕事を担当させるのは `«allocate»`（Decelerate → BrakeSystem）、要求に応えるのは `«satisfy»`（BrakeSystem → StoppingDistance）。先が要求なら satisfy、と覚える。",
+    "diagram": "bdd"
+  }
+]

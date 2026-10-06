@@ -57,6 +57,8 @@ export type ElementKind =
   | 'constraintBlock'
   | 'flowSpecification'
   | 'enumeration'
+  /** bdd に描くアクティビティ（«activity» の箱。機能の分解と割り当ての元に使う） */
+  | 'activity'
   // ibd / par（使用）
   | 'part'
   | 'reference'
@@ -332,6 +334,7 @@ export const KIND_STEREOTYPE: Partial<Record<ElementKind, string>> = {
   constraintBlock: 'constraint',
   flowSpecification: 'flowSpecification',
   enumeration: 'enumeration',
+  activity: 'activity',
   model: 'model',
   modelLibrary: 'modelLibrary',
   view: 'view',
@@ -347,6 +350,7 @@ export const KIND_LABEL: Record<ElementKind, string> = {
   constraintBlock: '制約ブロック',
   flowSpecification: 'フロー仕様',
   enumeration: '列挙',
+  activity: 'アクティビティ',
   part: 'パート',
   reference: '参照プロパティ',
   value: '値属性',
@@ -367,8 +371,9 @@ export const KIND_LABEL: Record<ElementKind, string> = {
   acceptEvent: 'イベント受理アクション',
   acceptTime: '時間イベント受理アクション',
   objectNode: 'オブジェクトノード',
-  initial: '開始ノード',
-  final: '終了ノード',
+  // act では開始ノード、stm では開始擬似状態。形が同じなので形の名前で呼ぶ
+  initial: '開始（黒丸）',
+  final: '終了（二重丸）',
   flowFinal: 'フロー終了ノード',
   decision: '判断ノード',
   merge: 'マージノード',
@@ -425,6 +430,7 @@ export const ALLOWED: Record<DiagramType, { elements: ElementKind[]; relations: 
         'constraintBlock',
         'flowSpecification',
         'enumeration',
+        'activity',
         'actor',
         'requirement',
         'comment',

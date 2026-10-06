@@ -1940,5 +1940,130 @@
       "区画の行と線は、同じことの 2 通りの書き方。"
     ],
     "explanation_md": "parts 区画の `rotors : Rotor [4]` と、黒ひし形の線の**部分の側の端**（ロール名 rotors・多重度 4・相手 Rotor）は同じもの。名前・型・多重度のすべてが一致する。全体の側の端に書くロール名は別の意味（部分から見た全体の呼び名）。"
+  },
+  {
+    "id": "bdd-build-4",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-bdd"
+    ],
+    "level": 3,
+    "diagram": "bdd",
+    "title": "parts 区画を線で描き、特化を足す",
+    "prompt_md": "Vehicle の parts 区画には `engine : Engine` と `wheels : Wheel [4]` がある。次を組め。\n\n1. parts 区画と食い違わないよう、Vehicle から Engine・Wheel へ線を引く（ロール名と多重度も）\n2. ブロック `ElectricVehicle` を置き、Vehicle の一種であることを表す",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure",
+        "name": "Decomposition"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            },
+            {
+              "kind": "part",
+              "name": "wheels",
+              "type": "Wheel",
+              "mult": "4"
+            }
+          ]
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "wh",
+          "kind": "block",
+          "name": "Wheel"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "VehicleStructure",
+        "name": "Decomposition"
+      },
+      "elements": [
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "props": [
+            {
+              "kind": "part",
+              "name": "engine",
+              "type": "Engine"
+            },
+            {
+              "kind": "part",
+              "name": "wheels",
+              "type": "Wheel",
+              "mult": "4"
+            }
+          ]
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine"
+        },
+        {
+          "id": "wh",
+          "kind": "block",
+          "name": "Wheel"
+        },
+        {
+          "id": "ev",
+          "kind": "block",
+          "name": "ElectricVehicle"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "composition",
+          "source": "veh",
+          "target": "eng",
+          "targetRole": "engine",
+          "targetMult": "1"
+        },
+        {
+          "id": "k2",
+          "kind": "composition",
+          "source": "veh",
+          "target": "wh",
+          "targetRole": "wheels",
+          "targetMult": "4"
+        },
+        {
+          "id": "g1",
+          "kind": "generalization",
+          "source": "ev",
+          "target": "veh"
+        }
+      ]
+    },
+    "hints_md": [
+      "parts 区画はどのひし形の別の書き方か。",
+      "ロール名と多重度は部分の側（先の端）。",
+      "「一種である」は白三角。特化 → 一般。"
+    ],
+    "explanation_md": "parts 区画は**黒ひし形（コンポジション）**の別の書き方なので、線も黒ひし形にし、先の端に区画と同じロール名・多重度（`engine` `1`、`wheels` `4`）を書く。ElectricVehicle は Vehicle の特化なので、**ElectricVehicle → Vehicle に汎化（白三角）**を引く。"
   }
 ]

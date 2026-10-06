@@ -1,0 +1,1044 @@
+[
+  {
+    "id": "pkg-purpose-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-pkg-purpose"
+    ],
+    "level": 1,
+    "title": "pkg から読み取れること",
+    "prompt_md": "次の図から言えることはどれか。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "req",
+          "kind": "package",
+          "name": "Requirements"
+        },
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "st"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "parent": "st"
+        },
+        {
+          "id": "beh",
+          "kind": "package",
+          "name": "Behavior"
+        },
+        {
+          "id": "lib",
+          "kind": "modelLibrary",
+          "name": "Units"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "beh",
+          "target": "st",
+          "stereotype": "import"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "st",
+          "target": "lib",
+          "stereotype": "import"
+        }
+      ]
+    },
+    "hints_md": [
+      "フォルダの中に描いた要素は誰のものか。",
+      "破線の矢印は「持つ」か「使う」か。"
+    ],
+    "explanation_md": "パッケージ（フォルダ）の**中に描いた要素は、そのパッケージが所有**する。Vehicle と Engine は Structure のもの。\n\n- b: `«import»` の破線矢印は**使う**（依存）で、所有ではない\n- c: 「一種である」は汎化（白三角）\n- d: 図に中身を描いていないだけで、空とは限らない（図はモデルの見え方）",
+    "diagram": "pkg",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Vehicle と Engine は Structure パッケージが所有している"
+      },
+      {
+        "id": "b",
+        "text_md": "Behavior パッケージは Structure パッケージを所有している"
+      },
+      {
+        "id": "c",
+        "text_md": "Units は Structure の一種である"
+      },
+      {
+        "id": "d",
+        "text_md": "Requirements パッケージは空である"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-purpose-2",
+    "type": "spot_error",
+    "items": [
+      "mu-pkg-purpose"
+    ],
+    "level": 2,
+    "title": "pkg のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "block",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "req",
+          "kind": "package",
+          "name": "Requirements"
+        },
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "st"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "parent": "st"
+        },
+        {
+          "id": "beh",
+          "kind": "package",
+          "name": "Behavior"
+        },
+        {
+          "id": "lib",
+          "kind": "modelLibrary",
+          "name": "Units"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "beh",
+          "target": "st",
+          "stereotype": "import"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "st",
+          "target": "lib",
+          "stereotype": "import"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "パッケージ図が表すのはパッケージ類（package / model / modelLibrary / profile / view）。`block` の中身はパッケージ図では描かない。"
+      }
+    ],
+    "hints_md": [
+      "パッケージ図の図枠が表すのは、何の入れ物か。"
+    ],
+    "explanation_md": "pkg の図枠は、中のパッケージを持つ**パッケージ類**を表す。ヘッダの [ ] に書けるのは package / model / modelLibrary / profile / view。この図は最上位のモデルを描いているので `[model]` が正しい。",
+    "diagram": "pkg"
+  },
+  {
+    "id": "pkg-purpose-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-pkg-purpose"
+    ],
+    "level": 3,
+    "title": "どの図で表すか",
+    "prompt_md": "「要求・構造・振る舞いの要素を担当チームごとに分け、名前の衝突を避ける」ことを表すのに最も適した図はどれか。",
+    "hints_md": [],
+    "explanation_md": "モデルの**整理棚**を表すのはパッケージ図。パッケージごとに名前の範囲（名前空間）が分かれるので、名前の衝突も避けられる。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "パッケージ図（pkg）"
+      },
+      {
+        "id": "b",
+        "text_md": "ブロック定義図（bdd）"
+      },
+      {
+        "id": "c",
+        "text_md": "要求図（req）"
+      },
+      {
+        "id": "d",
+        "text_md": "内部ブロック図（ibd）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-own-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-pkg-ownership"
+    ],
+    "level": 1,
+    "title": "同じ名前の要素",
+    "prompt_md": "次の図の 2 つの `Vehicle` について正しいものはどれか。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Namespaces"
+      },
+      "elements": [
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "v1",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "st"
+        },
+        {
+          "id": "an",
+          "kind": "package",
+          "name": "Analysis"
+        },
+        {
+          "id": "v2",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "an"
+        }
+      ],
+      "relations": []
+    },
+    "hints_md": [
+      "パッケージは名前空間。名前が一意であればよい範囲はどこまでか。"
+    ],
+    "explanation_md": "パッケージは**名前空間**なので、別のパッケージに同じ名前の要素があってよい。区別するときは完全修飾名 `Structure::Vehicle` と `Analysis::Vehicle` で指す。2 つの別々の要素で、汎化の線も無い。",
+    "diagram": "pkg",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "別々の要素で、`Structure::Vehicle` と `Analysis::Vehicle` で区別できる"
+      },
+      {
+        "id": "b",
+        "text_md": "同じ要素を 2 か所に描いたもの"
+      },
+      {
+        "id": "c",
+        "text_md": "名前が重なっているのでモデルとして誤り"
+      },
+      {
+        "id": "d",
+        "text_md": "Analysis の Vehicle は Structure の Vehicle の特化"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-own-2",
+    "type": "spot_error",
+    "items": [
+      "mu-pkg-ownership"
+    ],
+    "level": 2,
+    "title": "持ち主の数",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "req",
+          "kind": "package",
+          "name": "Requirements"
+        },
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "st"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "parent": "st"
+        },
+        {
+          "id": "beh",
+          "kind": "package",
+          "name": "Behavior"
+        },
+        {
+          "id": "lib",
+          "kind": "modelLibrary",
+          "name": "Units"
+        },
+        {
+          "id": "an",
+          "kind": "package",
+          "name": "Analysis"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "beh",
+          "target": "st",
+          "stereotype": "import"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "st",
+          "target": "lib",
+          "stereotype": "import"
+        },
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "an",
+          "target": "veh"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "veh",
+        "kind": "owned-twice",
+        "why": "Vehicle は Structure の中に描かれ（所有）、さらに Analysis から包含の線（⊕）も引かれている。持ち主が 2 つになる。"
+      }
+    ],
+    "hints_md": [
+      "フォルダの中に描くことと、⊕ の線は同じ意味。"
+    ],
+    "explanation_md": "モデルの要素の**持ち主はちょうど 1 つ**。フォルダの中に描くのも ⊕ の線を引くのも「所有」の書き方なので、Vehicle は Structure と Analysis の 2 つに所有されている。Analysis から使いたいなら、所有ではなく `«import»` で取り込む。",
+    "diagram": "pkg"
+  },
+  {
+    "id": "pkg-own-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-pkg-ownership"
+    ],
+    "level": 3,
+    "title": "別のパッケージで使う",
+    "prompt_md": "Behavior パッケージの中のアクティビティで、Structure パッケージの `Vehicle` を使いたい。正しいものはどれか。",
+    "hints_md": [
+      "持ち主は 1 つ。使うだけなら？"
+    ],
+    "explanation_md": "要素の持ち主は 1 つなので、別のパッケージから使うときは**依存（`«import»`）**で取り込む。\n\n- b: 持ち主が 2 つになり誤り\n- c: 別の要素ができてしまい、片方を直してももう片方は古いまま\n- d: 構造を振る舞いの下に入れると、整理の意味がなくなる",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Behavior から Structure へ `«import»` を引き、Vehicle を短い名前で使う"
+      },
+      {
+        "id": "b",
+        "text_md": "Vehicle を Behavior にも入れ、両方のパッケージに所有させる"
+      },
+      {
+        "id": "c",
+        "text_md": "Behavior の中に同じ名前の Vehicle をもう 1 つ作る"
+      },
+      {
+        "id": "d",
+        "text_md": "Structure を Behavior の中に入れる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-rel-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-pkg-relations"
+    ],
+    "level": 1,
+    "title": "«import» を読む",
+    "prompt_md": "図の Behavior から Structure への `«import»` の矢印について正しいものはどれか。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "req",
+          "kind": "package",
+          "name": "Requirements"
+        },
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "st"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "parent": "st"
+        },
+        {
+          "id": "beh",
+          "kind": "package",
+          "name": "Behavior"
+        },
+        {
+          "id": "lib",
+          "kind": "modelLibrary",
+          "name": "Units"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "beh",
+          "target": "st",
+          "stereotype": "import"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "st",
+          "target": "lib",
+          "stereotype": "import"
+        }
+      ]
+    },
+    "hints_md": [
+      "依存の矢印は「元が先を使う」。"
+    ],
+    "explanation_md": "依存の矢印は**元が依存する側**、先が依存される側。`Behavior ⇢«import»⇢ Structure` は「Behavior が Structure の要素を使う（完全修飾名なしで呼べる）」。Structure が変わると Behavior が影響を受ける。",
+    "diagram": "pkg",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Behavior が Structure の要素を使う。Structure が変わると Behavior が影響を受ける"
+      },
+      {
+        "id": "b",
+        "text_md": "Structure が Behavior の要素を使う"
+      },
+      {
+        "id": "c",
+        "text_md": "Behavior が Structure を所有する"
+      },
+      {
+        "id": "d",
+        "text_md": "Behavior の要素が Structure に割り当てられる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-rel-2",
+    "type": "choose_construct",
+    "items": [
+      "mu-pkg-relations"
+    ],
+    "level": 2,
+    "title": "import と access",
+    "prompt_md": "Behavior が Structure の要素を取り込みたい。ただし取り込んだ名前は Behavior の中だけで使い、Behavior をさらに取り込む側には見せたくない。どれを使うか。",
+    "hints_md": [
+      "公開と非公開の違い。"
+    ],
+    "explanation_md": "`«import»` は**公開**インポートで、取り込んだ名前をさらに外にも見せる。`«access»` は**非公開**インポートで、自分の中だけで使う。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`«access»`"
+      },
+      {
+        "id": "b",
+        "text_md": "`«import»`"
+      },
+      {
+        "id": "c",
+        "text_md": "包含（⊕）"
+      },
+      {
+        "id": "d",
+        "text_md": "`«trace»`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-rel-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-pkg-relations"
+    ],
+    "level": 3,
+    "title": "包含と依存の違い",
+    "prompt_md": "パッケージ P が要素 X を包含（⊕）している場合と、P から X へ依存（破線矢印）を引いた場合の違いとして正しいものはどれか。",
+    "hints_md": [
+      "持っているのか、使っているのか。"
+    ],
+    "explanation_md": "| | 包含（⊕） | 依存（破線矢印） |\n| --- | --- | --- |\n| 意味 | 持っている | 使っている |\n| 持ち主が消えると | 中身も消える | 相手は残る |\n\n⊕ は**持ち主の側**（P の側）に付く。依存の矢印は使う側（P）から使われる側（X）へ向く。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "包含なら P を消すと X も消える。依存なら P を消しても X は残る"
+      },
+      {
+        "id": "b",
+        "text_md": "どちらも P を消すと X も消える"
+      },
+      {
+        "id": "c",
+        "text_md": "包含は ⊕ が X の側に付き、依存は矢印が P を向く"
+      },
+      {
+        "id": "d",
+        "text_md": "依存は所有の別の書き方で、意味は同じ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-view-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-view-viewpoint"
+    ],
+    "level": 1,
+    "title": "ビューとビューポイント",
+    "prompt_md": "図の `«conform»` が表すものはどれか。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "package",
+        "owner": "Views"
+      },
+      "elements": [
+        {
+          "id": "vp",
+          "kind": "viewpoint",
+          "name": "SafetyViewpoint",
+          "tags": {
+            "stakeholders": "安全担当",
+            "purpose": "危険の把握",
+            "concerns": "故障と危害"
+          }
+        },
+        {
+          "id": "v",
+          "kind": "view",
+          "name": "SafetyView"
+        },
+        {
+          "id": "sa",
+          "kind": "package",
+          "name": "SafetyAnalysis"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "v",
+          "target": "vp",
+          "stereotype": "conform"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "v",
+          "target": "sa",
+          "stereotype": "import"
+        }
+      ]
+    },
+    "hints_md": [
+      "ビューポイントは「決まり」、ビューは「見せ方」。"
+    ],
+    "explanation_md": "**ビューポイント**は stakeholders・concerns・purpose などを持つ「誰に何を見せるかの決まり」、**ビュー**はそれに従ってモデルから集めた見せ方。ビューは `«conform»` でビューポイントに**従う**（矢印はビュー → ビューポイント）。中身は `«import»` で集める。",
+    "diagram": "pkg",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "SafetyView が SafetyViewpoint の決まり（誰の・どんな関心に応えるか）に従っている"
+      },
+      {
+        "id": "b",
+        "text_md": "SafetyViewpoint が SafetyView を所有している"
+      },
+      {
+        "id": "c",
+        "text_md": "SafetyView が SafetyViewpoint の一種である"
+      },
+      {
+        "id": "d",
+        "text_md": "SafetyViewpoint が SafetyView の中身を取り込んでいる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-view-2",
+    "type": "spot_error",
+    "items": [
+      "mu-view-viewpoint"
+    ],
+    "level": 2,
+    "title": "«conform» の向き",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "package",
+        "owner": "Views"
+      },
+      "elements": [
+        {
+          "id": "vp",
+          "kind": "viewpoint",
+          "name": "SafetyViewpoint",
+          "tags": {
+            "stakeholders": "安全担当",
+            "purpose": "危険の把握",
+            "concerns": "故障と危害"
+          }
+        },
+        {
+          "id": "v",
+          "kind": "view",
+          "name": "SafetyView"
+        },
+        {
+          "id": "sa",
+          "kind": "package",
+          "name": "SafetyAnalysis"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "vp",
+          "target": "v",
+          "stereotype": "conform"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "v",
+          "target": "sa",
+          "stereotype": "import"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "d1",
+        "kind": "conform-reversed",
+        "why": "«conform» はビューがビューポイントに従う関係。矢印は SafetyView から SafetyViewpoint へ。"
+      }
+    ],
+    "hints_md": [
+      "どちらがどちらに従うのか。"
+    ],
+    "explanation_md": "`«conform»` は**ビューから**ビューポイントへ引く（ビューが決まりに適合する）。決まり（ビューポイント）が見せ方（ビュー）に従うことはない。",
+    "diagram": "pkg"
+  },
+  {
+    "id": "pkg-view-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-view-viewpoint"
+    ],
+    "level": 3,
+    "title": "stakeholders を持つもの",
+    "prompt_md": "`stakeholders`（関係者）・`concerns`（関心）・`purpose`（目的）を持つのはどれか。",
+    "hints_md": [],
+    "explanation_md": "stakeholders・concerns・purpose・languages・methods は**ビューポイント**が持つ（誰の・どんな関心に・何の目的で応えるか）。ビューはそれに従ってモデル要素を集めたもの。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "«viewpoint»"
+      },
+      {
+        "id": "b",
+        "text_md": "«view»"
+      },
+      {
+        "id": "c",
+        "text_md": "«modelLibrary»"
+      },
+      {
+        "id": "d",
+        "text_md": "«requirement»"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-hier-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-hierarchy"
+    ],
+    "level": 1,
+    "title": "最上位に置くもの",
+    "prompt_md": "モデル全体を表す、パッケージ階層の最上位に置くものはどれか。",
+    "hints_md": [],
+    "explanation_md": "**最上位は `«model»`**（モデル全体）。その下にパッケージを置いて分ける。modelLibrary は共通部品の置き場、view は見せ方、block はシステムの構造の型。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`«model»`"
+      },
+      {
+        "id": "b",
+        "text_md": "`«modelLibrary»`"
+      },
+      {
+        "id": "c",
+        "text_md": "`«view»`"
+      },
+      {
+        "id": "d",
+        "text_md": "`«block»`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-hier-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-hierarchy"
+    ],
+    "level": 2,
+    "title": "共通の値型の置き場",
+    "prompt_md": "複数のモデルで使う値型と単位（kg・N・m/s など）の置き場として最も適したものはどれか。",
+    "hints_md": [],
+    "explanation_md": "何度も使う部品（値型・単位など）は**モデルライブラリ**に切り出し、使う側から `«import»` する。同じ値型をあちこちに作ると、直すときに食い違う。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`«modelLibrary»` のパッケージに入れ、使う側から `«import»` する"
+      },
+      {
+        "id": "b",
+        "text_md": "使うパッケージのそれぞれに同じ値型を作る"
+      },
+      {
+        "id": "c",
+        "text_md": "最上位の `«model»` に直接並べる"
+      },
+      {
+        "id": "d",
+        "text_md": "Structure パッケージのブロックの中に入れる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-hier-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-hierarchy"
+    ],
+    "level": 3,
+    "title": "循環依存を解く",
+    "prompt_md": "Structure が Behavior を、Behavior が Structure を `«import»` している。最も適した直し方はどれか。",
+    "hints_md": [
+      "A ⇄ B のどちらも、相手が変わると影響を受ける。"
+    ],
+    "explanation_md": "**循環依存は避ける**。どちらを変えても相手に影響し、分けた意味がなくなる。共通部分を別のパッケージに切り出せば、依存は一方向（Structure → Common ← Behavior）になる。access に変えても依存の向きは同じで、循環は残る。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "両方が使う共通部分を別のパッケージに切り出し、Structure と Behavior の両方からそれを `«import»` する"
+      },
+      {
+        "id": "b",
+        "text_md": "2 つのパッケージを 1 つにまとめる"
+      },
+      {
+        "id": "c",
+        "text_md": "`«import»` を `«access»` に変える"
+      },
+      {
+        "id": "d",
+        "text_md": "そのままにする（依存は双方向でよい）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-pkg"
+    ],
+    "level": 1,
+    "title": "依存の向き",
+    "prompt_md": "Behavior パッケージが Structure パッケージの要素を使う。`«import»` の矢印はどう引くか。",
+    "hints_md": [],
+    "explanation_md": "依存の矢印は**使う側 → 使われる側**。Behavior が使うので Behavior から Structure へ引く。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "Behavior → Structure（矢じりが Structure）"
+      },
+      {
+        "id": "b",
+        "text_md": "Structure → Behavior（矢じりが Behavior）"
+      },
+      {
+        "id": "c",
+        "text_md": "両方向に 1 本ずつ"
+      },
+      {
+        "id": "d",
+        "text_md": "向きは無い（実線）"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "pkg-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-pkg"
+    ],
+    "level": 2,
+    "title": "«import» を引く",
+    "prompt_md": "次の 2 つの取り込みを足せ。\n\n- Behavior は Structure の要素を使う\n- Structure はモデルライブラリ Units の値型を使う",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "beh",
+          "kind": "package",
+          "name": "Behavior"
+        },
+        {
+          "id": "lib",
+          "kind": "modelLibrary",
+          "name": "Units"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "beh",
+          "kind": "package",
+          "name": "Behavior"
+        },
+        {
+          "id": "lib",
+          "kind": "modelLibrary",
+          "name": "Units"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "beh",
+          "target": "st",
+          "stereotype": "import"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "st",
+          "target": "lib",
+          "stereotype": "import"
+        }
+      ]
+    },
+    "hints_md": [
+      "使う側から使われる側へ。"
+    ],
+    "explanation_md": "依存は**使う側 → 使われる側**。Behavior ⇢ Structure、Structure ⇢ Units の 2 本の `«import»`。こうすると Behavior を変えても Structure は影響を受けない（依存が一方向）。",
+    "diagram": "pkg"
+  },
+  {
+    "id": "pkg-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-pkg"
+    ],
+    "level": 3,
+    "title": "パッケージ階層を組む",
+    "prompt_md": "次を組め。\n\n1. ブロック `Vehicle` を、パッケージ `Structure` の中に置く\n2. パッケージ `Analysis` を置く\n3. Analysis が Structure の要素（Vehicle）を使えるようにする",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "st"
+        },
+        {
+          "id": "an",
+          "kind": "package",
+          "name": "Analysis"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "an",
+          "target": "st",
+          "stereotype": "import"
+        }
+      ]
+    },
+    "hints_md": [
+      "ブロックを置くときに「置く場所」で Structure を選ぶ。",
+      "使う側から使われる側へ «import»。"
+    ],
+    "explanation_md": "Vehicle は Structure の中に置く（**所有**）。Analysis は Vehicle を所有せず、`Analysis ⇢«import»⇢ Structure` で**使う**。持ち主を 1 つに保ったまま、別のパッケージから使える。",
+    "diagram": "pkg"
+  }
+]

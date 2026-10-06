@@ -71,9 +71,11 @@ PDF を読む必要が出たら `poppler-utils` も同じ手で入る（依存�
 
 ## いま どこまで
 
-DESIGN.md §13 の手順 1〜7・9・12・13（Service Worker を除く）まで完了。画面はすべて動く。
-教材は全 12 章（`src/data/lessons/*.md`）、問題は第 1 章 bdd の 27 問。bdd の記法見本は `#/notation`。
-**次は手順 8（自分で解いて手が止まった所を記録する検問）と、手順 10（ibd / par のレンダラ）。**
+DESIGN.md §13 の手順 1〜7・9〜13 まで完了（Service Worker を含む）。画面はすべて動く。
+9 図種すべてを描ける（`#/notation` に見本 21 枚）。教材は全 12 章、問題は全 65 項目に 3 問以上で **196 問**
+（読む・選ぶ 131 / 誤り指摘 43 / 組み立て 22）。全章が `problemsReady: true` で、`coverage` は全項目の穴を落とす。
+**次は手順 8（自分で解いて手が止まった所を記録する検問）**。型の比率は DESIGN.md §6.2 の目安より選択式に寄っている
+（誤り指摘と組み立てを足す余地）。trace_match・param_eval の型はまだ無い。
 
 見た目は **WHITEBOARD のすりガラス**（2026-10-06 に決定。Claude 風の配色はやめた）。
 sql-training の「前景は不透明」は引き継がない。代わりにコントラストは `contrast` で実描画から測る。
@@ -83,11 +85,17 @@ sql-training の「前景は不透明」は引き継がない。代わりにコ�
 - 教材は章ごとの Markdown。節の見出しの直後に `items:` `figures:` `term:` の札（`src/data/lessonParser.ts`）
 - `validate` が「用語が定義より先に出ていないか」を落とす（章 0 の地図は除く）
 - spot_error の誤りは `src/diagram/rules.ts` の規則で検出できるものだけ。問題の `errors` と規則の検出結果が**ぴったり一致**しないと落ちる
-- `coverage` は章の札 `problemsReady: true` の章だけ穴を落とす（レンダラが無い章は問題を作れないため）
+- `coverage` は章の札 `problemsReady: true` の章だけ穴を落とす（今は全章が true）
+- build_fragment は `answer_model`（正解の図）と照合する。`validate` が「土台 + パレットで置けるものだけで正解が作れるか」
+  「置かせる要素の名前が問題文にあるか」を見る。パレットは `src/diagram/palette.ts`
 
 図のレンダラの作り:
 
-- `model.ts`（型と「図にできるか」の検査）→ `bdd.ts`（ELK で並べて座標にする）→ `Diagram.tsx`（描くだけ）
+- `model.ts`（9 図種の型と「図にできるか」の検査）→ `diagrams.ts`（図種で並べ方を選ぶ）→ `Diagram.tsx`（描くだけ）
+- 並べ方は 3 つ。箱と線の図（bdd・ibd・par・pkg・req・uc・stm）は ELK（`graph.ts`）、act は自前（`act.ts`）、sd は自前（`sd.ts`）。
+  act を ELK にしないのは、パーティションを入れ物で渡すと帯を行き来する流れで崩れたため
+- 形はプリミティブ（矩形・楕円・折れ線・多角形）の列で持つ（`shapes.ts`）。Diagram.tsx は図種を知らない
 - 座標まではすべて Node で回る。`validate` は**本物のレイアウト**を走らせる（.ts を直接 import）
 - 文字幅はブラウザでは canvas で実測、Node では `estimateWidth` の推定。`smoke` が実描画ではみ出しを測る
 - 図の色は白黒（本番の図が白黒）。4 色の色相は未決のまま
+- elkjs 0.12 の罠: `INCLUDE_CHILDREN` と `considerModelOrder` を同時に使うと落ちる。入れ子のある図だけ前者を使う（`graph.ts`）

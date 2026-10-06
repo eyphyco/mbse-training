@@ -4,7 +4,7 @@ no: 0
 title: 地図
 lead: 何も覚えなくてよい。SysML の 9 つの図がどこにあって、試験がどう出るかだけを先に見ておく。
 diagram: map
-problemsReady: false
+problemsReady: true
 ---
 
 ## MBSE とは何か — なぜ文書ではなくモデルか {#map-mbse}
@@ -107,8 +107,8 @@ bdd [package] VehicleStructure [Vehicle Decomposition]
 | `ibd` | block |
 | `par` | block / constraintBlock |
 | `pkg` | package / model / modelLibrary / profile / view |
-| `req` | package / requirement |
-| `uc` | package |
+| `req` | package / model / modelLibrary / requirement |
+| `uc` | package / model / modelLibrary |
 | `act` | activity |
 | `stm` | stateMachine |
 | `sd` | interaction |

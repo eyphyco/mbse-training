@@ -27,8 +27,9 @@ import { IconCheck, IconX } from './icons';
  * （置くたびに赤字が出ると、組み立ての途中の形が全部「誤り」に見える）。
  */
 
+// 見出し（label）の太字を継がないよう font-normal。枠は地に溶けないよう濃い線
 const INPUT =
-  'h-9 w-full min-w-0 rounded-md border border-edge bg-raised px-2.5 text-small text-fg placeholder:text-subtle';
+  'h-9 w-full min-w-0 rounded-md border border-line-strong bg-raised px-2.5 text-small font-normal text-fg placeholder:text-subtle';
 
 function FieldInputs({
   fields,
@@ -107,7 +108,7 @@ function ToolButton({
           ? 'cursor-not-allowed border-dashed border-edge bg-transparent opacity-60'
           : on
             ? 'border-accent-line bg-accent-soft'
-            : 'border-edge bg-raised hover:border-accent-line'
+            : 'border-line-strong bg-raised hover:border-accent-line'
       }`}
     >
       <span className={`block text-tiny font-bold ${on ? 'text-accent' : 'text-fg'}`}>{label}</span>
@@ -319,10 +320,11 @@ export default function BuildPanel({
                 <ul className="space-y-1">
                   {palette.outOfScope.map((o) => (
                     <li key={o.label} className="text-micro text-muted">
-                      <span className="mr-1.5 rounded-xs border border-dashed border-edge px-1.5 py-0.5 font-semibold opacity-70">
+                      {/* 薄くはしない（4.5:1 を割った。2026-10-06 に測定）。点線の枠で「使えない」を示す */}
+                      <span className="mr-1.5 rounded-xs border border-dashed border-line-strong px-1.5 py-0.5 font-semibold">
                         {o.label}
                       </span>
-                      {o.reason}
+                      <span data-reason>{o.reason}</span>
                     </li>
                   ))}
                 </ul>

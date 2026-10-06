@@ -1,0 +1,1495 @@
+[
+  {
+    "id": "req-concept-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-req-concept"
+    ],
+    "level": 1,
+    "title": "要求の箱を読む",
+    "prompt_md": "図の `StoppingDistance` について正しいものはどれか。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "hints_md": [
+      "«requirement» の箱の区画には何が書いてあるか。"
+    ],
+    "explanation_md": "要求は **id と text を持つモデル要素**。文書の 1 行ではなく、包含・satisfy・verify などの**関係で他の要素と結べる**のが要点。\n\n- c: 要求は**何を**満たすかを言い、どう満たすかは設計要素（BrakeSystem）の仕事\n- d: BrakeTest からの矢印は «verify»（検証）で、満たしてはいない",
+    "diagram": "req",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "id「R1」と text を持つモデル要素で、ほかの要素と関係で結ばれている"
+      },
+      {
+        "id": "b",
+        "text_md": "文書の 1 行で、モデルの要素ではない"
+      },
+      {
+        "id": "c",
+        "text_md": "ブレーキの止め方（どう満たすか）を定めている"
+      },
+      {
+        "id": "d",
+        "text_md": "BrakeTest が満たしている"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-concept-2",
+    "type": "spot_error",
+    "items": [
+      "mu-req-concept"
+    ],
+    "level": 2,
+    "title": "要求が持つもの",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "r1",
+        "kind": "requirement-missing-text",
+        "why": "StoppingDistance には id はあるが text が無い。何を求めるのかが書かれていない。"
+      }
+    ],
+    "hints_md": [
+      "«requirement» の箱は、どの 2 つを持つはずか。"
+    ],
+    "explanation_md": "要求は **id と text** の 2 つを持つ。text は「何を求めるか」の文で、これが無いと、満たしたか・検証できたかを判断できない。",
+    "diagram": "req"
+  },
+  {
+    "id": "req-concept-3",
+    "type": "choose_construct",
+    "items": [
+      "mu-req-concept"
+    ],
+    "level": 3,
+    "title": "要求に書かないこと",
+    "prompt_md": "要求 `MaxSpeed`（text: 最高速度 180 km/h を出せること）に、「エンジン出力を 150 kW にする」という実現方法も書き込みたい。正しい扱いはどれか。",
+    "hints_md": [
+      "要求は振る舞いや実現方法を持つか。"
+    ],
+    "explanation_md": "要求は**何を満たすか**を言い、**どう満たすか**は言わない。実現方法は設計要素の仕事で、要求とは **«satisfy»** で結ぶ。\n\n- b: 要求の text に実現方法を混ぜると、別の方法で満たしたとき要求ごと書き換えることになる\n- c: 要求は操作（振る舞い）を持たない\n- d: 要求が包含できるのは要求だけ",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "要求には何を満たすかだけを書き、出力 150 kW は設計要素（Engine の値属性など）に持たせて «satisfy» で要求と結ぶ"
+      },
+      {
+        "id": "b",
+        "text_md": "MaxSpeed の text に「エンジン出力 150 kW で」と書き足す"
+      },
+      {
+        "id": "c",
+        "text_md": "MaxSpeed に operations 区画を作り、出力を決める操作を書く"
+      },
+      {
+        "id": "d",
+        "text_md": "Engine を MaxSpeed の中に包含（⊕）する"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-purpose-1",
+    "type": "choose_construct",
+    "items": [
+      "mu-req-purpose"
+    ],
+    "level": 1,
+    "title": "要求図の利点",
+    "prompt_md": "要求図（req）で要求と設計・試験を関係で結んでおく利点として最も適したものはどれか。",
+    "hints_md": [],
+    "explanation_md": "要求図の利点は**トレーサビリティ**（辿れること）。要求を変えたとき影響する設計と試験が分かり、満たされていない要求・試験の無い要求がモデルから見つかる。つながり方は ibd、処理の順序は act や sd の仕事。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "要求から設計・試験まで辿れ、満たされていない要求や試験の無い要求が見つかる"
+      },
+      {
+        "id": "b",
+        "text_md": "要求の文が自動で正しい日本語に直る"
+      },
+      {
+        "id": "c",
+        "text_md": "部品どうしのつながり方が分かる"
+      },
+      {
+        "id": "d",
+        "text_md": "処理の順序が分かる"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-purpose-2",
+    "type": "read_diagram",
+    "items": [
+      "mu-req-purpose"
+    ],
+    "level": 2,
+    "title": "テストケースを読む",
+    "prompt_md": "図の `BrakeTest` について言えることはどれか。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "hints_md": [
+      "«verify» の矢印はどこからどこへ向いているか。"
+    ],
+    "explanation_md": "`BrakeTest ⇢«verify»⇢ StoppingDistance` は「BrakeTest が StoppingDistance を**検証する**」。満たすのは BrakeSystem（«satisfy»）。矢印の先が要求、元が「〜する側」と読む。",
+    "diagram": "req",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "要求 StoppingDistance（R1）を検証する試験である"
+      },
+      {
+        "id": "b",
+        "text_md": "要求 BrakeForce を満たす設計要素である"
+      },
+      {
+        "id": "c",
+        "text_md": "StoppingDistance から導かれた要求である"
+      },
+      {
+        "id": "d",
+        "text_md": "BrakeSystem の一部である"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-purpose-3",
+    "type": "spot_error",
+    "items": [
+      "mu-req-purpose"
+    ],
+    "level": 3,
+    "title": "要求図のヘッダ",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "block",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "frame",
+        "kind": "header-owner-type",
+        "why": "要求図が表すのは要求の置き場（package など）か 1 つの要求。`block` は要求図のヘッダに来ない。"
+      }
+    ],
+    "hints_md": [
+      "req のヘッダの [ ] に来られる型は？"
+    ],
+    "explanation_md": "req のヘッダの [ ] は package / model / modelLibrary / requirement のどれか。要求をまとめたパッケージ `Requirements` の図なので `[package]`。",
+    "diagram": "req"
+  },
+  {
+    "id": "req-rel-1",
+    "type": "read_diagram",
+    "items": [
+      "mu-req-relations"
+    ],
+    "level": 1,
+    "title": "deriveReqt を読む",
+    "prompt_md": "図の PedalForce から BrakeForce への `«deriveReqt»` が表すものはどれか。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "hints_md": [
+      "矢印の元が「〜する側」。deriveReqt の元は導いた要求。"
+    ],
+    "explanation_md": "`«deriveReqt»` は**導いた要求 → 元の要求**。PedalForce（踏力 500 N 以下）は、BrakeForce（制動力 8 kN 以上）を分析して新しく作った条件。部分要求（分解）なら包含（⊕）で描く。",
+    "diagram": "req",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "PedalForce は、BrakeForce を分析して導いた要求である"
+      },
+      {
+        "id": "b",
+        "text_md": "PedalForce は BrakeForce を満たす設計である"
+      },
+      {
+        "id": "c",
+        "text_md": "PedalForce は BrakeForce の部分要求である"
+      },
+      {
+        "id": "d",
+        "text_md": "BrakeForce は PedalForce から導いた要求である"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-rel-2",
+    "type": "spot_error",
+    "items": [
+      "mu-req-relations"
+    ],
+    "level": 2,
+    "title": "要求どうしの関係",
+    "prompt_md": "次の図には誤りが 1 つある。誤っている所を指し、「答える」を押せ。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "d1",
+        "kind": "satisfy-between-requirements",
+        "why": "PedalForce も BrakeForce も要求。要求どうしを «satisfy» で結ばない。分析から導いたなら «deriveReqt»。"
+      }
+    ],
+    "hints_md": [
+      "«satisfy» の元になれるのは何か。"
+    ],
+    "explanation_md": "`«satisfy»` は**設計 → 要求**の関係で、要求どうしには使わない。要求どうしは**包含**（分解）か `«deriveReqt»`（導出）。",
+    "diagram": "req"
+  },
+  {
+    "id": "req-rel-3",
+    "type": "spot_error",
+    "items": [
+      "mu-req-relations"
+    ],
+    "level": 3,
+    "title": "矢印の向き",
+    "prompt_md": "次の図には誤りが 2 つある。誤っている所をすべて指し、「答える」を押せ。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "r11",
+          "target": "brake",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "r1",
+          "target": "tc",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "errors": [
+      {
+        "at": "s1",
+        "kind": "satisfy-reversed",
+        "why": "«satisfy» は設計（BrakeSystem）から要求（BrakeForce）へ。要求から設計へ向いている。"
+      },
+      {
+        "at": "v1",
+        "kind": "verify-reversed",
+        "why": "«verify» はテストケース（BrakeTest）から要求（StoppingDistance）へ。逆を向いている。"
+      }
+    ],
+    "hints_md": [
+      "要求は常に矢印の**先**に来る。"
+    ],
+    "explanation_md": "要求の関係は、**すべて「〜する側」から要求へ**向く。要求が矢じりの側に来る、と覚える。\n\n- satisfy: BrakeSystem → BrakeForce\n- verify: BrakeTest → StoppingDistance",
+    "diagram": "req"
+  },
+  {
+    "id": "req-cap-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-req-capture"
+    ],
+    "level": 1,
+    "title": "判断の理由を残す",
+    "prompt_md": "「制動距離を 40 m にしたのは、法規の上限 44 m に余裕を持たせるため」という理由をモデルに残したい。何を使うか。",
+    "hints_md": [],
+    "explanation_md": "判断の理由は**根拠**（`«rationale»` のコメント）で書き添える。`«problem»` は欠陥・課題。text に混ぜると要求の文が理由で汚れ、検証の対象がぼやける。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "`«rationale»` のコメントを要求に付ける"
+      },
+      {
+        "id": "b",
+        "text_md": "`«problem»` のコメントを付ける"
+      },
+      {
+        "id": "c",
+        "text_md": "要求の text に理由も書く"
+      },
+      {
+        "id": "d",
+        "text_md": "新しい要求を作って «deriveReqt» で結ぶ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-cap-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-req-capture"
+    ],
+    "level": 2,
+    "title": "1 つの要求に 1 つのこと",
+    "prompt_md": "要求「最高速度 180 km/h を出せ、かつ 0〜100 km/h 加速を 8 秒以内にすること」がある。最も適した扱いはどれか。",
+    "hints_md": [
+      "「〜かつ〜」は検証できる単位か。"
+    ],
+    "explanation_md": "**1 つの要求に 1 つのこと**。「〜かつ〜」は検証の単位にならない（片方だけ満たしたときに判定できない）。分けて親から包含で結べば、それぞれに satisfy・verify を付けられる。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "2 つの要求に分け、親の要求から包含（⊕）で結ぶ"
+      },
+      {
+        "id": "b",
+        "text_md": "このまま 1 つの要求にする"
+      },
+      {
+        "id": "c",
+        "text_md": "最高速度だけを要求にし、加速はコメントにする"
+      },
+      {
+        "id": "d",
+        "text_md": "2 つを «trace» で結ぶ"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-cap-3",
+    "type": "choose_construct",
+    "items": [
+      "mbf-req-capture"
+    ],
+    "level": 3,
+    "title": "導出か、分解か、詳細化か",
+    "prompt_md": "ブレーキ性能を分析した結果、「制動力は 8 kN 以上」という**新しい条件**を作った。元の要求「40 m 以内に停止」との関係はどれか。",
+    "hints_md": [
+      "分析して条件を足したのか、同じことを詳しく言っただけか。"
+    ],
+    "explanation_md": "分析から**新しい条件を作った**なら `«deriveReqt»`（導いた側 → 元）。包含は分解（子を全部満たせば親を満たす）、refine は同じことを**詳しく言い換えた**だけのとき。satisfy は設計 → 要求で、要求どうしには使わない。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "新しい要求 → 元の要求に `«deriveReqt»`"
+      },
+      {
+        "id": "b",
+        "text_md": "元の要求から新しい要求へ包含（⊕）"
+      },
+      {
+        "id": "c",
+        "text_md": "新しい要求 → 元の要求に `«refine»`"
+      },
+      {
+        "id": "d",
+        "text_md": "新しい要求 → 元の要求に `«satisfy»`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-build-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-build-req"
+    ],
+    "level": 1,
+    "title": "要求どうしの関係",
+    "prompt_md": "要求どうしを結ぶのに使える関係の組はどれか。",
+    "hints_md": [],
+    "explanation_md": "要求どうしは**包含**（分解）か **`«deriveReqt»`**（導出）。satisfy は設計 → 要求、verify はテスト → 要求。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "包含と `«deriveReqt»`"
+      },
+      {
+        "id": "b",
+        "text_md": "`«satisfy»` と `«verify»`"
+      },
+      {
+        "id": "c",
+        "text_md": "`«allocate»` と汎化"
+      },
+      {
+        "id": "d",
+        "text_md": "コンポジションと `«import»`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-build-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-req"
+    ],
+    "level": 2,
+    "title": "要求を分解する",
+    "prompt_md": "親の要求 `Performance` を、`MaxSpeed` と `Acceleration` の 2 つの部分要求に分解せよ。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Performance"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "Performance",
+          "reqId": "R1",
+          "text": "車両は性能要件を満たすこと"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "MaxSpeed",
+          "reqId": "R1.1",
+          "text": "最高速度 180 km/h"
+        },
+        {
+          "id": "r12",
+          "kind": "requirement",
+          "name": "Acceleration",
+          "reqId": "R1.2",
+          "text": "0〜100 km/h を 8 秒以内"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Performance"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "Performance",
+          "reqId": "R1",
+          "text": "車両は性能要件を満たすこと"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "MaxSpeed",
+          "reqId": "R1.1",
+          "text": "最高速度 180 km/h"
+        },
+        {
+          "id": "r12",
+          "kind": "requirement",
+          "name": "Acceleration",
+          "reqId": "R1.2",
+          "text": "0〜100 km/h を 8 秒以内"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "k2",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r12"
+        }
+      ]
+    },
+    "hints_md": [
+      "分解は包含（⊕）。⊕ は親の側。"
+    ],
+    "explanation_md": "分解は**包含**。⊕ は**親の側**（Performance）に付く。子の 2 つを満たせば親を満たす、という関係になる。",
+    "diagram": "req"
+  },
+  {
+    "id": "req-build-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-build-req"
+    ],
+    "level": 3,
+    "title": "導いた要求を足す",
+    "prompt_md": "BrakeForce の分析から、新しい要求 `PedalForce`（id `R2`、text「ペダル踏力は 500 N 以下」）を導いた。この要求を置き、BrakeForce との関係を引け。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        }
+      ]
+    },
+    "answer_model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        }
+      ]
+    },
+    "hints_md": [
+      "要求を置くときは id と text も入れる。",
+      "導いた要求 → 元の要求。"
+    ],
+    "explanation_md": "分析から導いた要求は `«deriveReqt»` で**導いた側（PedalForce）→ 元（BrakeForce）**。要求は id と text を持つ要素として置く。",
+    "diagram": "req"
+  },
+  {
+    "id": "req-elem-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-req-to-elements"
+    ],
+    "level": 1,
+    "title": "ブロックが要求に応える",
+    "prompt_md": "ブロック `BrakeSystem` が要求 `StoppingDistance` に応えていることを表す関係と向きはどれか。",
+    "hints_md": [],
+    "explanation_md": "**設計要素 → 要求**に `«satisfy»`。要求は常に矢印の先。verify はテストケースから、allocate は機能を構造に担当させる関係（先は要求ではない）。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "BrakeSystem → StoppingDistance に `«satisfy»`"
+      },
+      {
+        "id": "b",
+        "text_md": "StoppingDistance → BrakeSystem に `«satisfy»`"
+      },
+      {
+        "id": "c",
+        "text_md": "BrakeSystem → StoppingDistance に `«verify»`"
+      },
+      {
+        "id": "d",
+        "text_md": "StoppingDistance → BrakeSystem に `«allocate»`"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-elem-2",
+    "type": "build_fragment",
+    "items": [
+      "mbf-req-to-elements"
+    ],
+    "level": 2,
+    "title": "満たす・確かめる",
+    "prompt_md": "`BrakeSystem` が `StoppingDistance` を満たし、`BrakeTest` がそれを確かめることを表せ。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Trace"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Trace"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r1",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "hints_md": [
+      "満たすのは設計、確かめるのはテストケース。"
+    ],
+    "explanation_md": "`BrakeSystem ⇢«satisfy»⇢ StoppingDistance`、`BrakeTest ⇢«verify»⇢ StoppingDistance`。どちらも要求が矢印の先。",
+    "diagram": "req"
+  },
+  {
+    "id": "req-elem-3",
+    "type": "build_fragment",
+    "items": [
+      "mbf-req-to-elements"
+    ],
+    "level": 3,
+    "title": "要求を 3 方向へ結ぶ",
+    "prompt_md": "要求 `StoppingDistance` について、次の 3 つを表せ。\n\n- ユースケース `Stop Vehicle` が、この要求を使われ方として詳しく述べている\n- `BrakeSystem` がこの要求を満たす\n- `BrakeTest` がこの要求を確かめる",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Trace"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "uc",
+          "kind": "useCase",
+          "name": "Stop Vehicle"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": []
+    },
+    "answer_model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Trace"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "uc",
+          "kind": "useCase",
+          "name": "Stop Vehicle"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "dependency",
+          "source": "uc",
+          "target": "r1",
+          "stereotype": "refine"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r1",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "hints_md": [
+      "詳しく言い換えたのは «refine»。",
+      "3 本とも要求が矢印の先。"
+    ],
+    "explanation_md": "| やりたいこと | 関係 |\n| --- | --- |\n| ユースケースで詳しく言う | `Stop Vehicle ⇢«refine»⇢ 要求` |\n| ブロックが応える | `BrakeSystem ⇢«satisfy»⇢ 要求` |\n| 試験で確かめる | `BrakeTest ⇢«verify»⇢ 要求` |",
+    "diagram": "req"
+  },
+  {
+    "id": "req-table-1",
+    "type": "choose_construct",
+    "items": [
+      "mbf-req-table"
+    ],
+    "level": 1,
+    "title": "要求表の空欄",
+    "prompt_md": "要求表で、ある要求の `verifiedBy` 列が空だった。何が分かるか。",
+    "hints_md": [],
+    "explanation_md": "`verifiedBy` は «verify» の線を要求の側から見た名前。空なら**試験がまだ無い**。満たす設計が無いのは `satisfiedBy` が空のとき。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "その要求を確かめるテストケースがまだ無い"
+      },
+      {
+        "id": "b",
+        "text_md": "その要求はまだ満たされていない（設計が無い）"
+      },
+      {
+        "id": "c",
+        "text_md": "その要求は不要"
+      },
+      {
+        "id": "d",
+        "text_md": "その要求に id が無い"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-table-2",
+    "type": "choose_construct",
+    "items": [
+      "mbf-req-table"
+    ],
+    "level": 2,
+    "title": "行列で探す",
+    "prompt_md": "行 = 要求、列 = 設計要素、交点に «satisfy» の印を付けた行列がある。印が 1 つも無い**行**から分かることはどれか。",
+    "hints_md": [
+      "行は何で、列は何か。"
+    ],
+    "explanation_md": "行が要求なので、空の行は「**どの設計要素からも満たされていない要求**」。逆に空の列は「どの要求にも応えていない設計要素」（不要な設計の疑い）。表や行列で関係を足しても、図と同じモデルに入る。",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "その要求を満たす設計要素がまだ無い"
+      },
+      {
+        "id": "b",
+        "text_md": "その設計要素はどの要求にも応えていない"
+      },
+      {
+        "id": "c",
+        "text_md": "その要求は検証済み"
+      },
+      {
+        "id": "d",
+        "text_md": "その要求は他の要求から導かれた"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  },
+  {
+    "id": "req-table-3",
+    "type": "read_diagram",
+    "items": [
+      "mbf-req-table"
+    ],
+    "level": 3,
+    "title": "図を表として読む",
+    "prompt_md": "次の図を要求表にした。`BrakeForce` の行の `satisfiedBy` と `derived` の列に入るものの組はどれか。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    },
+    "hints_md": [
+      "satisfiedBy は «satisfy» の元、derived は BrakeForce から導かれた要求。"
+    ],
+    "explanation_md": "要求の側から見た名前に読み替える。\n\n- `satisfiedBy`: BrakeForce を満たす設計 = «satisfy» の元 = **BrakeSystem**\n- `derived`: BrakeForce から導かれた要求 = «deriveReqt» の元 = **PedalForce**\n\n表と図は同じモデルの別の見え方なので、食い違わない。",
+    "diagram": "req",
+    "choices": [
+      {
+        "id": "a",
+        "text_md": "satisfiedBy: BrakeSystem、derived: PedalForce"
+      },
+      {
+        "id": "b",
+        "text_md": "satisfiedBy: BrakeTest、derived: StoppingDistance"
+      },
+      {
+        "id": "c",
+        "text_md": "satisfiedBy: PedalForce、derived: BrakeSystem"
+      },
+      {
+        "id": "d",
+        "text_md": "satisfiedBy: StoppingDistance、derived: PedalForce"
+      }
+    ],
+    "answer": [
+      "a"
+    ]
+  }
+]
