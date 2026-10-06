@@ -16,7 +16,7 @@ import { useProgress } from '../storage/progressContext';
 export default function LearnChapter() {
   const { id } = useParams();
   const { hash } = useLocation();
-  const { data, markRead } = useProgress();
+  const { data, markRead, unmarkRead } = useProgress();
   const i = LESSONS.findIndex((l) => l.id === id);
   const lesson = LESSONS[i];
 
@@ -133,13 +133,28 @@ export default function LearnChapter() {
               )}
 
               <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+                {/*
+                  押すたびに付け外しする。付いている間は緑の札で「読んだ」と出し、
+                  押せば外れることを副題で言う（外せないと、押し間違いを直せない）
+                */}
                 {read ? (
-                  <span className="flex items-center gap-1.5 text-small font-semibold text-success">
-                    <IconCheck size={14} /> 読んだ
-                  </span>
+                  <button
+                    type="button"
+                    aria-pressed="true"
+                    onClick={() => unmarkRead(s.items, s.id)}
+                    data-testid={`read-${s.id}`}
+                    className="group flex h-8 items-center gap-1.5 rounded-sm border border-success-line bg-success-soft px-3 text-small font-semibold text-success transition-colors hover:border-line-strong hover:bg-raised hover:text-muted"
+                  >
+                    <IconCheck size={14} />
+                    <span className="group-hover:hidden group-focus-visible:hidden">読んだ</span>
+                    <span className="hidden group-hover:inline group-focus-visible:inline">
+                      読んだを外す
+                    </span>
+                  </button>
                 ) : (
                   <Button
                     size="sm"
+                    aria-pressed="false"
                     onClick={() => markRead(s.items, s.id)}
                     data-testid={`read-${s.id}`}
                   >

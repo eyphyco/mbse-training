@@ -7,6 +7,7 @@ import {
   normalize,
   planStatus,
   sectionRead,
+  unmarkRead,
   recordAnswer,
   todayPlan,
 } from './progress';
@@ -126,10 +127,22 @@ describe('節を読んだ', () => {
     expect(sectionRead(d, { id: 'map-exam', items: [] })).toBe(true);
     expect(sectionRead(d, { id: 'map-howto', items: [] })).toBe(false);
   });
-  it('項目をすべて読んだ・解いた節は、節を押していなくても読んだ', () => {
+  it('項目をすべて読んだ節（ボードで読んだにした）は、節を押していなくても読んだ', () => {
     const d = markRead(emptyProgress(), ['a', 'b'], T);
     expect(sectionRead(d, { id: 's', items: ['a', 'b'] })).toBe(true);
     expect(sectionRead(d, { id: 's', items: ['a', 'c'] })).toBe(false);
+  });
+  it('外すと節と項目の「読んだ」が消える。解いた記録は残る', () => {
+    let d = markRead(emptyProgress(), ['a'], T, 's');
+    d = recordAnswer(d, 'p1', ['a'], true, new Date(), T).data;
+    d = unmarkRead(d, ['a'], 's');
+    expect(sectionRead(d, { id: 's', items: ['a'] })).toBe(false);
+    expect(d.read.a).toBeUndefined();
+    expect(laneOf(d, 'a')).toBe('solved');
+  });
+  it('問題を解いただけでは節を読んだにしない（外せなくなるため）', () => {
+    const d = recordAnswer(emptyProgress(), 'p1', ['a'], true, new Date(), T).data;
+    expect(sectionRead(d, { id: 's', items: ['a'] })).toBe(false);
   });
   it('古い保存データ（節の記録が無い）も空として読める', () => {
     expect(normalize({ version: 1, read: { a: T } }).sections).toEqual({});

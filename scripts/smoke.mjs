@@ -203,15 +203,18 @@ try {
   check('節の終わりに初出の語を出す', text.includes('この節で初めて出る語'));
   check('教材の中に図を描く', (await page.locator('[data-testid=diagram] svg').count()) > 0);
 
-  // 項目を持たない節（章 0 の「試験の構造」）も読んだにでき、目次にチェックが入る
+  // 項目を持たない節（章 0 の「試験の構造」）も読んだにでき、もう一度押せば外せる
   await go('/learn/map');
-  await page.click('[data-testid=read-map-exam]');
+  const readBtn = page.locator('[data-testid=read-map-exam]');
+  await readBtn.click();
   await page.waitForTimeout(300);
   check(
     '項目の無い節も「読んだ」にできる',
-    (await page.locator('[data-testid=read-map-exam]').count()) === 0 &&
-      (await page.locator('[data-testid=section-map-exam]').innerText()).includes('読んだ'),
+    (await readBtn.getAttribute('aria-pressed')) === 'true',
   );
+  await readBtn.click();
+  await page.waitForTimeout(300);
+  check('「読んだ」を外せる', (await readBtn.getAttribute('aria-pressed')) === 'false');
 
   /* --- 問題の一覧 ------------------------------------------------------ */
   await go('/problems');

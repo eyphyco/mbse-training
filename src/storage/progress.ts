@@ -213,12 +213,26 @@ export function markRead(
 }
 
 /**
- * 節を読み終えたか。節を「読んだ」にしたか、節の項目をすべて読んだ・解いたなら読み終えた。
- * ボードで項目を読んだにした場合も、教材の節に反映されるように項目からも判定する
+ * 「読んだ」を外す。節の記録と、その節の項目の「読んだ」を消す。
+ * 解いた記録（定着度）は消さない。読んだかどうかと、解けるかどうかは別の軸なので
+ */
+export function unmarkRead(data: ProgressData, itemIds: string[], sectionId: string): ProgressData {
+  const read = { ...data.read };
+  const sections = { ...data.sections };
+  for (const id of itemIds) delete read[id];
+  delete sections[sectionId];
+  return { ...data, read, sections };
+}
+
+/**
+ * 節を読み終えたか。節を「読んだ」にしたか、ボードで節の項目をすべて「読んだ」にしたなら読み終えた。
+ *
+ * 問題を解いたことは数えない。数えると「読んだ」を外しても解いた記録でまた点き、外せなかった
+ * （2026-10-06 の指摘）。解いたかどうかはボードのレーンが示す
  */
 export function sectionRead(data: ProgressData, section: { id: string; items: string[] }): boolean {
   if (data.sections[section.id]) return true;
-  return section.items.length > 0 && section.items.every((it) => data.read[it] || data.items[it]);
+  return section.items.length > 0 && section.items.every((it) => data.read[it]);
 }
 
 /**

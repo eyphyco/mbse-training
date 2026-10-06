@@ -9,6 +9,8 @@ export interface ProgressContextValue {
   answer: (problemId: string, items: string[], correct: boolean) => Transition[];
   /** 項目を読んだにする。節 id を渡すと節も読んだにする */
   markRead: (items: string[], sectionId?: string) => void;
+  /** 教材の節の「読んだ」を外す */
+  unmarkRead: (items: string[], sectionId: string) => void;
   addMemo: (itemId: string, text: string) => void;
   removeMemo: (itemId: string, at: string) => void;
   setSettings: (s: Partial<Settings>) => void;

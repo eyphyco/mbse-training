@@ -6,6 +6,7 @@ import {
   emptyProgress,
   loadProgress,
   markRead as markReadPure,
+  unmarkRead as unmarkReadPure,
   recordAnswer,
   saveProgress,
 } from './progress';
@@ -79,6 +80,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       answer,
       markRead: (items: string[], sectionId?: string) =>
         setData((d) => markReadPure(d, items, dayOf(Date.now()), sectionId)),
+      unmarkRead: (items: string[], sectionId: string) =>
+        setData((d) => unmarkReadPure(d, items, sectionId)),
       addMemo: (itemId: string, text: string) =>
         setData((d) => ({
           ...d,
