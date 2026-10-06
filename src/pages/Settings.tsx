@@ -117,6 +117,11 @@ export default function Settings() {
 
       <Card className="space-y-3 p-5">
         <SectionTitle>データ</SectionTitle>
+        <p className="text-small leading-relaxed text-fg">
+          進捗はこの端末のブラウザ（localStorage）にだけ保存しています。サーバには送らず、ログインもありません。
+          別の端末やブラウザへ移すときは、下の「書き出す」で JSON にして、移った先で「読み込む」。
+          ブラウザのサイトデータを消すと進捗も消えるので、ときどき書き出しておくと安心です。
+        </p>
         <p className="tnum text-small text-muted">
           定着度 {Object.keys(data.items).length} 項目 ・ 解いた記録 {data.history.length} 件 ・
           メモ {Object.values(data.memos).reduce((n, m) => n + m.length, 0)} 件 ・ 模擬試験{' '}

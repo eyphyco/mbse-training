@@ -58,7 +58,9 @@ try {
   check('分母を出す', text.includes(`出題範囲 ${itemCount} 項目中`), `${itemCount} 項目`);
   check(
     'データの所在を常に出す',
-    (await page.locator('[data-testid=data-badge]').innerText()).includes('この端末のみ'),
+    ((await page.getAttribute('[data-testid=data-badge]', 'aria-label')) ?? '').includes(
+      'この端末のブラウザにだけ保存',
+    ),
   );
 
   /*
@@ -221,7 +223,10 @@ try {
   await go('/');
   await page.fill('[data-testid=search]', 'ロール名');
   await page.waitForTimeout(300);
-  check('検索で用語が引ける', (await page.locator('.panel-pop').innerText()).includes('ロール名'));
+  check(
+    '検索で用語が引ける',
+    (await page.locator('.panel-pop:not([role=tooltip])').innerText()).includes('ロール名'),
+  );
   await page.fill('[data-testid=search]', '');
 
   /* --- 用語集 -------------------------------------------------------- */

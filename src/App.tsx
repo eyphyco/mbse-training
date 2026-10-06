@@ -11,6 +11,7 @@ import {
   IconAa,
   IconBook,
   IconCube,
+  IconDatabase,
   IconGrid,
   IconHome,
   IconInfo,
@@ -109,22 +110,40 @@ function Header({ legend, onLegend }: { legend: boolean; onLegend: () => void })
             <IconInfo size={15} />
             <span className="hidden sm:inline">凡例</span>
           </button>
-          {/* データの所在を常時出す（DESIGN.md §4.10）。保存に失敗していたら正直に言う */}
-          <span
-            className={`hidden shrink-0 items-center gap-1.5 rounded-sm border px-2.5 py-1 text-micro leading-tight font-semibold xl:flex ${
-              saveFailed
-                ? 'border-danger-line bg-danger-soft text-danger'
-                : 'border-[var(--c-tile-rose)] bg-[var(--c-tile-rose)] text-[var(--c-tile-rose-fg)]'
-            }`}
-            data-testid="data-badge"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-current" />
-            <span>
-              {saveFailed ? '保存できていません' : 'サーバ未接続'}
-              <br />
-              {saveFailed ? 'このタブを閉じると消えます' : 'データはこの端末のみ'}
+          {/*
+            データの所在（DESIGN.md §4.10）。ふだんは小さなアイコンにして、説明はホバー・フォーカスで出す
+            （常時の赤い札は悪目立ちした。2026-10-06 の指摘）。詳しくは「進捗」（/settings）の「データ」に書いてある。
+            保存に失敗しているときだけは赤い札で常に出す。気付かないとタブを閉じた時に進捗が消えるため
+          */}
+          {saveFailed ? (
+            <span
+              className="flex shrink-0 items-center gap-1.5 rounded-sm border border-danger-line bg-danger-soft px-2.5 py-1 text-micro leading-tight font-semibold text-danger"
+              data-testid="data-badge"
+              role="alert"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              <span>
+                保存できていません
+                <br />
+                このタブを閉じると消えます
+              </span>
             </span>
-          </span>
+          ) : (
+            <Link
+              to="/settings"
+              className="group relative flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-edge bg-raised text-muted transition-colors hover:text-fg focus-visible:text-fg"
+              aria-label="データはこの端末のブラウザにだけ保存（サーバには送らない）。「進捗」の「データ」で書き出せる"
+              data-testid="data-badge"
+            >
+              <IconDatabase size={15} />
+              <span
+                role="tooltip"
+                className="panel-pop pointer-events-none absolute top-full right-0 z-50 mt-2 w-60 rounded-md px-3 py-2 text-left text-tiny leading-relaxed text-fg opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+              >
+                データはこの端末のブラウザにだけ保存しています（サーバには送りません）。別の端末へ移すときは「進捗」の「データ」から書き出します。
+              </span>
+            </Link>
+          )}
         </div>
         <div className="order-4 w-full md:hidden">
           <Search />

@@ -123,7 +123,10 @@ for (const theme of ['light', 'dark']) {
   await measure('主ボタンの白文字 (gradient)', '[data-testid=start-today]');
   await measure('ナビの現在地 (accent)', 'header nav a[aria-current="page"]');
   await measure('ナビの他 (muted)', 'header nav a:not([aria-current])', 1);
-  await measure('データの所在 (rose)', '[data-testid=data-badge]');
+  await page.hover('[data-testid=data-badge]');
+  await page.waitForTimeout(300);
+  await measure('データの所在の説明 (fg)', '[data-testid=data-badge] [role=tooltip]');
+  await page.mouse.move(0, 0);
 
   await open('/board?item=mu-association');
   await measure('レーン名 (fg)', '[data-testid=lane-untouched] h2');
