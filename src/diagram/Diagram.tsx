@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { KeyboardEvent, MouseEvent } from 'react';
-import { layoutBdd } from './bdd';
+import { layoutDiagram } from './diagrams';
 import { describeModel } from './describe';
 import { headerText } from './model';
 import type { Model, PortSide } from './model';
 import type { Measure } from './metrics';
-import type { DiagramLayout, Point, PortShape, TextRun } from './layout';
+import type { DiagramLayout, NodeShape, Point, PortShape, Prim, TextRun } from './layout';
 import { MARK_LABEL } from './marks';
 import type { PickMark } from './marks';
 
@@ -62,7 +62,7 @@ const OUTWARD: Record<PortSide, Point> = {
  * ポート。四角が箱の縁にまたがる。
  * フローポートだけ中に矢印を描く（v1.2: 入る / 出る / 両方向）。標準ポートは空の四角。
  */
-function PortGlyph({ p }: { p: PortShape }) {
+function PortGlyph({ p, ...rest }: { p: PortShape } & Record<string, unknown>) {
   const c = { x: p.x + p.size / 2, y: p.y + p.size / 2 };
   const o = OUTWARD[p.side];
   const n = { x: -o.y, y: o.x };
@@ -77,7 +77,7 @@ function PortGlyph({ p }: { p: PortShape }) {
     return <polyline className="dg-line" points={pts([back(1), tip, back(-1)])} />;
   };
   return (
-    <g data-ref={p.id} data-kind="port">
+    <g data-ref={p.id} data-kind="port" {...rest}>
       <rect className="dg-box" x={p.x} y={p.y} width={p.size} height={p.size} />
       {p.kind === 'flow' && (
         <>
@@ -93,6 +93,66 @@ function PortGlyph({ p }: { p: PortShape }) {
         </>
       )}
       <Text t={p.label} />
+    </g>
+  );
+}
+
+/** プリミティブ 1 つ。塗りは paper（白抜き）・ink（黒塗り）・none の 3 つだけ */
+function PrimEl({ p }: { p: Prim }) {
+  const cls = (fill?: string) =>
+    fill === 'ink' ? 'dg-solid' : fill === 'paper' ? 'dg-box' : 'dg-line';
+  const dash = p.dash ? '6 4' : undefined;
+  switch (p.t) {
+    case 'rect':
+      return (
+        <rect
+          className={cls(p.fill)}
+          x={p.x}
+          y={p.y}
+          width={p.w}
+          height={p.h}
+          rx={p.r}
+          strokeDasharray={dash}
+        />
+      );
+    case 'ellipse':
+      return (
+        <ellipse
+          className={cls(p.fill)}
+          cx={p.cx}
+          cy={p.cy}
+          rx={p.rx}
+          ry={p.ry}
+          strokeDasharray={dash}
+        />
+      );
+    case 'line':
+      return <polyline className="dg-line" points={pts(p.pts)} strokeDasharray={dash} />;
+    case 'poly':
+      return <polygon className={cls(p.fill)} points={pts(p.pts)} strokeDasharray={dash} />;
+  }
+}
+
+type Focusable = (ref: string) => Record<string, unknown>;
+
+function NodeG({ n, focusable }: { n: NodeShape; focusable: Focusable }) {
+  const body = (
+    <>
+      {n.prims.map((p, i) => (
+        <PrimEl key={i} p={p} />
+      ))}
+      {n.texts.map((t, i) => (
+        <Text key={i} t={t} />
+      ))}
+      {n.ports.map((p) => (
+        <PortGlyph key={p.id} p={p} {...focusable(p.id)} />
+      ))}
+    </>
+  );
+  if (n.inert) return <g aria-hidden="true">{body}</g>;
+  return (
+    <g data-ref={n.id} data-kind="node" {...focusable(n.id)}>
+      {body}
     </g>
   );
 }
@@ -117,10 +177,14 @@ function boxOf(layout: DiagramLayout, ref: string): Box | null {
   if (ref === 'frame') {
     const xs = layout.tab.map((p) => p.x);
     const ys = layout.tab.map((p) => p.y);
-    return { x: 0, y: 0, w: Math.max(...xs), h: Math.max(...ys) };
+    const x = Math.min(...xs);
+    const y = Math.min(...ys);
+    return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
   }
   const n = layout.nodes.find((x) => x.id === ref);
   if (n) return { x: n.x, y: n.y, w: n.w, h: n.h };
+  for (const p of layout.framePorts)
+    if (p.id === ref) return { x: p.x, y: p.y, w: p.size, h: p.size };
   for (const node of layout.nodes) {
     const p = node.ports.find((x) => x.id === ref);
     if (p) return { x: p.x, y: p.y, w: p.size, h: p.size };
@@ -228,6 +292,8 @@ function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pi
         }
       : {};
 
+  const containers = layout.nodes.filter((n) => n.container);
+  const leaves = layout.nodes.filter((n) => !n.container);
   return (
     <svg
       className={`dg block ${active ? 'dg-pickable' : ''}`}
@@ -242,10 +308,10 @@ function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pi
       <g transform="translate(0.5 0.5)">
         <rect
           className="dg-frame"
-          x={0}
-          y={0}
-          width={layout.width - 1}
-          height={layout.height - 1}
+          x={layout.frame.x}
+          y={layout.frame.y}
+          width={layout.frame.w}
+          height={layout.frame.h}
         />
         <g data-ref="frame" data-kind="frame" aria-label="図枠のヘッダ" {...focusable('frame')}>
           <polygon className="dg-tab" points={pts(layout.tab)} />
@@ -254,6 +320,12 @@ function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pi
           ))}
         </g>
 
+        {containers.map((n) => (
+          <NodeG key={n.id} n={n} focusable={focusable} />
+        ))}
+        {layout.framePorts.map((p) => (
+          <PortGlyph key={p.id} p={p} {...focusable(p.id)} />
+        ))}
         {layout.edges.map((e) => (
           <g key={e.id} data-ref={e.id} data-kind="edge" {...focusable(e.id)}>
             {/* 細い線は指しにくいので、見えない太い線を当たり判定にする */}
@@ -264,7 +336,30 @@ function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pi
               strokeDasharray={e.dashed ? '6 4' : undefined}
             />
             {e.markers.map((m, i) =>
-              m.shape === 'polygon' ? (
+              m.shape === 'circle' ? (
+                <g key={i}>
+                  <circle
+                    className="dg-box"
+                    cx={m.points[0].x}
+                    cy={m.points[0].y}
+                    r={Math.hypot(m.points[1].x - m.points[0].x, m.points[1].y - m.points[0].y)}
+                  />
+                  <line
+                    className="dg-line"
+                    x1={m.points[1].x}
+                    y1={m.points[1].y}
+                    x2={m.points[2].x}
+                    y2={m.points[2].y}
+                  />
+                  <line
+                    className="dg-line"
+                    x1={m.points[3].x}
+                    y1={m.points[3].y}
+                    x2={m.points[4].x}
+                    y2={m.points[4].y}
+                  />
+                </g>
+              ) : m.shape === 'polygon' ? (
                 <polygon
                   key={i}
                   className={m.filled ? 'dg-solid' : 'dg-box'}
@@ -280,19 +375,8 @@ function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pi
           </g>
         ))}
 
-        {layout.nodes.map((n) => (
-          <g key={n.id} data-ref={n.id} data-kind="node" {...focusable(n.id)}>
-            <rect className="dg-box" x={n.x} y={n.y} width={n.w} height={n.h} />
-            {n.dividers.map((y) => (
-              <line key={y} className="dg-line" x1={n.x} y1={y} x2={n.x + n.w} y2={y} />
-            ))}
-            {n.texts.map((t, i) => (
-              <Text key={i} t={t} />
-            ))}
-            {n.ports.map((p) => (
-              <PortGlyph key={p.id} p={p} />
-            ))}
-          </g>
+        {leaves.map((n) => (
+          <NodeG key={n.id} n={n} focusable={focusable} />
         ))}
 
         {pick &&
@@ -322,7 +406,7 @@ export default function Diagram({
 
   useEffect(() => {
     let alive = true;
-    layoutBdd(model, canvasMeasure).then(
+    layoutDiagram(model, canvasMeasure).then(
       (layout) => alive && setState({ status: 'ready', layout, model }),
       (e: unknown) => alive && setState({ status: 'error', message: String(e) }),
     );

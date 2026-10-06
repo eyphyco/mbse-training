@@ -1,0 +1,44 @@
+[
+  {
+    "id": "alloc-compartment",
+    "title": "割り当ての区画と吹き出し",
+    "items": ["mu-alloc-repr", "mu-allocated-fromto"],
+    "note_md": "ブロックの `allocatedFrom` 区画は「このブロックに割り当てられたもの（元）」。点線の矢印 `«allocate»` は**元（機能） → 先（部品）**の向き。",
+    "model": {
+      "type": "bdd",
+      "frame": {
+        "kind": "bdd",
+        "ownerType": "package",
+        "owner": "Allocation"
+      },
+      "elements": [
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "allocatedFrom": ["«activity» Generate Power"]
+        },
+        {
+          "id": "brk",
+          "kind": "block",
+          "name": "BrakeSystem",
+          "allocatedFrom": ["«activity» Decelerate"]
+        },
+        {
+          "id": "note",
+          "kind": "comment",
+          "name": "",
+          "text": "allocatedFrom\n«activity» Generate Power"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "anchor",
+          "source": "note",
+          "target": "eng"
+        }
+      ]
+    }
+  }
+]

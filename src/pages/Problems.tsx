@@ -106,11 +106,21 @@ export default function Problems() {
           onChange={setType}
           options={[
             { id: 'all', label: 'すべて' },
-            ...(['read_diagram', 'spot_error', 'choose_construct'] as const).map((t) => ({
-              id: t,
-              label: TYPE_LABEL[t],
-              n: PROBLEMS.filter((p) => p.type === t).length,
-            })),
+            ...(
+              [
+                'read_diagram',
+                'spot_error',
+                'choose_construct',
+                'build_fragment',
+                'written',
+              ] as const
+            )
+              .filter((t) => PROBLEMS.some((p) => p.type === t))
+              .map((t) => ({
+                id: t,
+                label: TYPE_LABEL[t],
+                n: PROBLEMS.filter((p) => p.type === t).length,
+              })),
           ]}
         />
         <Pills

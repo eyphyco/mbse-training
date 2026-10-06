@@ -1,0 +1,101 @@
+[
+  {
+    "id": "uc-vehicle",
+    "title": "uc: アクター・主題・include・extend",
+    "items": ["mu-uc-purpose", "mu-uc-structure", "mu-uc-relations"],
+    "note_md": "棒人間がアクター（**主題の外**）、楕円がユースケース、四角が主題（システムの境界）。`«include»` は基底 → 必ず含む側、`«extend»` は**拡張する側 → 基底**（矢印の向きが逆なのが要点）。",
+    "model": {
+      "type": "uc",
+      "frame": {
+        "kind": "uc",
+        "ownerType": "package",
+        "owner": "VehicleUseCases"
+      },
+      "elements": [
+        {
+          "id": "driver",
+          "kind": "actor",
+          "name": "Driver"
+        },
+        {
+          "id": "sys",
+          "kind": "subject",
+          "name": "Vehicle"
+        },
+        {
+          "id": "drive",
+          "kind": "useCase",
+          "name": "Drive",
+          "parent": "sys"
+        },
+        {
+          "id": "start",
+          "kind": "useCase",
+          "name": "Start Engine",
+          "parent": "sys"
+        },
+        {
+          "id": "park",
+          "kind": "useCase",
+          "name": "Park",
+          "parent": "sys"
+        },
+        {
+          "id": "assist",
+          "kind": "useCase",
+          "name": "Parking Assist",
+          "parent": "sys"
+        },
+        {
+          "id": "mech",
+          "kind": "actor",
+          "name": "Mechanic"
+        },
+        {
+          "id": "maint",
+          "kind": "useCase",
+          "name": "Maintain",
+          "parent": "sys"
+        }
+      ],
+      "relations": [
+        {
+          "id": "a1",
+          "kind": "association",
+          "source": "driver",
+          "target": "drive"
+        },
+        {
+          "id": "a2",
+          "kind": "association",
+          "source": "driver",
+          "target": "park"
+        },
+        {
+          "id": "i1",
+          "kind": "include",
+          "source": "drive",
+          "target": "start"
+        },
+        {
+          "id": "e1",
+          "kind": "extend",
+          "source": "assist",
+          "target": "park"
+        },
+        {
+          "id": "a3",
+          "kind": "association",
+          "source": "mech",
+          "target": "maint"
+        },
+        {
+          "id": "i2",
+          "kind": "include",
+          "source": "maint",
+          "target": "start"
+        }
+      ]
+    }
+  }
+]

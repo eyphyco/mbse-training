@@ -16,8 +16,10 @@
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { layoutBdd } from '../src/diagram/bdd.ts';
-import { checkModel } from '../src/diagram/model.ts';
+import { layoutDiagram } from '../src/diagram/diagrams.ts';
+import { checkModel, flattenSteps, allPorts } from '../src/diagram/model.ts';
+import { PALETTES } from '../src/diagram/palette.ts';
+import { judgeBuild } from '../src/engine/build.ts';
 import { RULES, findIssues, pickableRefs } from '../src/diagram/rules.ts';
 import { parseLesson } from '../src/data/lessonParser.ts';
 
@@ -36,9 +38,18 @@ async function drawable(model) {
   const bad = checkModel(model);
   if (bad.length > 0) return bad;
   try {
-    const l = await layoutBdd(model);
-    if (l.nodes.length !== model.elements.length) return ['描かれない要素がある'];
-    const lost = l.edges.filter((e) => e.points.length < 2).map((e) => e.id);
+    const l = await layoutDiagram(model);
+    const drawn = new Set(l.nodes.map((n) => n.id));
+    const lostEl = model.elements.filter((e) => !drawn.has(e.id)).map((e) => e.id);
+    if (lostEl.length > 0) return [`描かれない要素: ${lostEl.join(', ')}`];
+    const edges = new Map(l.edges.map((e) => [e.id, e]));
+    const want = [
+      ...model.relations.map((r) => r.id),
+      ...flattenSteps(model.steps)
+        .filter((s) => s.kind === 'message')
+        .map((s) => s.id),
+    ];
+    const lost = want.filter((id) => (edges.get(id)?.points.length ?? 0) < 2);
     if (lost.length > 0) return [`線が引けない関係: ${lost.join(', ')}`];
     return [];
   } catch (e) {
@@ -57,14 +68,25 @@ const knownItems = new Set(itemIds);
 
 /* --- 記法見本 ------------------------------------------------------- */
 const notation = readJson(join(root, 'src/data/notation'));
+const notationSeen = new Set();
 for (const s of notation) {
+  if (notationSeen.has(s.id)) ng.push(`記法見本 ${s.id}: id が重複している`);
+  notationSeen.add(s.id);
+  for (const id of s.items ?? [])
+    if (!knownItems.has(id)) ng.push(`記法見本 ${s.id}: 知らない項目「${id}」`);
   for (const m of await drawable(s.model)) ng.push(`記法見本 ${s.id}: ${m}`);
   for (const i of findIssues(s.model)) ng.push(`記法見本 ${s.id}: 見本の図に誤りがある ${key(i)}`);
 }
 const notationIds = new Set(notation.map((s) => s.id));
 
 /* --- 問題 ----------------------------------------------------------- */
-const TYPES = new Set(['read_diagram', 'spot_error', 'choose_construct', 'written']);
+const TYPES = new Set([
+  'read_diagram',
+  'spot_error',
+  'choose_construct',
+  'build_fragment',
+  'written',
+]);
 const problems = readJson(join(root, 'src/data/problems'));
 const seen = new Set();
 for (const p of problems) {
@@ -95,10 +117,76 @@ for (const p of problems) {
     }
   }
   if (p.type === 'read_diagram' && !p.model) ng.push(`${at}: read_diagram に図（model）が無い`);
+  if (p.type === 'written' && !p.model_answer_md) ng.push(`${at}: written に模範解答が無い`);
+
+  /*
+    組み立て問題。正解の図が「土台 + パレットで置けるもの」だけで作れることを確かめる。
+    作れない正解を出すと、利用者はどう組んでも正解にならない
+  */
+  if (p.type === 'build_fragment') {
+    const base = p.model;
+    const ans = p.answer_model;
+    if (!base || !ans) ng.push(`${at}: build_fragment に model（土台）か answer_model が無い`);
+    else {
+      for (const m of await drawable(ans)) ng.push(`${at} 正解の図: ${m}`);
+      for (const i of findIssues(ans)) ng.push(`${at}: 正解の図に誤り ${key(i)}`);
+      if (ans.type !== base.type) ng.push(`${at}: 土台と正解の図種が違う`);
+      // 土台を正解と照合して「余分」が出たら、土台が正解に含まれていない
+      const r0 = judgeBuild(ans, base);
+      if (r0.extra.length > 0) ng.push(`${at}: 土台にあって正解に無いもの ${r0.extra.join(' / ')}`);
+      if (r0.missing.length === 0) ng.push(`${at}: 土台がすでに正解（足すものが無い）`);
+      const pal = PALETTES[ans.type];
+      const baseIds = new Set([
+        ...base.elements.map((e) => e.id),
+        ...base.relations.map((r) => r.id),
+        ...flattenSteps(base.steps).map((s) => s.id),
+      ]);
+      const kindOf = (id) => {
+        const el = ans.elements.find((e) => e.id === id);
+        if (el) return el.kind;
+        const pt = allPorts(ans).find((x) => x.port.id === id);
+        if (!pt) return undefined;
+        if (pt.owner === null) return pt.port.kind === 'param' ? 'frameParam' : 'port';
+        return pt.port.kind === 'flow' || pt.port.kind === 'standard' ? 'port' : pt.port.kind;
+      };
+      for (const el of ans.elements) {
+        if (baseIds.has(el.id)) continue;
+        const tool = pal.elements.find((t) => t.kind === el.kind);
+        if (!tool) ng.push(`${at}: パレットに無い要素「${el.kind}」を置かせている`);
+        else if (el.parent && !tool.fields.includes('parent'))
+          ng.push(`${at}: ${el.id} の置き場所（parent）をパレットで選べない`);
+        if ((el.ports ?? []).length > 0)
+          ng.push(`${at}: ${el.id} はポートを持つ（ポートはパレットで置けない。土台に入れる）`);
+        // 名前は問題文に書いておく（綴りを当てさせる問題にしない）
+        if (el.name && !p.prompt_md.includes(el.name))
+          ng.push(`${at}: 置かせる要素の名前「${el.name}」が問題文に無い`);
+      }
+      for (const r of ans.relations) {
+        if (baseIds.has(r.id)) continue;
+        const tool = pal.relations.find(
+          (t) => t.kind === r.kind && (t.stereotype ?? '') === (r.stereotype ?? ''),
+        );
+        if (!tool) {
+          ng.push(
+            `${at}: パレットに無い関係「${r.kind}${r.stereotype ? `:${r.stereotype}` : ''}」を引かせている`,
+          );
+          continue;
+        }
+        if (!tool.from.includes(kindOf(r.source)) || !tool.to.includes(kindOf(r.target)))
+          ng.push(
+            `${at}: ${r.id} の元・先（${kindOf(r.source)} → ${kindOf(r.target)}）をパレットで選べない`,
+          );
+      }
+      for (const s of flattenSteps(ans.steps)) {
+        if (baseIds.has(s.id)) continue;
+        if (s.kind !== 'message') ng.push(`${at}: ${s.id}（${s.kind}）はパレットで置けない`);
+      }
+    }
+  }
   if (p.type === 'spot_error' && !(p.errors?.length > 0))
     ng.push(`${at}: spot_error に errors が無い`);
 
-  if (p.model) {
+  if (p.model && p.type !== 'build_fragment') {
     for (const m of await drawable(p.model)) ng.push(`${at}: ${m}`);
     const found = findIssues(p.model).map(key).sort();
     if (p.type === 'spot_error') {

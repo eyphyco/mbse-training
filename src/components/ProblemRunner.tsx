@@ -4,6 +4,7 @@ import Diagram from '../diagram/Diagram';
 import { MARK_LABEL } from '../diagram/marks';
 import type { PickMark } from '../diagram/marks';
 import { RULES, pickableRefs, refLabel } from '../diagram/rules';
+import BuildPanel from './BuildPanel';
 import Markdown from './Markdown';
 import { Button, Tag } from './ui';
 import { IconBulb, IconCheck, IconX } from './icons';
@@ -98,7 +99,17 @@ export default function ProblemRunner({
 
       <Markdown>{problem.prompt_md}</Markdown>
 
-      {problem.model && (
+      {problem.type === 'build_fragment' && problem.model && (
+        <BuildPanel
+          base={problem.model}
+          value={a.built ?? problem.model}
+          onChange={(m) => !done && set({ ...a, built: m })}
+          answer={exam ? undefined : problem.answer_model}
+          done={done}
+        />
+      )}
+
+      {problem.model && problem.type !== 'build_fragment' && (
         <div className="rounded-md bg-sunken p-3">
           <Diagram
             model={problem.model}

@@ -23,6 +23,11 @@ import { useProgress } from '../storage/progressContext';
 */
 
 const examOf = (p: Problem) => ITEM_INDEX.get(p.items[0])?.exam.id;
+/**
+ * 模擬試験に出す型。本番は多肢選択だけなので、組み立てと記述は練習でだけ出す
+ * （試験中に採点の見えない組み立てをさせても、本番の練習にならない）
+ */
+const EXAM_TYPES = new Set<Problem['type']>(['read_diagram', 'choose_construct', 'spot_error']);
 const areaOf = (p: Problem) => ITEM_INDEX.get(p.items[0])?.area;
 
 /** 領域の比率に比例させて選ぶ。決まった順で回せるよう、乱数は渡す */
@@ -104,7 +109,7 @@ function Setup({ onStart }: { onStart: (e: ExamInfo, p: Problem[], minutes: numb
       </Card>
       <div className="grid gap-4 md:grid-cols-2">
         {SYLLABUS.exams.map((exam, k) => {
-          const pool = PROBLEMS.filter((p) => examOf(p) === exam.id);
+          const pool = PROBLEMS.filter((p) => examOf(p) === exam.id && EXAM_TYPES.has(p.type));
           const n = Math.min(exam.questions, pool.length);
           const minutes = Math.max(1, Math.round((exam.minutes * n) / exam.questions));
           const pass = Math.ceil((exam.pass / exam.questions) * n);
@@ -196,7 +201,9 @@ function Running({
     }
   }, [now, endsAt, onFinish]);
 
-  const done = answers.filter((a) => a.choices.length > 0 || a.picks.length > 0).length;
+  const done = answers.filter(
+    (a) => a.choices.length > 0 || a.picks.length > 0 || !!a.built,
+  ).length;
   const left = endsAt - now;
   const total = endsAt - startedAt;
   const p = problems[i];

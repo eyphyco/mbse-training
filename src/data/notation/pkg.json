@@ -1,0 +1,118 @@
+[
+  {
+    "id": "pkg-model",
+    "title": "pkg: 所有と import",
+    "items": ["mu-pkg-purpose", "mu-pkg-ownership", "mu-pkg-relations"],
+    "note_md": "パッケージの中に描いた要素は、そのパッケージが**所有**する（名前空間）。`Behavior` から `Structure` への `«import»` は、Structure の要素を Behavior の中で短い名前で呼べるようにする依存。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "model",
+        "owner": "VehicleModel",
+        "name": "Organization"
+      },
+      "elements": [
+        {
+          "id": "req",
+          "kind": "package",
+          "name": "Requirements"
+        },
+        {
+          "id": "st",
+          "kind": "package",
+          "name": "Structure"
+        },
+        {
+          "id": "veh",
+          "kind": "block",
+          "name": "Vehicle",
+          "parent": "st"
+        },
+        {
+          "id": "eng",
+          "kind": "block",
+          "name": "Engine",
+          "parent": "st"
+        },
+        {
+          "id": "beh",
+          "kind": "package",
+          "name": "Behavior"
+        },
+        {
+          "id": "lib",
+          "kind": "modelLibrary",
+          "name": "Units"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "beh",
+          "target": "st",
+          "stereotype": "import"
+        },
+        {
+          "id": "d2",
+          "kind": "dependency",
+          "source": "st",
+          "target": "lib",
+          "stereotype": "import"
+        }
+      ]
+    }
+  },
+  {
+    "id": "pkg-view",
+    "title": "pkg: ビューとビューポイント",
+    "items": ["mu-view-viewpoint"],
+    "note_md": "`«viewpoint»` は「誰の・何の関心に・どう答えるか」の決まり、`«view»` はそれに従って集めた中身。view から viewpoint へ `«conform»`。包含（丸に十字）は丸の側が入れ物。",
+    "model": {
+      "type": "pkg",
+      "frame": {
+        "kind": "pkg",
+        "ownerType": "package",
+        "owner": "Views"
+      },
+      "elements": [
+        {
+          "id": "vp",
+          "kind": "viewpoint",
+          "name": "SafetyViewpoint",
+          "tags": {
+            "stakeholders": "安全担当",
+            "purpose": "危険の把握",
+            "concerns": "故障と危害"
+          }
+        },
+        {
+          "id": "v",
+          "kind": "view",
+          "name": "SafetyView"
+        },
+        {
+          "id": "sv",
+          "kind": "package",
+          "name": "SafetyAnalysis"
+        }
+      ],
+      "relations": [
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "v",
+          "target": "vp",
+          "stereotype": "conform"
+        },
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "sv",
+          "target": "v"
+        }
+      ]
+    }
+  }
+]

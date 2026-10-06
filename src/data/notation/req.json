@@ -1,0 +1,144 @@
+[
+  {
+    "id": "req-relations",
+    "title": "req: 要求の関係",
+    "items": ["mu-req-concept", "mu-req-relations", "mu-req-purpose"],
+    "note_md": "要求は `id` と `text` を持つ箱。**矢印の元が「依存する側」**: 導出した要求 → 元の要求（`«deriveReqt»`）、設計 → 要求（`«satisfy»`）、テスト → 要求（`«verify»`）。丸に十字は包含（丸の側が親）。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Braking"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "StoppingDistance",
+          "reqId": "R1",
+          "text": "100 km/h から 40 m 以内に停止すること"
+        },
+        {
+          "id": "r11",
+          "kind": "requirement",
+          "name": "BrakeForce",
+          "reqId": "R1.1",
+          "text": "制動力は 8 kN 以上"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "PedalForce",
+          "reqId": "R2",
+          "text": "ペダル踏力は 500 N 以下"
+        },
+        {
+          "id": "brake",
+          "kind": "block",
+          "name": "BrakeSystem"
+        },
+        {
+          "id": "tc",
+          "kind": "testCase",
+          "name": "BrakeTest"
+        }
+      ],
+      "relations": [
+        {
+          "id": "k1",
+          "kind": "containment",
+          "source": "r1",
+          "target": "r11"
+        },
+        {
+          "id": "d1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r11",
+          "stereotype": "deriveReqt"
+        },
+        {
+          "id": "s1",
+          "kind": "dependency",
+          "source": "brake",
+          "target": "r11",
+          "stereotype": "satisfy"
+        },
+        {
+          "id": "v1",
+          "kind": "dependency",
+          "source": "tc",
+          "target": "r1",
+          "stereotype": "verify"
+        }
+      ]
+    }
+  },
+  {
+    "id": "req-refine",
+    "title": "req: refine と trace、根拠",
+    "items": ["mu-req-relations", "mu-comment"],
+    "note_md": "ユースケースが要求を詳しく述べるなら `«refine»`（ユースケース → 要求）。`«trace»` は弱い「関係がある」。角の折れた箱はコメントで、`«rationale»` は「なぜそうしたか」。",
+    "model": {
+      "type": "req",
+      "frame": {
+        "kind": "req",
+        "ownerType": "package",
+        "owner": "Requirements",
+        "name": "Usage"
+      },
+      "elements": [
+        {
+          "id": "r1",
+          "kind": "requirement",
+          "name": "Parking",
+          "reqId": "R5",
+          "text": "運転者が車庫入れできること"
+        },
+        {
+          "id": "uc",
+          "kind": "useCase",
+          "name": "Park Vehicle"
+        },
+        {
+          "id": "r2",
+          "kind": "requirement",
+          "name": "Visibility",
+          "reqId": "R6",
+          "text": "後方 3 m を視認できること"
+        },
+        {
+          "id": "why",
+          "kind": "comment",
+          "name": "",
+          "text": "狭い車庫の利用者が多いという調査結果による",
+          "stereotypes": ["rationale"]
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "dependency",
+          "source": "uc",
+          "target": "r1",
+          "stereotype": "refine"
+        },
+        {
+          "id": "t1",
+          "kind": "dependency",
+          "source": "r2",
+          "target": "r1",
+          "stereotype": "trace"
+        },
+        {
+          "id": "a1",
+          "kind": "anchor",
+          "source": "why",
+          "target": "r2"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,211 @@
+[
+  {
+    "id": "ibd-power",
+    "title": "ibd: パート・ポート・コネクタ・項目フロー",
+    "items": ["mu-ibd-purpose", "mu-ports", "mu-connector-itemflow"],
+    "note_md": "図枠そのものが囲みブロック `Vehicle`。縁の四角 `fuelIn` は Vehicle のポートで、中のパートへコネクタでつながる。線の途中の黒三角が**項目フロー**（何が流れるか）。四角の中の矢印はフローポートの向き。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Power"
+      },
+      "elements": [
+        {
+          "id": "tank",
+          "kind": "part",
+          "name": "tank",
+          "type": "FuelTank",
+          "ports": [
+            {
+              "id": "tank.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "tank.out",
+              "name": "out",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Fuel"
+            }
+          ]
+        },
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine",
+          "ports": [
+            {
+              "id": "engine.fuel",
+              "name": "fuelIn",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "engine.shaft",
+              "name": "shaft",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission",
+          "ports": [
+            {
+              "id": "trans.in",
+              "name": "in",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Torque"
+            },
+            {
+              "id": "trans.ctl",
+              "name": "ctl",
+              "kind": "standard",
+              "side": "south"
+            }
+          ]
+        },
+        {
+          "id": "driver",
+          "kind": "reference",
+          "name": "driver",
+          "type": "Driver"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "fuelIn",
+          "target": "tank.in"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "tank.out",
+          "target": "engine.fuel",
+          "itemFlows": [
+            {
+              "item": "fuel : Fuel"
+            }
+          ]
+        },
+        {
+          "id": "c3",
+          "kind": "connector",
+          "source": "engine.shaft",
+          "target": "trans.in",
+          "itemFlows": [
+            {
+              "item": "torque : Torque"
+            }
+          ]
+        },
+        {
+          "id": "c4",
+          "kind": "connector",
+          "source": "driver",
+          "target": "trans.ctl"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuelIn",
+          "name": "fuelIn",
+          "kind": "flow",
+          "direction": "in",
+          "type": "Fuel"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ibd-nested",
+    "title": "ibd: 入れ子のパート",
+    "items": ["mu-part-repr"],
+    "note_md": "パートの中にパートを描ける。`engine` の中の `pistons : Piston [4]` は、Engine の定義が持つパートを、Vehicle の文脈で描いたもの。多重度は名前の後ろの `[4]`。",
+    "model": {
+      "type": "ibd",
+      "frame": {
+        "kind": "ibd",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Engine detail"
+      },
+      "elements": [
+        {
+          "id": "engine",
+          "kind": "part",
+          "name": "engine",
+          "type": "Engine"
+        },
+        {
+          "id": "pistons",
+          "kind": "part",
+          "name": "pistons",
+          "type": "Piston",
+          "mult": "4",
+          "parent": "engine",
+          "ports": [
+            {
+              "id": "pistons.p",
+              "name": "force",
+              "kind": "flow",
+              "direction": "out",
+              "type": "Force"
+            }
+          ]
+        },
+        {
+          "id": "crank",
+          "kind": "part",
+          "name": "crank",
+          "type": "Crankshaft",
+          "parent": "engine",
+          "ports": [
+            {
+              "id": "crank.p",
+              "name": "force",
+              "kind": "flow",
+              "direction": "in",
+              "type": "Force"
+            }
+          ]
+        },
+        {
+          "id": "trans",
+          "kind": "part",
+          "name": "trans",
+          "type": "Transmission"
+        }
+      ],
+      "relations": [
+        {
+          "id": "c1",
+          "kind": "connector",
+          "source": "pistons.p",
+          "target": "crank.p"
+        },
+        {
+          "id": "c2",
+          "kind": "connector",
+          "source": "crank",
+          "target": "trans"
+        }
+      ]
+    }
+  }
+]

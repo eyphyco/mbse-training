@@ -1,0 +1,323 @@
+[
+  {
+    "id": "act-start",
+    "title": "act: 制御フローと制御ノード",
+    "items": ["mu-act-purpose", "mu-controlflow", "mu-actions"],
+    "note_md": "黒丸から始まり、ひし形で分かれて合流し、二重丸で全体が終わる。フォークの棒で 2 本に分けた流れは、ジョインの棒で**両方揃うまで待つ**。この教材の図では制御フローを破線で描く。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "StartVehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Check Battery"
+        },
+        {
+          "id": "d",
+          "kind": "decision",
+          "name": ""
+        },
+        {
+          "id": "a2",
+          "kind": "sendSignal",
+          "name": "Warn Driver"
+        },
+        {
+          "id": "f",
+          "kind": "fork",
+          "name": ""
+        },
+        {
+          "id": "a3",
+          "kind": "callBehavior",
+          "name": "start",
+          "type": "StartEngine"
+        },
+        {
+          "id": "a4",
+          "kind": "action",
+          "name": "Check Brakes"
+        },
+        {
+          "id": "j",
+          "kind": "join",
+          "name": ""
+        },
+        {
+          "id": "t",
+          "kind": "acceptTime",
+          "name": "after(2 s)"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        },
+        {
+          "id": "ff",
+          "kind": "flowFinal",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "d"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "f",
+          "guard": "ok"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "d",
+          "target": "a2",
+          "guard": "low"
+        },
+        {
+          "id": "f5",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a3"
+        },
+        {
+          "id": "f6",
+          "kind": "controlFlow",
+          "source": "f",
+          "target": "a4"
+        },
+        {
+          "id": "f7",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "j"
+        },
+        {
+          "id": "f8",
+          "kind": "controlFlow",
+          "source": "a4",
+          "target": "j"
+        },
+        {
+          "id": "f9",
+          "kind": "controlFlow",
+          "source": "j",
+          "target": "t"
+        },
+        {
+          "id": "f10",
+          "kind": "controlFlow",
+          "source": "t",
+          "target": "end"
+        },
+        {
+          "id": "f11",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "ff"
+        }
+      ]
+    }
+  },
+  {
+    "id": "act-objects",
+    "title": "act: ピンとオブジェクトフロー",
+    "items": ["mu-objectflow"],
+    "note_md": "アクションの縁の小さな四角がピン。物（燃料・トルク）は実線のオブジェクトフローでピンからピンへ流れる。図枠の縁の長方形は**アクティビティパラメータノード**（このアクティビティ全体の入出力）。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "GeneratePower"
+      },
+      "elements": [
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Burn Fuel",
+          "ports": [
+            {
+              "id": "a1.in",
+              "name": "fuel",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Fuel"
+            },
+            {
+              "id": "a1.out",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Heat"
+            }
+          ]
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Convert",
+          "ports": [
+            {
+              "id": "a2.in",
+              "name": "heat",
+              "kind": "pin",
+              "direction": "in",
+              "type": "Heat"
+            },
+            {
+              "id": "a2.out",
+              "name": "torque",
+              "kind": "pin",
+              "direction": "out",
+              "type": "Torque"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "o1",
+          "kind": "objectFlow",
+          "source": "fuel",
+          "target": "a1.in"
+        },
+        {
+          "id": "o2",
+          "kind": "objectFlow",
+          "source": "a1.out",
+          "target": "a2.in"
+        },
+        {
+          "id": "o3",
+          "kind": "objectFlow",
+          "source": "a2.out",
+          "target": "torque"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "fuel",
+          "name": "fuel",
+          "kind": "param",
+          "direction": "in",
+          "type": "Fuel"
+        },
+        {
+          "id": "torque",
+          "name": "torque",
+          "kind": "param",
+          "direction": "out",
+          "type": "Torque"
+        }
+      ]
+    }
+  },
+  {
+    "id": "act-partition",
+    "title": "act: パーティション",
+    "items": ["mu-partition"],
+    "note_md": "縦の帯がパーティション。帯の見出しが担当する部品で、帯の中のアクションはその部品が行う。`«allocate»` が付くと、アクションをその部品に**割り当てた**意味になる（第 10 章）。",
+    "model": {
+      "type": "act",
+      "frame": {
+        "kind": "act",
+        "ownerType": "activity",
+        "owner": "Accelerate"
+      },
+      "elements": [
+        {
+          "id": "p1",
+          "kind": "partition",
+          "name": "",
+          "type": "Driver"
+        },
+        {
+          "id": "p2",
+          "kind": "partition",
+          "name": "",
+          "type": "Vehicle",
+          "stereotypes": ["allocate"]
+        },
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": "",
+          "parent": "p1"
+        },
+        {
+          "id": "a1",
+          "kind": "action",
+          "name": "Press Pedal",
+          "parent": "p1"
+        },
+        {
+          "id": "a2",
+          "kind": "action",
+          "name": "Increase Torque",
+          "parent": "p2"
+        },
+        {
+          "id": "a3",
+          "kind": "action",
+          "name": "Feel Acceleration",
+          "parent": "p1"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": "",
+          "parent": "p1"
+        }
+      ],
+      "relations": [
+        {
+          "id": "f1",
+          "kind": "controlFlow",
+          "source": "i",
+          "target": "a1"
+        },
+        {
+          "id": "f2",
+          "kind": "controlFlow",
+          "source": "a1",
+          "target": "a2"
+        },
+        {
+          "id": "f3",
+          "kind": "controlFlow",
+          "source": "a2",
+          "target": "a3"
+        },
+        {
+          "id": "f4",
+          "kind": "controlFlow",
+          "source": "a3",
+          "target": "end"
+        }
+      ]
+    }
+  }
+]

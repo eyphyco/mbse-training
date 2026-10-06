@@ -66,6 +66,11 @@ export const MARKER = {
   triangleHalf: 8,
   arrowLen: 10,
   arrowHalf: 5,
+  /** 包含（丸に十字）の半径 */
+  crossR: 6,
+  /** 項目フローの黒三角 */
+  flowLen: 10,
+  flowHalf: 6,
 } as const;
 
 /* ------------------------------------------------------------------ */

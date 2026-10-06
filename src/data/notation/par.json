@@ -1,0 +1,240 @@
+[
+  {
+    "id": "par-newton",
+    "title": "par: 制約プロパティと束縛",
+    "items": ["mu-par-purpose", "mu-constraint-param", "mu-binding"],
+    "note_md": "角の丸い箱が**制約プロパティ** `newton : NewtonLaw`。縁の四角がパラメータ（`F` `m` `a`）。四角い箱は Vehicle の値属性。間の実線が**束縛コネクタ**で、両端の値が常に等しいことを表す。向きは無い。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "block",
+        "owner": "Vehicle",
+        "name": "Dynamics"
+      },
+      "elements": [
+        {
+          "id": "mass",
+          "kind": "value",
+          "name": "mass",
+          "type": "Mass"
+        },
+        {
+          "id": "force",
+          "kind": "value",
+          "name": "force",
+          "type": "Force"
+        },
+        {
+          "id": "newton",
+          "kind": "constraintProperty",
+          "name": "newton",
+          "type": "NewtonLaw",
+          "expr": "F = m * a",
+          "ports": [
+            {
+              "id": "newton.F",
+              "name": "F",
+              "kind": "param"
+            },
+            {
+              "id": "newton.m",
+              "name": "m",
+              "kind": "param"
+            },
+            {
+              "id": "newton.a",
+              "name": "a",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "accel",
+          "kind": "value",
+          "name": "accel",
+          "type": "Acceleration"
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "force",
+          "target": "newton.F"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "mass",
+          "target": "newton.m"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "newton.a",
+          "target": "accel"
+        }
+      ]
+    }
+  },
+  {
+    "id": "par-stopping",
+    "title": "par: 制約ブロックの図（図枠の縁のパラメータ）",
+    "items": ["mu-frame", "mbf-build-par"],
+    "note_md": "ヘッダが `[constraintBlock]` のときは、図枠の縁の四角が**その制約ブロックのパラメータ**になる。中の 2 つの制約プロパティを束縛でつないで、大きな式を組み立てている。",
+    "model": {
+      "type": "par",
+      "frame": {
+        "kind": "par",
+        "ownerType": "constraintBlock",
+        "owner": "StoppingDistance"
+      },
+      "elements": [
+        {
+          "id": "react",
+          "kind": "constraintProperty",
+          "name": "r",
+          "type": "ReactionDist",
+          "expr": "d1 = v * t",
+          "ports": [
+            {
+              "id": "r.v",
+              "name": "v",
+              "kind": "param"
+            },
+            {
+              "id": "r.t",
+              "name": "t",
+              "kind": "param"
+            },
+            {
+              "id": "r.d1",
+              "name": "d1",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "brake",
+          "kind": "constraintProperty",
+          "name": "b",
+          "type": "BrakingDist",
+          "expr": "d2 = v^2 / (2 * a)",
+          "ports": [
+            {
+              "id": "b.v",
+              "name": "v",
+              "kind": "param"
+            },
+            {
+              "id": "b.a",
+              "name": "a",
+              "kind": "param"
+            },
+            {
+              "id": "b.d2",
+              "name": "d2",
+              "kind": "param"
+            }
+          ]
+        },
+        {
+          "id": "sum",
+          "kind": "constraintProperty",
+          "name": "s",
+          "type": "Sum",
+          "expr": "d = d1 + d2",
+          "ports": [
+            {
+              "id": "s.d1",
+              "name": "d1",
+              "kind": "param"
+            },
+            {
+              "id": "s.d2",
+              "name": "d2",
+              "kind": "param"
+            },
+            {
+              "id": "s.d",
+              "name": "d",
+              "kind": "param",
+              "side": "east"
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "b1",
+          "kind": "binding",
+          "source": "pv",
+          "target": "r.v"
+        },
+        {
+          "id": "b2",
+          "kind": "binding",
+          "source": "pt",
+          "target": "r.t"
+        },
+        {
+          "id": "b3",
+          "kind": "binding",
+          "source": "pv",
+          "target": "b.v"
+        },
+        {
+          "id": "b4",
+          "kind": "binding",
+          "source": "pa",
+          "target": "b.a"
+        },
+        {
+          "id": "b5",
+          "kind": "binding",
+          "source": "r.d1",
+          "target": "s.d1"
+        },
+        {
+          "id": "b6",
+          "kind": "binding",
+          "source": "b.d2",
+          "target": "s.d2"
+        },
+        {
+          "id": "b7",
+          "kind": "binding",
+          "source": "s.d",
+          "target": "pd"
+        }
+      ],
+      "framePorts": [
+        {
+          "id": "pv",
+          "name": "v",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pt",
+          "name": "t",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pa",
+          "name": "a",
+          "kind": "param",
+          "side": "west"
+        },
+        {
+          "id": "pd",
+          "name": "d",
+          "kind": "param",
+          "side": "east"
+        }
+      ]
+    }
+  }
+]

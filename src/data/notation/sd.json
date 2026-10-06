@@ -1,0 +1,110 @@
+[
+  {
+    "id": "sd-start",
+    "title": "sd: ライフラインとメッセージ",
+    "items": ["mu-sd-purpose", "mu-lifeline-message", "mu-interaction-ref"],
+    "note_md": "縦の点線がライフライン（時間は上から下）。**塗った矢じり = 同期**（返事を待つ）、**開いた矢じり = 非同期**（待たない）、**点線 = 返信**。`ref` の箱は別のシーケンス図の差し込み、`alt` は条件分岐。",
+    "model": {
+      "type": "sd",
+      "frame": {
+        "kind": "sd",
+        "ownerType": "interaction",
+        "owner": "StartEngine"
+      },
+      "elements": [
+        {
+          "id": "d",
+          "kind": "lifeline",
+          "name": "driver",
+          "type": "Driver"
+        },
+        {
+          "id": "e",
+          "kind": "lifeline",
+          "name": "ecu",
+          "type": "ECU"
+        },
+        {
+          "id": "g",
+          "kind": "lifeline",
+          "name": "engine",
+          "type": "Engine"
+        }
+      ],
+      "relations": [],
+      "steps": [
+        {
+          "kind": "message",
+          "id": "m1",
+          "sort": "async",
+          "from": "d",
+          "to": "e",
+          "label": "pushStart"
+        },
+        {
+          "kind": "message",
+          "id": "m2",
+          "sort": "sync",
+          "from": "e",
+          "to": "g",
+          "label": "crank()"
+        },
+        {
+          "kind": "message",
+          "id": "m3",
+          "sort": "reply",
+          "from": "g",
+          "to": "e",
+          "label": "running"
+        },
+        {
+          "kind": "fragment",
+          "id": "f1",
+          "operator": "alt",
+          "operands": [
+            {
+              "guard": "battery ok",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m4",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showReady"
+                }
+              ]
+            },
+            {
+              "guard": "else",
+              "steps": [
+                {
+                  "kind": "message",
+                  "id": "m5",
+                  "sort": "async",
+                  "from": "e",
+                  "to": "d",
+                  "label": "showWarning"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "ref",
+          "id": "r1",
+          "name": "CheckSystems",
+          "covers": ["e", "g"]
+        },
+        {
+          "kind": "message",
+          "id": "m6",
+          "sort": "sync",
+          "from": "e",
+          "to": "e",
+          "label": "log()"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,180 @@
+[
+  {
+    "id": "stm-engine",
+    "title": "stm: 状態と遷移",
+    "items": ["mu-stm-purpose", "mu-state-region", "mu-transition", "mu-state-behavior"],
+    "note_md": "遷移の札は `トリガ [ガード] / 効果`。`after(30 s)` は時間のトリガ、`[fuel > 0]` は条件、`/ ignite` は遷移するときに 1 回だけ行う振る舞い。状態の中の `entry / do / exit` は、入った時・居る間・出る時。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "EngineControl"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "off",
+          "kind": "state",
+          "name": "Off"
+        },
+        {
+          "id": "on",
+          "kind": "state",
+          "name": "Running",
+          "entry": "startPump",
+          "doActivity": "controlIdle",
+          "exit": "stopPump"
+        },
+        {
+          "id": "end",
+          "kind": "final",
+          "name": ""
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "off"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "off",
+          "target": "on",
+          "trigger": "start",
+          "guard": "fuel > 0",
+          "effect": "ignite"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "on",
+          "target": "off",
+          "trigger": "stop"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "off",
+          "target": "end",
+          "trigger": "after(30 s)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "stm-regions",
+    "title": "stm: 複合状態と直交領域",
+    "items": ["mu-state-region"],
+    "note_md": "状態の中に状態を入れたものが複合状態。点線で区切った**領域**は同時に動く（直交領域）。領域ごとに開始擬似状態を 1 つ持つ。",
+    "model": {
+      "type": "stm",
+      "frame": {
+        "kind": "stm",
+        "ownerType": "stateMachine",
+        "owner": "Vehicle"
+      },
+      "elements": [
+        {
+          "id": "i",
+          "kind": "initial",
+          "name": ""
+        },
+        {
+          "id": "op",
+          "kind": "state",
+          "name": "Operating"
+        },
+        {
+          "id": "r1",
+          "kind": "region",
+          "name": "",
+          "parent": "op"
+        },
+        {
+          "id": "r2",
+          "kind": "region",
+          "name": "",
+          "parent": "op"
+        },
+        {
+          "id": "i1",
+          "kind": "initial",
+          "name": "",
+          "parent": "r1"
+        },
+        {
+          "id": "idle",
+          "kind": "state",
+          "name": "Idle",
+          "parent": "r1"
+        },
+        {
+          "id": "mov",
+          "kind": "state",
+          "name": "Moving",
+          "parent": "r1"
+        },
+        {
+          "id": "i2",
+          "kind": "initial",
+          "name": "",
+          "parent": "r2"
+        },
+        {
+          "id": "lo",
+          "kind": "state",
+          "name": "LightsOff",
+          "parent": "r2"
+        },
+        {
+          "id": "ln",
+          "kind": "state",
+          "name": "LightsOn",
+          "parent": "r2"
+        }
+      ],
+      "relations": [
+        {
+          "id": "t0",
+          "kind": "transition",
+          "source": "i",
+          "target": "op"
+        },
+        {
+          "id": "t1",
+          "kind": "transition",
+          "source": "i1",
+          "target": "idle"
+        },
+        {
+          "id": "t2",
+          "kind": "transition",
+          "source": "idle",
+          "target": "mov",
+          "trigger": "accelerate"
+        },
+        {
+          "id": "t3",
+          "kind": "transition",
+          "source": "i2",
+          "target": "lo"
+        },
+        {
+          "id": "t4",
+          "kind": "transition",
+          "source": "lo",
+          "target": "ln",
+          "trigger": "dark"
+        }
+      ]
+    }
+  }
+]

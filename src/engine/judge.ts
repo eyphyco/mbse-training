@@ -2,6 +2,8 @@
  * 採点（DESIGN.md §9）。純粋関数。
  */
 import type { Problem } from '../data/types';
+import type { Model } from '../diagram/model';
+import { judgeBuild } from './build';
 
 /** 選択肢の問題。集合として一致すれば正解（順序は無視） */
 export function judgeChoice(problem: Problem, picked: readonly string[]): boolean {
@@ -39,6 +41,8 @@ export interface AnswerState {
   picks: string[];
   /** written の自己採点 */
   self?: boolean;
+  /** build_fragment で組んだモデル（土台 + 置いたもの） */
+  built?: Model;
 }
 
 export const EMPTY_ANSWER: AnswerState = { choices: [], picks: [] };
@@ -51,6 +55,10 @@ export function grade(problem: Problem, a: AnswerState): boolean {
       return judgeChoice(problem, a.choices);
     case 'spot_error':
       return judgeSpot(problem, a.picks).correct;
+    case 'build_fragment':
+      return (
+        !!a.built && !!problem.answer_model && judgeBuild(problem.answer_model, a.built).correct
+      );
     case 'written':
       return a.self === true;
   }
@@ -60,6 +68,10 @@ export function grade(problem: Problem, a: AnswerState): boolean {
 export function answered(problem: Problem, a: AnswerState): boolean {
   if (problem.type === 'spot_error') return a.picks.length > 0;
   if (problem.type === 'written') return true;
+  if (problem.type === 'build_fragment')
+    return (
+      !!a.built && !!problem.model && JSON.stringify(a.built) !== JSON.stringify(problem.model)
+    );
   return a.choices.length > 0;
 }
 
@@ -67,5 +79,6 @@ export const TYPE_LABEL: Record<Problem['type'], string> = {
   read_diagram: '図を読む',
   spot_error: '誤りを見つける',
   choose_construct: '構成を選ぶ',
+  build_fragment: '組み立てる',
   written: '記述',
 };

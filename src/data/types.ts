@@ -2,10 +2,11 @@ import type { DiagramType, Model } from '../diagram/model';
 import type { IssueKind } from '../diagram/rules';
 
 /**
- * 問題（DESIGN.md §8.2）。今ある型は 4 つ。
- * build_fragment（パレット）・trace_match・param_eval は DESIGN.md §13 の手順 10 以降で足す。
+ * 問題（DESIGN.md §8.2）。今ある型は 5 つ。trace_match・param_eval はまだ無い
+ * （状態機械に流す・式を評価するは read_diagram の選択肢で問うている）。
  */
-export type ProblemType = 'read_diagram' | 'choose_construct' | 'spot_error' | 'written';
+export type ProblemType =
+  'read_diagram' | 'choose_construct' | 'spot_error' | 'build_fragment' | 'written';
 
 export interface Choice {
   id: string;
@@ -39,6 +40,11 @@ export interface Problem {
   answer?: string[];
   /** spot_error。空にはしない（「誤りは無い」問題は read_diagram で作る） */
   errors?: SpotError[];
+  /**
+   * build_fragment の正解の図。土台（model）に足して、これと同じモデルになれば正解。
+   * 照合は種類と名前で行う（engine/build.ts）。土台の要素と関係はすべてここにも含める
+   */
+  answer_model?: Model;
   /** written の模範解答 */
   model_answer_md?: string;
   hints_md?: string[];

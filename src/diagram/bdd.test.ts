@@ -222,11 +222,12 @@ describe('bdd のレイアウト', () => {
     }
   });
 
-  it('箱どうしが重ならない（記法見本の全図）', async () => {
+  it('箱どうしが重ならない（記法見本の全図。入れ物は中に箱を持つので除く）', async () => {
     for (const s of NOTATION) {
       const l = await layoutBdd(s.model);
-      for (const a of l.nodes)
-        for (const b of l.nodes) {
+      const leaves = l.nodes.filter((n) => !n.container);
+      for (const a of leaves)
+        for (const b of leaves) {
           if (a === b) continue;
           const apart =
             a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y;
