@@ -119,7 +119,13 @@ let elkPromise: Promise<InstanceType<typeof ELKType>> | null = null;
  * Worker を挟むと CSP の worker-src と Service Worker のキャッシュ対象が増えるだけになる。
  */
 export function loadElk() {
-  elkPromise ??= import('elkjs/lib/elk.bundled.js').then((m) => new m.default());
+  // 失敗した Promise を握り続けると、回線が戻っても再読込するまで図が一切描けない。失敗したら捨てる
+  elkPromise ??= import('elkjs/lib/elk.bundled.js')
+    .then((m) => new m.default())
+    .catch((e: unknown) => {
+      elkPromise = null;
+      throw e;
+    });
   return elkPromise;
 }
 
