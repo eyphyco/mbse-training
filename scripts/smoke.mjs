@@ -343,6 +343,30 @@ try {
   await page.waitForTimeout(100);
   const w2 = await svgW();
   check('Ctrl + ホイールで図を拡大できる', w2 > w1 * 1.05, `${w1.toFixed(0)} → ${w2.toFixed(0)}px`);
+  // 修飾なしのホイール。図の上で手を止めてから回すと縮小する
+  // （ページが少し動くのは、カーソルの下の点を据え置くための位置合わせ）
+  await page.waitForTimeout(500);
+  await page.mouse.wheel(0, 100);
+  await page.waitForTimeout(100);
+  const w3 = await svgW();
+  check('ホイールだけで図を縮小できる', w3 < w2 * 0.95, `${w2.toFixed(0)} → ${w3.toFixed(0)}px`);
+  // ページを送っている途中で図の上に来たら、図は変えずにスクロールを続ける
+  await page.waitForTimeout(500);
+  await page.mouse.move(5, box.y + 20); // 図の外
+  await page.mouse.wheel(0, 100);
+  await page.waitForTimeout(50);
+  const fresh = await first.locator('svg.dg').boundingBox();
+  await page.mouse.move(fresh.x + 20, fresh.y + 20);
+  const y1 = await page.evaluate(() => scrollY);
+  await page.mouse.wheel(0, 100);
+  await page.waitForTimeout(100);
+  const w4 = await svgW();
+  check(
+    'スクロールの途中で図に入ってもスクロールを続ける',
+    Math.abs(w4 - w3) < 1 && (await page.evaluate(() => scrollY)) > y1,
+    `${w3.toFixed(0)} → ${w4.toFixed(0)}px`,
+  );
+  await page.evaluate(() => scrollTo(0, 0));
   // 全画面。開くと画面いっぱいの dialog、Esc で閉じる
   await first.getByRole('button', { name: '全画面で見る' }).click();
   const dlg = page.locator('dialog.dg-dialog[open]');

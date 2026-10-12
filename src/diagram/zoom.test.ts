@@ -9,6 +9,8 @@ import {
   stepZoom,
   storeZoom,
   wheelFactor,
+  isMouseWheel,
+  wheelIntent,
 } from './zoom';
 
 describe('stepZoom', () => {
@@ -76,5 +78,50 @@ describe('覚えておく倍率', () => {
     expect(readStoredZoom()).toBe(1);
     localStorage.setItem(ZOOM_KEY, '99');
     expect(readStoredZoom()).toBe(ZOOM_MAX);
+  });
+});
+
+describe('isMouseWheel', () => {
+  it('120 の倍数の wheelDelta はマウス（画面の倍率で deltaY が半端でも）', () => {
+    expect(isMouseWheel({ deltaX: 0, deltaY: 66.67, deltaMode: 0, wheelDeltaY: -120 })).toBe(true);
+  });
+  it('細かい wheelDelta はトラックパッド', () => {
+    expect(isMouseWheel({ deltaX: 0, deltaY: 4, deltaMode: 0, wheelDeltaY: -12 })).toBe(false);
+  });
+  it('行単位は Firefox のマウス', () => {
+    expect(isMouseWheel({ deltaX: 0, deltaY: 3, deltaMode: 1 })).toBe(true);
+  });
+  it('wheelDelta が無ければ、横成分なしで大きいものをマウスとみなす', () => {
+    expect(isMouseWheel({ deltaX: 0, deltaY: 100, deltaMode: 0 })).toBe(true);
+    expect(isMouseWheel({ deltaX: 1, deltaY: 8, deltaMode: 0 })).toBe(false);
+  });
+});
+
+describe('wheelIntent', () => {
+  const base = {
+    modifier: false,
+    mouse: true,
+    full: false,
+    sinceScroll: 10_000,
+    zoom: 1,
+    deltaY: -100,
+  };
+  it('図の上で手を止めてから回したら拡大縮小', () => {
+    expect(wheelIntent(base)).toBe('zoom');
+  });
+  it('ページを送っている途中なら素通し', () => {
+    expect(wheelIntent({ ...base, sinceScroll: 100 })).toBe('pass');
+  });
+  it('全画面ではスクロールの途中でも拡大縮小', () => {
+    expect(wheelIntent({ ...base, full: true, sinceScroll: 100 })).toBe('zoom');
+  });
+  it('トラックパッドのスクロールは素通し、Ctrl 付きなら拡大縮小', () => {
+    expect(wheelIntent({ ...base, mouse: false })).toBe('pass');
+    expect(wheelIntent({ ...base, mouse: false, modifier: true })).toBe('zoom');
+  });
+  it('端でそれ以上変えられない向きは素通し', () => {
+    expect(wheelIntent({ ...base, zoom: ZOOM_MAX, deltaY: -100 })).toBe('pass');
+    expect(wheelIntent({ ...base, zoom: ZOOM_MIN, deltaY: 100 })).toBe('pass');
+    expect(wheelIntent({ ...base, zoom: ZOOM_MAX, deltaY: 100 })).toBe('zoom');
   });
 });

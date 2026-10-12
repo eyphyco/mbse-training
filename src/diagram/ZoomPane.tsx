@@ -9,15 +9,34 @@ import {
   stepZoom,
   storeZoom,
   wheelFactor,
+  isMouseWheel,
+  wheelIntent,
 } from './zoom';
+
+/*
+  最後にページのスクロールへ素通ししたホイールの時刻。図をまたいで共有する
+  （図 A の上でスクロールしてきて図 B に入っても、続きのスクロールとして扱う）。
+  図の外のホイールも数えるため、window で拾う。図が拡大に使ったものは preventDefault 済みなので数えない。
+*/
+let lastScrollWheel = -Infinity;
+if (typeof window !== 'undefined') {
+  window.addEventListener(
+    'wheel',
+    (e) => {
+      if (!e.defaultPrevented) lastScrollWheel = e.timeStamp;
+    },
+    { passive: true },
+  );
+}
 
 /**
  * 図の拡大縮小と移動。高解像度の画面で図の文字が小さく見える、という指摘から入れた（2026-10-13）。
  *
  * 操作は地図アプリや PDF ビューアと同じ作法に寄せる（新しく覚えさせない）。
  *   - ボタン（− / 倍率 / +）。どの端末でも効き、存在そのものが「拡大できる」と知らせる
- *   - PC: Ctrl（Mac は ⌘）+ ホイール。トラックパッドのピンチも Ctrl 付きホイールで来る。
- *     ホイールだけではページのスクロールのまま（奪うと本文が読み進められなくなる）
+ *   - PC: 図の上でマウスのホイールを回す（要望で入れた。2026-10-13）。ただし本文を読み進める邪魔をしないよう、
+ *     ページを送っている途中・それ以上変えられない向き・トラックパッドの 2 本指スクロールは素通しする
+ *     （判定は zoom.ts の wheelIntent）。Ctrl（Mac は ⌘）+ ホイールとトラックパッドのピンチは常に拡大縮小
  *   - スマホ: 2 本指のピンチは図だけを拡大。1 本指はふつうのスクロール
  *   - はみ出したら、マウスはドラッグで動かせる。4px 動くまではクリック扱い（誤り指摘の図を押せる）
  *   - キーボード: 図に焦点があるとき + − 0
@@ -136,7 +155,15 @@ export function ZoomPane({
     if (!el) return;
 
     const onWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey && !e.metaKey) return;
+      const intent = wheelIntent({
+        modifier: e.ctrlKey || e.metaKey,
+        mouse: isMouseWheel(e as WheelEvent & { wheelDeltaY?: number }),
+        full,
+        sinceScroll: e.timeStamp - lastScrollWheel,
+        zoom: zoomRef.current,
+        deltaY: e.deltaY,
+      });
+      if (intent === 'pass') return;
       e.preventDefault();
       zoomTo(zoomRef.current * wheelFactor(e.deltaY, e.deltaMode), e.clientX, e.clientY);
     };
@@ -180,7 +207,7 @@ export function ZoomPane({
       el.removeEventListener('gesturestart', stopGesture);
       el.removeEventListener('gesturechange', stopGesture);
     };
-  }, [zoomTo]);
+  }, [zoomTo, full]);
 
   // マウスのドラッグで動かす。タッチはブラウザのスクロールに任せる（慣性も付く）
   const drag = useRef<{ x: number; y: number; left: number; top: number; moved: boolean } | null>(
@@ -251,7 +278,7 @@ export function ZoomPane({
         {full && <p className="mr-auto truncate text-small font-semibold text-fg">{label}</p>}
         {full && (
           <p className="mr-3 hidden text-tiny text-subtle sm:block">
-            <span className="pointer-coarse:hidden">Ctrl + ホイールで拡大縮小・ドラッグで移動</span>
+            <span className="pointer-coarse:hidden">ホイールで拡大縮小・ドラッグで移動</span>
             <span className="hidden pointer-coarse:inline">2 本指でつまんで拡大縮小</span>
           </p>
         )}
