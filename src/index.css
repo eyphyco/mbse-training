@@ -506,6 +506,29 @@ body {
   fill: #3a63e0;
 }
 
+/* 全画面の図。紙と同じ不透明の地にする（すりガラス越しだと図の線が背景の写真と混ざる） */
+.dg-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100dvw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: var(--c-solid);
+  color: var(--c-fg);
+}
+.dg-dialog::backdrop {
+  background: rgb(10 15 30 / 0.4);
+}
+/* 焦点の輪は枠の内側に出す（全画面では外側が画面の外になる） */
+.dg-zoom:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: -2px;
+}
+
 .dg-tab {
   fill: var(--c-dg-tab);
   stroke: var(--c-dg-ink);

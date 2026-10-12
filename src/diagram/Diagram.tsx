@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { layoutDiagram } from './diagrams';
 import { describeModel } from './describe';
@@ -8,6 +8,7 @@ import type { Measure } from './metrics';
 import type { DiagramLayout, NodeShape, Point, PortShape, Prim, TextRun } from './layout';
 import { MARK_LABEL } from './marks';
 import type { PickMark } from './marks';
+import { ZoomPane } from './ZoomPane';
 
 /**
  * モデル JSON → SVG。**図のレンダラが製品の心臓**（DESIGN.md §1.2）。
@@ -272,7 +273,18 @@ function MarkOverlay({
   );
 }
 
-function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pick?: PickProps }) {
+function Svg({
+  layout,
+  label,
+  pick,
+  zoom = 1,
+}: {
+  layout: DiagramLayout;
+  label: string;
+  pick?: PickProps;
+  /** 拡大は外寸だけを変える。viewBox（レイアウトの座標）は据え置くので、測った文字幅はそのまま効く */
+  zoom?: number;
+}) {
   const active = !!pick?.onToggle;
   // クリックした要素から一番近い data-ref を拾う（ポートは箱の中にあるので内側が勝つ）
   const onClick = (ev: MouseEvent<SVGSVGElement>) => {
@@ -303,8 +315,8 @@ function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pi
   return (
     <svg
       className={`dg block ${active ? 'dg-pickable' : ''}`}
-      width={layout.width}
-      height={layout.height}
+      width={layout.width * zoom}
+      height={layout.height * zoom}
       viewBox={`0 0 ${layout.width} ${layout.height}`}
       role={active ? 'group' : 'img'}
       aria-label={label}
@@ -394,6 +406,65 @@ function Svg({ layout, label, pick }: { layout: DiagramLayout; label: string; pi
   );
 }
 
+/**
+ * 埋め込みの図と、全画面の図。全画面でも誤り指摘の図は押せる（細い画面では全画面のほうが狙いやすい）。
+ * 印（marks）は親が持っているので、どちらで押しても同じ状態になる。
+ */
+function Zoomable({
+  layout,
+  label,
+  pick,
+}: {
+  layout: DiagramLayout;
+  label: string;
+  pick?: PickProps;
+}) {
+  const [full, setFull] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const d = dialog.current;
+    if (full && d && !d.open) d.showModal();
+  }, [full]);
+
+  const close = () => {
+    dialog.current?.close();
+  };
+
+  return (
+    <>
+      <ZoomPane
+        mode="inline"
+        contentW={layout.width}
+        contentH={layout.height}
+        label={label}
+        onExpand={() => setFull(true)}
+      >
+        {(zoom) => <Svg layout={layout} label={label} pick={pick} zoom={zoom} />}
+      </ZoomPane>
+      {full && (
+        // Esc はブラウザが close を出す。閉じたら中身ごと捨て、次に開くときは「画面に合わせる」から始める
+        <dialog
+          ref={dialog}
+          className="dg-dialog"
+          aria-label={`${label}（全画面）`}
+          onClose={() => setFull(false)}
+        >
+          <ZoomPane
+            mode="full"
+            contentW={layout.width}
+            contentH={layout.height}
+            label={label}
+            onClose={close}
+          >
+            {(zoom) => <Svg layout={layout} label={label} pick={pick} zoom={zoom} />}
+          </ZoomPane>
+        </dialog>
+      )}
+    </>
+  );
+}
+
 type State =
   | { status: 'loading' }
   | { status: 'ready'; layout: DiagramLayout; model: Model }
@@ -424,10 +495,10 @@ export default function Diagram({
   const header = headerText(model.frame);
   return (
     <figure className={className} data-testid="diagram" data-status={state.status}>
-      {/* 図が画面より広いときは図の中だけ横に流す（縮めると文字が読めなくなる） */}
-      <div className="overflow-x-auto">
+      {/* 図が画面より広いときは図の中だけ横に流す（勝手に縮めると文字が読めなくなる。縮めるのは本人が選んだときだけ） */}
+      <div>
         {state.status === 'ready' && state.model === model ? (
-          <Svg layout={state.layout} label={`図 ${header}`} pick={pick} />
+          <Zoomable layout={state.layout} label={`図 ${header}`} pick={pick} />
         ) : state.status === 'error' ? (
           <p className="rounded-md border border-danger-line bg-danger-soft p-4 text-small text-danger">
             図を描けませんでした: {state.message}

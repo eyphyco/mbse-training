@@ -122,6 +122,28 @@ export const IconSearch = (p: IconProps) =>
   );
 
 /* --- 画面のナビ・操作 ------------------------------------------------ */
+export const IconZoomIn = (p: IconProps) =>
+  svg(
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4.5 4.5M8.5 11h5M11 8.5v5" />
+    </>,
+    p,
+  );
+export const IconZoomOut = (p: IconProps) =>
+  svg(
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4.5 4.5M8.5 11h5" />
+    </>,
+    p,
+  );
+/** 全画面で開く（四隅へ広がる矢印） */
+export const IconExpand = (p: IconProps) =>
+  svg(<path d="M14 4h6v6M20 4l-6.5 6.5M10 20H4v-6M4 20l6.5-6.5" />, p);
+/** 枠に合わせる（四隅のかぎ） */
+export const IconFit = (p: IconProps) =>
+  svg(<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />, p);
 export const IconGrid = (p: IconProps) =>
   svg(
     <>

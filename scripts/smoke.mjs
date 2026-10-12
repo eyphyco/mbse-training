@@ -201,7 +201,7 @@ try {
   await page.waitForSelector('[data-testid=diagram][data-status=ready]');
   text = await main();
   check('節の終わりに初出の語を出す', text.includes('この節で初めて出る語'));
-  check('教材の中に図を描く', (await page.locator('[data-testid=diagram] svg').count()) > 0);
+  check('教材の中に図を描く', (await page.locator('[data-testid=diagram] svg.dg').count()) > 0);
 
   // 項目を持たない節（章 0 の「試験の構造」）も読んだにでき、もう一度押せば外せる
   await go('/learn/map');
@@ -276,7 +276,7 @@ try {
     .nth(notation.length - 1)
     .waitFor({ timeout: 10000 });
   const dg = await page.evaluate(() => {
-    const svgs = [...document.querySelectorAll('[data-testid=diagram] svg')];
+    const svgs = [...document.querySelectorAll('[data-testid=diagram] svg.dg')];
     const overflow = [];
     for (const svg of svgs) {
       // 箱（レイアウトが見込んだ矩形 data-box）と、その g の直下の文字。ポートの名前は箱の外に置くので対象外
@@ -326,6 +326,36 @@ try {
     '楕円（ユースケース・開始）と点線（依存・制御フロー）も描く',
     kinds.ellipse > 0 && kinds.dashedLine > 0,
   );
+
+  // 拡大縮小。外寸だけが変わり、レイアウトの座標（viewBox）は据え置き
+  const first = page.locator('[data-testid=diagram]').first();
+  const svgW = () => first.locator('svg.dg').evaluate((s) => s.getBoundingClientRect().width);
+  const w0 = await svgW();
+  await first.getByRole('button', { name: '拡大' }).click();
+  const w1 = await svgW();
+  check('図を拡大できる（ボタン）', w1 > w0 * 1.05, `${w0.toFixed(0)} → ${w1.toFixed(0)}px`);
+  // Ctrl + ホイールは図だけを拡大し、ページは拡大しない
+  const box = await first.locator('svg.dg').boundingBox();
+  await page.mouse.move(box.x + 20, box.y + 20);
+  await page.keyboard.down('Control');
+  await page.mouse.wheel(0, -200);
+  await page.keyboard.up('Control');
+  await page.waitForTimeout(100);
+  const w2 = await svgW();
+  check('Ctrl + ホイールで図を拡大できる', w2 > w1 * 1.05, `${w1.toFixed(0)} → ${w2.toFixed(0)}px`);
+  // 全画面。開くと画面いっぱいの dialog、Esc で閉じる
+  await first.getByRole('button', { name: '全画面で見る' }).click();
+  const dlg = page.locator('dialog.dg-dialog[open]');
+  await dlg.locator('svg.dg').waitFor({ timeout: 3000 });
+  const vp = page.viewportSize();
+  const fullW = await dlg.evaluate((d) => d.getBoundingClientRect().width);
+  check('全画面で図を開ける', Math.abs(fullW - vp.width) < 2, `${fullW.toFixed(0)}px`);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(100);
+  check('全画面は Esc で閉じる', (await page.locator('dialog.dg-dialog').count()) === 0);
+  // 倍率は覚えている。後の検査に響かないよう等倍に戻す
+  await first.getByRole('button', { name: /^倍率/ }).click();
+  check('倍率を等倍に戻せる', Math.abs((await svgW()) - w0) < 1);
   await page.click('button[aria-pressed]:has-text("act")');
   await page.waitForTimeout(300);
   const actCount = notation.filter((n) => n.model.type === 'act').length;
